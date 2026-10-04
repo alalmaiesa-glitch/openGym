@@ -30,7 +30,7 @@ describe('Arabic settings, account and sync experience', () => {
   it('isolates server hostnames from surrounding RTL sync text', () => {
     const sync = readFileSync(new URL('../components/ServerSync.jsx', import.meta.url), 'utf8')
     expect(sync).toContain('<bdi dir="ltr">{hostOf(sync.server)}</bdi>')
-    expect(sync).toContain('<bdi dir="ltr">{hostOf(k.server)}</bdi>')
+    expect(sync).toContain('<bdi dir="ltr">{k.server ? hostOf(k.server) : \'\'}</bdi>')
   })
 
   it('keeps passkey and device-link language understandable in Arabic', () => {
