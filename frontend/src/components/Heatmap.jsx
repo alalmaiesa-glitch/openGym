@@ -69,6 +69,7 @@ export default function Heatmap({ S, onDay, metric: selectedMetric, onMetricChan
       const a = agg[key]
       const cls = 'hm-c l' + level(a) + (key === todayISO() ? ' today' : '') + (day > today ? ' future' : '')
       cells.push(<div key={d} className={cls}
+        data-date={key}
         title={fmtDate(key, true, true) + (a ? ` · ${t(a.n === 1 ? '{0} workout' : '{0} workouts', a.n)} · ${t('{0} min', a.min)} · ${fmtVol(a.vol, S.unit)}` : '')}
         {...tappable(a ? () => onDay?.(key) : undefined)} />)
     }
