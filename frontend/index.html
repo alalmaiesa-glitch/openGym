@@ -8,6 +8,7 @@
   // The app re-applies this on every language change (lib/i18n.js setLang).
   // i18n-core RTL_LANGS is the runtime source of truth — keep this list in sync.
   try {
+    if (localStorage.getItem('gym_default_lang') === null) localStorage.setItem('gym_default_lang', 'ar');
     var s = JSON.parse(localStorage.getItem('gym_state_v1') || '{}');
     var l = s.lang || 'ar';
     document.documentElement.lang = l;
