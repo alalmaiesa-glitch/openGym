@@ -101,7 +101,7 @@ export function searchScore(exercise, query) {
   // Token-level matching is Unicode-aware: Arabic queries are first-class input rather than
   // disappearing in an ASCII-only split. The localized title is weighted above the canonical
   // English title while both remain searchable.
-  const tokens = needle.split(/[^\\p{L}\\p{N}]+/u).filter(Boolean)
+  const tokens = needle.split(/[^\p{L}\p{N}]+/u).filter(Boolean)
   if (!tokens.length) return 0
   let total = 0
   for (const token of tokens) {
@@ -113,7 +113,7 @@ export function searchScore(exercise, query) {
       else if (hay.startsWith(token)) best = Math.max(best, weight * 3)
       const idx = hay.indexOf(token)
       if (idx > 0) best = Math.max(best, weight * 2 - Math.min(idx, 20) * 0.5)
-      if (hay.split(/[^\\p{L}\\p{N}]+/u).some(w => w.startsWith(token))) best = Math.max(best, weight * 2.5)
+      if (hay.split(/[^\p{L}\p{N}]+/u).some(w => w.startsWith(token))) best = Math.max(best, weight * 2.5)
       if (isSubsequence(token, hay)) best = Math.max(best, weight + Math.max(0, 10 - (hay.length - token.length)))
     }
     if (!best) return 0 // every token must match
