@@ -784,7 +784,7 @@ function PushCard({ S, update, toast }) {
       )}
       {on && S.reminder?.on && (
         <Row icon="clock" iconTint="var(--purple)" title={t('Reminder time')}>
-          <input type="time" className="timef" value={S.reminder?.time || DEF.reminder.time}
+          <input type="time" className="timef" dir="ltr" value={S.reminder?.time || DEF.reminder.time}
             onChange={e => update(s => { s.reminder = { ...(s.reminder || DEF.reminder), time: e.target.value, tz: localTZ() } })} />
         </Row>
       )}
