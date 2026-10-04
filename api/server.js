@@ -53,7 +53,7 @@ const PASSWORD_LOGIN = /^(1|true|yes|on)$/i.test(process.env.PASSWORD_LOGIN || '
 // The language the sign-in screen, and every profile that never picked one, starts in (#303) —
 // for an instance whose people share a language. Only a tag's shape is checked here; the app
 // matches it against the languages it has and ignores one it does not know. Unset, it is left
-// out of /api/config and the app behaves as before.
+// out of /api/config; the Arabic edition sets DEFAULT_LANG=ar in its environment template.
 const DEFAULT_LANG = (() => {
   const v = String(process.env.DEFAULT_LANG || '').trim();
   if (!v) return '';

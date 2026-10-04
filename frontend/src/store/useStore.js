@@ -199,6 +199,9 @@ const detectedLang = () => {
 export function freshState() {
   const s = clone(DEF)
   s.lang = detectedLang()
+  // Arabic edition: new profiles use Sunday as the first day of the week without
+  // changing the fallback shape used to restore older upstream profiles.
+  s.weekStart = 0
   s.langAuto = true
   return s
 }

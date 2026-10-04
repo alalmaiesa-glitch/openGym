@@ -6,6 +6,14 @@ import {
 import { EXDB } from './exercises-data.js'
 import de from '../locales/de.js'
 
+
+describe('Arabic edition defaults', () => {
+  it('ships Arabic as an RTL language with an exercise-name pack', () => {
+    expect(LANGS.ar).toBe('العربية')
+    expect(EXERCISE_NAME_LANGS).toContain('ar')
+  })
+})
+
 describe('baseLang', () => {
   it('maps a derived locale to the language whose packs it loads', () => {
     expect(baseLang('de-CH')).toBe('de')
