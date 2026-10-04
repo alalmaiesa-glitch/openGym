@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import coachCss from '../coach.css?raw'
+import { readFileSync } from 'node:fs'
+
+const coachCss = readFileSync(new URL('../coach.css', import.meta.url), 'utf8')
 
 describe('RTL-safe Coach CSS', () => {
   it('uses logical alignment for Arabic-facing controls', () => {
