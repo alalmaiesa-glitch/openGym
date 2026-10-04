@@ -41,6 +41,22 @@ const PLANS = {
   '5x5': { routines: FIVE_BY_FIVE, schedule: [[1, '5x5-a'], [3, '5x5-b'], [5, '5x5-c']] }
 }
 
+const ARABIC_ROUTINE_NAMES = {
+  'Push Day': 'يوم الدفع',
+  'Pull Day': 'يوم السحب',
+  'Leg Day': 'يوم الأرجل',
+  'Upper A': 'الجزء العلوي A',
+  'Lower A': 'الجزء السفلي A',
+  'Upper B': 'الجزء العلوي B',
+  'Lower B': 'الجزء السفلي B',
+  'Full Body A': 'الجسم كامل A',
+  'Full Body B': 'الجسم كامل B',
+  'Full Body C': 'الجسم كامل C'
+}
+
+export const starterRoutineName = (name, lang = 'en') =>
+  lang === 'ar' ? (ARABIC_ROUTINE_NAMES[name] || name) : name
+
 const build = (routines, nameOf = name => name) =>
   routines.map(([, name, emoji, list]) => ({ id: uid(), name: nameOf(name), emoji, ex: list.map(([id, sets, reps]) => ({ id, sets, reps, weight: 0 })) }))
 
