@@ -11,7 +11,7 @@ import { toScale, rirOf, EFFORT_PRESETS, effortColor } from './lib/effort.js'
 import { beep, vibrate } from './lib/sound.js'
 import { t, dateLocale, instrFor, exerciseNameFor, exerciseNameClass, getLang, INSTR_LANGS } from './lib/i18n.js'
 import { nav } from './lib/nav.js'
-import { buildStarterPlan, starterPlanDays, starterPlanOptions } from './lib/starter.js'
+import { buildStarterPlan, starterPlanDays, starterPlanOptions, starterRoutineName } from './lib/starter.js'
 import Media, { Thumb } from './components/Media.jsx'
 import CustomMediaField from './components/CustomMediaField.jsx'
 import WorkoutMediaSection, { workoutMediaCount } from './components/WorkoutMedia.jsx'
@@ -141,7 +141,7 @@ const PLAN_COPY = {
 // which hands the click event in as the plan and silently loads nothing.
 export function loadStarterPlan(planId) {
   const current = S()
-  const plan = buildStarterPlan(planId, { weekStart: current.weekStart ?? 1, nameOf: name => t(name) })
+  const plan = buildStarterPlan(planId, { weekStart: current.weekStart ?? 1, nameOf: name => starterRoutineName(name, getLang()) })
   if (!plan) return false
   update(st => {
     st.routines.push(...plan.routines)
