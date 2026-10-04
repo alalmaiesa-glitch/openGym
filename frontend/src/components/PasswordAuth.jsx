@@ -80,7 +80,7 @@ async function signedIn(u, close) {
 }
 
 const field = { autoCapitalize: 'none', autoCorrect: 'off', spellCheck: false }
-const codeStyle = { letterSpacing: '.14em', fontWeight: 600, textAlign: 'center' }
+const codeStyle = { direction: 'ltr', letterSpacing: '.14em', fontWeight: 600, textAlign: 'center' }
 
 /* Sign in with name (or the profile's sign-in e-mail) and password, or — one tap away — redeem a reset code from the admin, which
    sets a new password and signs in. `onPasskey`, when given, offers the passkey instead. The
