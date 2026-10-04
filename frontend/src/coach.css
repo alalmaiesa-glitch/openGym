@@ -15,7 +15,7 @@
 .ob-p{color:var(--label-2);font-size:16px;line-height:1.45;margin:0 0 24px;letter-spacing:-.006em}
 .ob-choices{display:flex;flex-direction:column;gap:10px}
 .ob-choice{
-  display:flex;align-items:center;gap:14px;width:100%;text-align:left;
+  display:flex;align-items:center;gap:14px;width:100%;text-align:start;
   padding:16px 18px;border-radius:var(--r-lg);background:var(--surface);
   font-size:17px;letter-spacing:-.012em;color:var(--label);
   border:1.5px solid transparent;transition:border-color var(--fast),background var(--fast),transform var(--fast)
@@ -103,12 +103,12 @@
   padding:11px 15px;border-radius:20px;font-size:16px;line-height:1.42;letter-spacing:-.008em;
   background:var(--surface);color:var(--label);white-space:pre-wrap;word-break:break-word
 }
-.msg.coach .bub{border-bottom-left-radius:6px}
-.msg.user .bub{background:var(--acc);color:var(--on-acc);border-bottom-right-radius:6px}
+.msg.coach .bub{border-end-start-radius:6px}
+.msg.user .bub{background:var(--acc);color:var(--on-acc);border-end-end-radius:6px}
 .bub.err{background:color-mix(in srgb,var(--red) 14%,var(--surface));color:var(--label)}
 .bub.sys{background:none;color:var(--label-2);font-size:13px;text-align:center;padding:4px 8px;align-self:center;max-width:100%}
 .msg.sys{align-self:center;max-width:100%;align-items:center}
-.bub ul{margin:6px 0 0;padding-left:18px}
+.bub ul{margin:6px 0 0;padding-inline-start:18px}
 .bub li{margin:2px 0}
 .msg-t{font-size:11px;color:var(--label-3);margin:4px 8px 0}
 .typing{display:flex;align-items:center;gap:5px;padding:14px 16px;min-width:64px}
@@ -168,7 +168,7 @@
 
 /* composer */
 .composer{
-  position:fixed;left:0;right:0;bottom:0;z-index:40;
+  position:fixed;inset-inline:0;bottom:0;z-index:40;
   padding:8px var(--pad) calc(10px + var(--sab));
   background:color-mix(in srgb,var(--bg) 88%,transparent);
   -webkit-backdrop-filter:saturate(180%) blur(12px);backdrop-filter:saturate(180%) blur(12px)
@@ -214,7 +214,7 @@
 .ins-block{background:var(--surface-2);border-radius:16px;padding:12px 14px 10px}
 .ins-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13px;font-weight:600;letter-spacing:-.008em;margin-bottom:6px;min-width:0}
 .ins-h>span:first-child{flex:none}
-.ins-h>span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right}
+.ins-h>span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:end}
 .ins-h .dim{font-weight:400;font-size:12px}
 .ins-block .chart{margin:2px -4px 0}
 .ins-delta{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--label-2);white-space:nowrap;flex:none}
@@ -231,7 +231,7 @@
 .ins-bar-l{font-size:12.5px;color:var(--label-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ins-bar-t{height:8px;border-radius:99px;background:var(--surface-3);overflow:hidden}
 .ins-bar-t i{display:block;height:100%;border-radius:99px;background:var(--acc);transition:width var(--med) var(--ease)}
-.ins-bar-v{font-size:12px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.ins-bar-v{font-size:12px;font-weight:600;text-align:end;font-variant-numeric:tabular-nums}
 .ins-cmp{font-size:12.5px;color:var(--label-2);line-height:1.5;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;padding:0 2px}
 .pcard-notes div{display:flex;gap:8px;align-items:flex-start}
 .pcard-notes .icn{color:var(--yellow);flex:none;font-size:15px;margin-top:1px}
@@ -244,20 +244,20 @@
 }
 .deb-ring::before{content:"";position:absolute;inset:6px;border-radius:99px;background:var(--surface)}
 .deb-ring span{position:relative;font-size:24px;font-weight:700;letter-spacing:-.03em;line-height:64px}
-.deb-ring small{position:relative;font-size:11px;color:var(--label-2);line-height:64px;margin-left:1px}
+.deb-ring small{position:relative;font-size:11px;color:var(--label-2);line-height:64px;margin-inline-start:1px}
 .deb-score-t{display:flex;flex-direction:column;gap:2px;min-width:0}
 .deb-score-t b{font-size:17px;font-weight:600;letter-spacing:-.015em}
 .deb-score-t span{font-size:13px;color:var(--label-2)}
 .deb-list{padding:8px 18px 4px}
 .deb-list-h{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;margin-bottom:4px}
 .deb-list-h .icn{font-size:15px}
-.deb-item{font-size:14.5px;line-height:1.45;letter-spacing:-.008em;padding:6px 0 6px 22px;position:relative;border-top:var(--hair) solid var(--sep)}
+.deb-item{font-size:14.5px;line-height:1.45;letter-spacing:-.008em;padding-block:6px;padding-inline:22px 0;position:relative;border-top:var(--hair) solid var(--sep)}
 .deb-item:first-of-type{border-top:none}
-.deb-item::before{content:"";position:absolute;left:8px;top:14px;width:5px;height:5px;border-radius:99px;background:var(--label-3)}
+.deb-item::before{content:"";position:absolute;inset-inline-start:8px;top:14px;width:5px;height:5px;border-radius:99px;background:var(--label-3)}
 
 /* ---------- a decided proposal, folded into the thread ---------- */
 .recap{
-  display:block;width:100%;text-align:left;margin-top:6px;padding:14px 16px 12px;border-radius:var(--r-xl);
+  display:block;width:100%;text-align:start;margin-top:6px;padding:14px 16px 12px;border-radius:var(--r-xl);
   background:var(--surface);border:1px solid var(--sep-op);color:var(--label);transition:transform var(--fast),background var(--fast)
 }
 .recap:active{transform:scale(.99);background:var(--surface-2)}
@@ -279,9 +279,9 @@
 .recap-more .icn{font-size:12px}
 .pcard-chg.declined .pcard-chg-t{color:var(--label-2)}
 .pcard-chg .recap-state{align-self:center}
-.pdetail .pcard-chg,.pdetail .pcard-notes,.pdetail .ins{padding-left:0;padding-right:0}
-.pdetail .pcard-rt{padding-left:0;padding-right:0}
-.pdetail .pcard-week{padding-left:0;padding-right:0}
+.pdetail .pcard-chg,.pdetail .pcard-notes,.pdetail .ins{padding-inline:0}
+.pdetail .pcard-rt{padding-inline:0}
+.pdetail .pcard-week{padding-inline:0}
 
 /* ---------- you against the room ---------- */
 .cmp{padding:8px 0;border-top:var(--hair) solid var(--sep)}
@@ -291,4 +291,4 @@
 .cmp-bar{position:relative;height:22px;border-radius:7px;background:var(--surface-3);overflow:hidden;margin-top:4px}
 .cmp-bar i{display:block;height:100%;border-radius:7px;background:var(--label-3);opacity:.55}
 .cmp-bar.you i{background:var(--acc);opacity:1}
-.cmp-bar span{position:absolute;left:8px;top:0;line-height:22px;font-size:11.5px;font-weight:600;color:var(--label);font-variant-numeric:tabular-nums;text-shadow:0 0 6px var(--bg)}
+.cmp-bar span{position:absolute;inset-inline-start:8px;top:0;line-height:22px;font-size:11.5px;font-weight:600;color:var(--label);font-variant-numeric:tabular-nums;text-shadow:0 0 6px var(--bg)}
