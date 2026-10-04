@@ -72,7 +72,7 @@ const gainedWorkoutMedia = (prev, next) => {
   return workoutMediaHashes(next).some(h => !had.has(h))
 }
 export const DEF = {
-  unit: 'kg', restSec: 90, restPauseSec: 15, sound: true, soundOnSilent: false, timerFlash: false, timedSetOvertime: false, keepAwake: true, lang: 'en',
+  unit: 'kg', restSec: 90, restPauseSec: 15, sound: true, soundOnSilent: false, timerFlash: false, timedSetOvertime: false, keepAwake: true, lang: 'ar',
   theme: 'dark', accent: 'lime', body: 'male', targetW: null,
   bodyweight: [], routines: [], week: {}, dayPlan: {},
   exWeights: {}, workouts: [], active: null, customEx: [], gifSize: 'full',
@@ -107,7 +107,7 @@ export const DEF = {
   // First day of the week as a getDay() index — 1 Monday, 0 Sunday. Monday is the default so
   // every profile written before this setting existed keeps the week it has been looking at.
   // See lib/format.js: nothing reads this field directly, everything goes through the helpers.
-  weekStart: 1,
+  weekStart: 0,
   // Decimals on displayed weights: 1 by default, 2 for anyone loading quarter plates or
   // microplates (issue #139). Display only — nothing is stored or rounded differently.
   wdec: 1,
@@ -189,7 +189,7 @@ const detectedLang = () => {
     const base = (navigator.language || '').toLowerCase().split('-')[0]
     if (RTL_LANGS.has(base)) return base
   } catch (e) { /* ignore */ }
-  return 'en'
+  return 'ar'
 }
 
 // A copy started from nothing on this device. `langAuto` marks its language as one nobody has
