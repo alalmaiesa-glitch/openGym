@@ -160,7 +160,8 @@ const WORDS = {
 const protect = []
 
 function escapeRe(s) {
-  return s.replace(/[.*+?^$()|[\]\\{}]/g, '\\$&')
+  const special = '\\^$.*+?()[]{}|'
+  return [...s].map(ch => special.includes(ch) ? '\\' + ch : ch).join('')
 }
 
 function protectPhrases(input) {
