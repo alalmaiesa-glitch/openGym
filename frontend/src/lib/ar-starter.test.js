@@ -1,9 +1,5 @@
-import { afterEach, describe, expect, it } from 'vitest'
-import ar from '../locales/ar.js'
-import { buildStarterPlan, starterPlanDays } from './starter.js'
-import { _setLangState, t } from './i18n-core.js'
-
-afterEach(() => _setLangState('en', {}, null, null))
+import { describe, expect, it } from 'vitest'
+import { buildStarterPlan, starterPlanDays, starterRoutineName } from './starter.js'
 
 describe('Arabic starter plans', () => {
   it('starts a three-day plan on Sunday for a Sunday-first profile', () => {
@@ -17,17 +13,21 @@ describe('Arabic starter plans', () => {
   })
 
   it('persists Arabic routine names when the active language is Arabic', () => {
-    _setLangState('ar', ar, null, null)
-    const plan = buildStarterPlan('ppl', { weekStart: 0, nameOf: name => t(name) })
+    const plan = buildStarterPlan('ppl', { weekStart: 0, nameOf: name => starterRoutineName(name, 'ar') })
     expect(plan.routines.map(r => r.name)).toEqual(['يوم الدفع', 'يوم السحب', 'يوم الأرجل'])
     expect(plan.schedule.map(s => s.day)).toEqual([0, 2, 4])
   })
 
   it('localizes every starter routine family used by the chooser', () => {
-    _setLangState('ar', ar, null, null)
-    expect(buildStarterPlan('upper-lower', { weekStart: 0, nameOf: t }).routines.map(r => r.name))
+    const nameOf = name => starterRoutineName(name, 'ar')
+    expect(buildStarterPlan('upper-lower', { weekStart: 0, nameOf }).routines.map(r => r.name))
       .toEqual(['الجزء العلوي A', 'الجزء السفلي A', 'الجزء العلوي B', 'الجزء السفلي B'])
-    expect(buildStarterPlan('full-body', { weekStart: 0, nameOf: t }).routines.map(r => r.name))
+    expect(buildStarterPlan('full-body', { weekStart: 0, nameOf }).routines.map(r => r.name))
       .toEqual(['الجسم كامل A', 'الجسم كامل B', 'الجسم كامل C'])
+  })
+
+  it('leaves routine names canonical for other languages', () => {
+    expect(starterRoutineName('Push Day', 'en')).toBe('Push Day')
+    expect(starterRoutineName('Push Day', 'de')).toBe('Push Day')
   })
 })
