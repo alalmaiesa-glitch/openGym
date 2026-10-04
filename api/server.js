@@ -52,10 +52,10 @@ const ALLOW_GUEST = !/^(0|false|no|off)$/i.test(process.env.ALLOW_GUEST || '');
 const PASSWORD_LOGIN = /^(1|true|yes|on)$/i.test(process.env.PASSWORD_LOGIN || '');
 // The language the sign-in screen, and every profile that never picked one, starts in (#303) —
 // for an instance whose people share a language. Only a tag's shape is checked here; the app
-// matches it against the languages it has and ignores one it does not know. This Arabic-first
-// fork defaults to Arabic when DEFAULT_LANG is not explicitly set.
+// matches it against the languages it has and ignores one it does not know. Unset, it is left
+// out of /api/config; the Arabic edition sets DEFAULT_LANG=ar in its environment template.
 const DEFAULT_LANG = (() => {
-  const v = String(process.env.DEFAULT_LANG || 'ar').trim();
+  const v = String(process.env.DEFAULT_LANG || '').trim();
   if (!v) return '';
   if (/^[A-Za-z]{2,3}([-_][A-Za-z0-9]{2,8})?$/.test(v)) return v;
   console.warn(`DEFAULT_LANG "${v.slice(0, 40)}" is not a language tag such as pt-BR or de — ignored`);
