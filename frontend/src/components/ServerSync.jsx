@@ -294,5 +294,5 @@ export function KeptChangesRows() {
   if (DEMO) return null
   return rows.map(k => <Row key={(k.server || '') + '|' + k.uid} icon="history" iconTint="var(--orange)"
     title={t('Changes kept for {0}', k.name || k.uid)}
-    subtitle={<><bdi dir="ltr">{k.server ? hostOf(k.server) : ''}</bdi>{k.server ? ' · ' : ''}{t('Added back when this device connects as that account again.') )}</>} />)
+    subtitle={<><bdi dir="ltr">{k.server ? hostOf(k.server) : ''}</bdi>{k.server ? ' · ' : ''}{t('Added back when this device connects as that account again.')}</>} />)
 }
