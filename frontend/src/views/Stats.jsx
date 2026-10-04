@@ -21,6 +21,7 @@ import {
   effortHistogram, isHardSet, HARD_RIR
 } from '../lib/effort.js'
 import { Button, Segmented, SelectRow } from '../components/ui.jsx'
+import { statsPeriodLabel } from '../lib/stats-period.js'
 import { tappable } from '../lib/use-sheet-keyboard.js'
 import { isWarmupRow } from '../lib/workout-model.js'
 
@@ -99,12 +100,12 @@ function fatigueLabel(value) {
 }
 
 function MuscleBalance({ S }) {
+  const lang = getLang()
   const [view, setView] = useState('balance')
   const [win, setWin] = useState(7)
   const [hard, setHard] = useState(false)
   const [sel, setSel] = useState(null)
   const now = useNow()
-  const lang = getLang()
   const workouts = S.workouts
   // The user's own last registered bodyweight drives bodyweight-exercise tonnage.
   const bodyweightKg = useMemo(() => {
@@ -151,7 +152,7 @@ function MuscleBalance({ S }) {
           onClick={() => { setHard(h => !h); setSel(null) }}>{on ? t('Hard') : t('All')}</Button>}
       </div>
       <Segmented className="seg-range" value={win} onChange={v => { setWin(v); setSel(null) }}
-        options={[{ value: 7, label: t('Week') }, { value: 30, label: '30d' }, { value: 90, label: '90d' }, { value: 0, label: t('All') }]} />
+        options={[{ value: 7, label: t('Week') }, { value: 30, label: statsPeriodLabel('30d', lang) }, { value: 90, label: statsPeriodLabel('90d', lang) }, { value: 0, label: t('All') }]} />
       {inWin.length ? <>
         <BodyMap className="tappable" load={load} body={S.body} selected={sel}
           onMuscle={m => setSel(s => (s === m ? null : m))} />
@@ -201,12 +202,12 @@ function MuscleBalance({ S }) {
                   ? <span className="dim" style={{ fontSize: 11, marginInlineStart: 6 }}>{t('primary')}</span>
                   : <span className="dim" style={{ fontSize: 11, marginInlineStart: 6 }}>{t('secondary')}</span>}
               </span>
-              <span className="small dim" style={{ display: 'block', fontWeight: 400 }}>{t('Est. 1RM')}: {fmtNum(row.est)} {S.unit} · {fmtDate(row.estDate, true)}</span>
+              <span className="small dim" style={{ display: 'block', fontWeight: 400 }}>{t('Est. 1RM')}: <bdi dir="ltr">{fmtNum(row.est)} {S.unit}</bdi> · {fmtDate(row.estDate, true)}</span>
             </span>
             {/* Filled by width, like the bars around it, rather than a 'to right' gradient: a block
                 starts at the inline start, so in right-to-left it fills from the right. */}
             <span className="bar" style={{ alignSelf: 'center' }}><i style={{ width: Math.round(row.decay * 100) + '%' }} /></span>
-            <span className="v" style={{ alignSelf: 'center' }}>{fmtNum(row.current)} {S.unit}<span className="dim"> · {Math.round(row.decay * 100)}%</span></span>
+            <span className="v" style={{ alignSelf: 'center' }}><bdi dir="ltr">{fmtNum(row.current)} {S.unit} · {Math.round(row.decay * 100)}%</bdi></span>
           </div>
         )) : <div className="muted small">{t('No exercises with an estimated 1RM yet.')}</div>}
       </>}
@@ -237,6 +238,7 @@ function MuscleBalance({ S }) {
 // default, so a partly rated history is the normal case, and an average without its
 // denominator would quietly speak for sets that were never rated.
 function EffortCard({ S }) {
+  const lang = getLang()
   const [win, setWin] = useState(90)
   const kind = displayScale(S)
   const hd = scaleName(kind)
@@ -253,7 +255,7 @@ function EffortCard({ S }) {
   return <div className="card">
     <h2>{t('Effort')} <span className="dim" style={{ textTransform: 'none', letterSpacing: 0 }}>· {t('how close to failure')}</span></h2>
     <Segmented className="seg-range" value={win} onChange={setWin}
-      options={[{ value: 30, label: '30d' }, { value: 90, label: '90d' }, { value: 365, label: '1Y' }, { value: 0, label: t('All') }]} />
+      options={[{ value: 30, label: statsPeriodLabel('30d', lang) }, { value: 90, label: statsPeriodLabel('90d', lang) }, { value: 365, label: statsPeriodLabel('1y', lang) }, { value: 0, label: t('All') }]} />
     {sum.rated === 0 ? <div className="muted small">{t('No rated sets in this period.')}</div> : <>
       <div className="row between" style={{ alignItems: 'flex-end', gap: 12 }}>
         <div>
@@ -275,9 +277,9 @@ function EffortCard({ S }) {
       </>}
       <h4 className="sec" style={{ marginTop: 12 }}>{t('Where the sets land')}</h4>
       {hist.map(b => <div key={b.rir} className="mrow">
-        <span className="nm">{hd} {binLabel(b)}</span>
+        <span className="nm"><bdi dir="ltr">{hd} {binLabel(b)}</bdi></span>
         <span className="bar"><i style={{ width: Math.round(b.n / maxBin * 100) + '%', background: b.rir <= HARD_RIR ? 'var(--yellow)' : 'var(--label-3)' }} /></span>
-        <span className="v">{b.n ? b.n + ' · ' + Math.round(b.pct * 100) + '%' : '—'}</span>
+        <span className="v"><bdi dir="ltr">{b.n ? b.n + ' · ' + Math.round(b.pct * 100) + '%' : '—'}</bdi></span>
       </div>)}
       <div className="small dim" style={{ marginTop: 8 }}>
         {t('Most working sets belong close to failure without living there — half at the floor and half at the top average out to a healthy-looking middle.')}
@@ -289,6 +291,7 @@ function EffortCard({ S }) {
 // Stats = the analytics hub: all charts, progress and history live here.
 export default function Stats() {
   const nav = useNavigate()
+  const lang = getLang()
   const S = useStore(s => s.S)
   const [range, setRange] = useState(90)
   const [exId, setExId] = useState(null)
@@ -457,7 +460,7 @@ export default function Stats() {
       <div className="tile"><div className="l"><Icon name="dumbbell" />{t('Workouts')}</div><div className="v">{workouts.length}</div></div>
       <div className="tile"><div className="l"><Icon name="calendar" />{t('This month')}</div><div className="v">{monthW}</div></div>
       <div className="tile"><div className="l"><Icon name="flame" />{t('Week streak')}</div><div className="v">{streakWeeks(S)}</div></div>
-      <div className="tile"><div className="l"><Icon name="scale" />{t('Weight 30d')}</div><div className="v" style={{ fontSize: 22, color: bwDelta30 === null ? 'inherit' : bwDeltaColor(bwDelta30, (lastBW(S) || {}).w || 0) }}>{bwDelta30 === null ? '—' : (bwDelta30 > 0 ? '+' : '') + fmtNum(bwDelta30) + ' ' + S.unit}</div></div>
+      <div className="tile"><div className="l"><Icon name="scale" />{t('Weight 30d')}</div><div className="v" style={{ fontSize: 22, color: bwDelta30 === null ? 'inherit' : bwDeltaColor(bwDelta30, (lastBW(S) || {}).w || 0) }}><bdi dir="ltr">{bwDelta30 === null ? '—' : (bwDelta30 > 0 ? '+' : '') + fmtNum(bwDelta30) + ' ' + S.unit}</bdi></div></div>
 
     </div>
 
@@ -489,7 +492,7 @@ export default function Stats() {
           </div>
         </div>
         <Segmented className="seg-range" value={range} onChange={setRange}
-          options={[{ value: 30, label: '1M' }, { value: 90, label: '3M' }, { value: 365, label: '1Y' }, { value: 0, label: t('All') }]} />
+          options={[{ value: 30, label: statsPeriodLabel('1m', lang) }, { value: 90, label: statsPeriodLabel('3m', lang) }, { value: 365, label: statsPeriodLabel('1y', lang) }, { value: 0, label: t('All') }]} />
         <div className="chart"><LineChart points={bwPts} h={160} unit={S.unit} goal={S.targetW} /></div>
         {/* every weigh-in, week by week with its average (Discord 'Weight') */}
         {S.bodyweight.length > 0 && <div className="row" style={{ justifyContent: 'flex-end', marginTop: 4 }}>
