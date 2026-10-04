@@ -140,7 +140,8 @@ const PLAN_COPY = {
 // nothing at all. planId is deliberately required — a default invites `onClick={loadStarterPlan}`,
 // which hands the click event in as the plan and silently loads nothing.
 export function loadStarterPlan(planId) {
-  const plan = buildStarterPlan(planId)
+  const current = S()
+  const plan = buildStarterPlan(planId, { weekStart: current.weekStart ?? 1, nameOf: name => t(name) })
   if (!plan) return false
   update(st => {
     st.routines.push(...plan.routines)
@@ -155,9 +156,10 @@ const dayList = days => new Intl.ListFormat(dateLocale()).format(days.map(d => t
 
 function StarterPlanChooser({ close }) {
   const week = useStore(s => s.S.week)
+  const weekStart = useStore(s => s.S.weekStart ?? 1)
   const routines = useStore(s => s.S.routines)
   const choose = (id, name) => {
-    const days = starterPlanDays(id)
+    const days = starterPlanDays(id, weekStart)
     close()
     // A confirmation is only worth showing when one of those days is actually occupied — by a
     // routine that still exists, not by a stale id the Plan already shows as "Rest".
