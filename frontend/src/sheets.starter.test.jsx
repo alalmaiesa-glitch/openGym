@@ -39,7 +39,7 @@ beforeEach(() => {
   globalThis.IS_REACT_ACT_ENVIRONMENT = true
   useUI.setState({ sheets: [], toastMsg: '' })
   useStore.setState(s => ({
-    S: { ...s.S, routines: [{ id: 'mine', name: 'My routine', emoji: 'star', ex: [] }], week: {}, active: null },
+    S: { ...s.S, weekStart: 1, routines: [{ id: 'mine', name: 'My routine', emoji: 'star', ex: [] }], week: {}, active: null },
   }))
   document.body.innerHTML = ''
 })
@@ -108,6 +108,15 @@ describe('starter plan chooser', () => {
 })
 
 describe('loadStarterPlan', () => {
+  it('rotates the starter schedule to a Sunday-first profile', () => {
+    useStore.setState(s => ({ S: { ...s.S, weekStart: 0, week: {} } }))
+    loadStarterPlan('ppl')
+    expect(nameOn(0)).toBe('Push Day')
+    expect(nameOn(2)).toBe('Pull Day')
+    expect(nameOn(4)).toBe('Leg Day')
+    expect(S().week[1]).toBeUndefined()
+  })
+
   it('appends independent routines each time the same plan is loaded', () => {
     loadStarterPlan('ppl')
     const first = S().routines.slice(1).map(r => r.id)
