@@ -721,7 +721,7 @@ function MobileReminderCard({ S, update, toast }) {
       </Row>
       {S.reminder?.on && (
         <Row icon="clock" iconTint="var(--purple)" title={t('Reminder time')}>
-          <input type="time" className="timef" value={S.reminder?.time || DEF.reminder.time}
+          <input type="time" className="timef" dir="ltr" value={S.reminder?.time || DEF.reminder.time}
             onChange={e => setReminder({ time: e.target.value })} />
         </Row>
       )}
@@ -881,7 +881,7 @@ function AccountIdRow({ id }) {
   const toast = useUI(s => s.toast)
   if (!id) return null
   const copy = async () => { if (await copyText(id)) toast(t('Account ID copied')) }
-  return <Row icon="person" iconTint="var(--grey)" title={t('Account ID')} subtitle={<span className="acct-id">{id}</span>} onClick={copy} />
+  return <Row icon="person" iconTint="var(--grey)" title={t('Account ID')} subtitle={<span className="acct-id" dir="ltr">{id}</span>} onClick={copy} />
 }
 
 // Lets the mobile app's "connect to my server" mode (lib/remote.js) authenticate without a
@@ -897,7 +897,7 @@ function PairSheet({ close }) {
       {t('On the openGym app, choose “Connect to my server”, then enter this address and the code below. It expires in 5 minutes.')}
     </div>
     {err ? <div className="dim small">{err}</div> : (
-      <div className="card" style={{ textAlign: 'center', fontSize: 30, fontWeight: 700, letterSpacing: '.16em', padding: '18px 0' }}>
+      <div className="card" dir="ltr" style={{ textAlign: 'center', fontSize: 30, fontWeight: 700, letterSpacing: '.16em', padding: '18px 0' }}>
         {code || '········'}
       </div>
     )}
@@ -930,7 +930,7 @@ function RegisterInline({ close, setUser, pushState, pullState, toast }) {
     <TextField ref={nameRef} placeholder={t('Your name')} maxLength={40} />
     {inviteOnly && <>
       <div style={{ height: 10 }} />
-      <input className="input" placeholder={t('Invite code')} maxLength={40} value={code}
+      <input className="input" dir="ltr" placeholder={t('Invite code')} maxLength={40} value={code}
         onChange={e => setCode(e.target.value.toUpperCase())} style={{ letterSpacing: '.14em', fontWeight: 600, textAlign: 'center' }} />
       <div className="dim small" style={{ marginTop: 6 }}>{t('This app is invite-only — enter the code you were given.')}</div>
     </>}
