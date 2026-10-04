@@ -94,25 +94,26 @@ function isSubsequence(needle, hay) {
 // 0 means no match, so matchesExerciseSearch stays a boolean filter while the picker can
 // rank results by score.
 export function searchScore(exercise, query) {
-  const needle = searchableText(query).toLowerCase().trim()
+  const needle = normalizeStr(searchableText(query)).trim()
   if (!needle) return 1
   const source = exercise && typeof exercise === 'object' ? exercise : {}
-  const fields = [['n', 100], ['tg', 40], ['eq', 40], ['sm', 30], ['muscleGroups', 30], ['primaries', 30], ['secondaries', 30], ['desc', 10], ['cues', 10]]
-  // Token-level matching: every query word must match somewhere (any order), so
-  // "press bench" finds "Bench Press". The score sums each token's best hit.
-  const tokens = needle.split(/[^a-z0-9]+/).filter(Boolean)
+  const fields = [[exerciseNameSearchText(source), 120], [source.n, 100], [source.tg, 40], [source.eq, 40], [source.sm, 30], [source.muscleGroups, 30], [source.primaries, 30], [source.secondaries, 30], [source.desc, 10], [source.cues, 10]]
+  // Token-level matching is Unicode-aware: Arabic queries are first-class input rather than
+  // disappearing in an ASCII-only split. The localized title is weighted above the canonical
+  // English title while both remain searchable.
+  const tokens = needle.split(/[^\\p{L}\\p{N}]+/u).filter(Boolean)
   if (!tokens.length) return 0
   let total = 0
   for (const token of tokens) {
     let best = 0
-    for (const [field, weight] of fields) {
-      const hay = searchableText(source[field]).toLowerCase()
+    for (const [value, weight] of fields) {
+      const hay = normalizeStr(searchableText(value))
       if (!hay) continue
       if (hay === token) best = Math.max(best, weight * 4)
       else if (hay.startsWith(token)) best = Math.max(best, weight * 3)
       const idx = hay.indexOf(token)
       if (idx > 0) best = Math.max(best, weight * 2 - Math.min(idx, 20) * 0.5)
-      if (hay.split(/[^a-z0-9]+/).some(w => w.startsWith(token))) best = Math.max(best, weight * 2.5)
+      if (hay.split(/[^\\p{L}\\p{N}]+/u).some(w => w.startsWith(token))) best = Math.max(best, weight * 2.5)
       if (isSubsequence(token, hay)) best = Math.max(best, weight + Math.max(0, 10 - (hay.length - token.length)))
     }
     if (!best) return 0 // every token must match
@@ -207,6 +208,10 @@ export const exOr = id => EXIDX[id] ||
 export const normalizeStr = s => (s || '')
   .normalize('NFD')
   .replace(/[\u0300-\u036f]/g, '')
+  // Arabic search ignores tashkeel/tatweel and the common alef/ya spelling variants.
+  .replace(/[\u0640\u064B-\u065F\u0670]/g, '')
+  .replace(/[أإآ]/g, 'ا')
+  .replace(/ى/g, 'ي')
   .toLowerCase()
 
 // Multi-token, accent-insensitive and multilingual exercise search.
