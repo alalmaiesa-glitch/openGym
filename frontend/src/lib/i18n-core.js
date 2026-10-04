@@ -16,7 +16,7 @@ export const RTL_LANGS = new Set(['ar'])
 export const DATE_LOCALES = {
   en: 'en-GB', de: 'de-DE', 'de-CH': 'de-CH', es: 'es-ES', fr: 'fr-FR', it: 'it-IT',
   pt: 'pt-PT', 'pt-BR': 'pt-BR',
-  pl: 'pl-PL', tr: 'tr-TR', ru: 'ru-RU', uk: 'uk-UA', zh: 'zh-CN', ko: 'ko-KR', hi: 'hi-IN', th: 'th-TH', hu: 'hu-HU', ar: 'ar-u-nu-latn'
+  pl: 'pl-PL', tr: 'tr-TR', ru: 'ru-RU', uk: 'uk-UA', zh: 'zh-CN', ko: 'ko-KR', hi: 'hi-IN', th: 'th-TH', hu: 'hu-HU', ar: 'ar-SA-u-ca-gregory-nu-latn'
 }
 
 // Locales derived from another language by a pure text transform rather than carried as their
