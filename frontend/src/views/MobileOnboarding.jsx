@@ -34,10 +34,10 @@ export function ConnectSheet({ close, initialUrl = '', again = false }) {
         ? t('Open Settings → “Pair the mobile app” on your openGym site in a browser and enter the new code shown there. What this phone kept is merged into your account.')
         : t('Open Settings → “Pair the mobile app” on the openGym site you’re already signed into, then enter its address and the code shown there.')}
     </div>
-    <input ref={ref} className="input" placeholder={t('Server address (e.g. gym.example.com)')} value={url}
+    <input ref={ref} className="input" dir="ltr" placeholder={t('Server address (e.g. gym.example.com)')} value={url}
       onChange={e => setUrl(e.target.value)} autoCapitalize="none" autoCorrect="off" inputMode="url" />
     <div style={{ height: 10 }} />
-    <input ref={codeRef} className="input" placeholder={t('Pairing code')} maxLength={8} value={code}
+    <input ref={codeRef} className="input" dir="ltr" placeholder={t('Pairing code')} maxLength={8} value={code}
       onChange={e => setCode(e.target.value.toUpperCase())} style={{ letterSpacing: '.14em', fontWeight: 600, textAlign: 'center' }} />
     <div style={{ height: 12 }} />
     <Button variant="primary" onClick={go} disabled={busy}>{busy ? t('Connecting…') : t('Connect')}</Button>
