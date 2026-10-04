@@ -264,7 +264,7 @@ export function ServerSyncSection({ children }) {
   return <Section title={t('Server & sync')}>
     {/* No address: a phone an earlier version unpaired. The status row below already says it is
         not connected; this row only says which server, and there is none to name. */}
-    <Row icon="globe" iconTint="var(--blue)" title={sync.server ? hostOf(sync.server) : t('Server address unknown')}
+    <Row icon="globe" iconTint="var(--blue)" title={sync.server ? <bdi dir="ltr">{hostOf(sync.server)}</bdi> : t('Server address unknown')}
       subtitle={t('Signed in as {0}', user.name)} />
     <Row icon={view.icon} iconTint={TINT[view.tone]} title={view.line} subtitle={sub} className="sync-status" />
     <Row icon="reset" iconTint="var(--acc)" title={busy ? t('Syncing…') : t('Sync now')} onClick={now} />
@@ -294,5 +294,5 @@ export function KeptChangesRows() {
   if (DEMO) return null
   return rows.map(k => <Row key={(k.server || '') + '|' + k.uid} icon="history" iconTint="var(--orange)"
     title={t('Changes kept for {0}', k.name || k.uid)}
-    subtitle={(k.server ? hostOf(k.server) + ' · ' : '') + t('Added back when this device connects as that account again.')} />)
+    subtitle={<>{k.server ? <><bdi dir="ltr">{hostOf(k.server)}</bdi><span> · </span></> : null}{t('Added back when this device connects as that account again.') )}</>} />)
 }
