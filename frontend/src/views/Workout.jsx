@@ -74,7 +74,7 @@ function Elapsed({ start }) {
     const tick = () => { const s = Math.floor((Date.now() - start) / 1000); setT(Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0')) }
     tick(); const iv = setInterval(tick, 1000); return () => clearInterval(iv)
   }, [start])
-  return <span>{t}</span>
+  return <span dir="ltr">{t}</span>
 }
 
 // A set-row column's number as it is shown. Most columns show what is stored; one with a `view`

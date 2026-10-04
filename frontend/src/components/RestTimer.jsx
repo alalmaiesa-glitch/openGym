@@ -25,7 +25,7 @@ export default function RestTimer() {
 
   if (work) return (
     <div id="timer" className="working">
-      <div className="t">{work.left <= 0 && work.overtime ? '+' + clock(-work.left) : clock(work.left)}</div>
+      <div className="t" dir="ltr">{work.left <= 0 && work.overtime ? '+' + clock(-work.left) : clock(work.left)}</div>
       <div className="grow">
         {work.label && <div className="lbl">{work.label}</div>}
         <div className="bar"><i style={{ width: pct + '%' }} /></div>
@@ -43,12 +43,12 @@ export default function RestTimer() {
   return (
     <div id="timer" className={'rest' + (timer.paused ? ' paused' : '')}>
       <div className="head">
-        <div className="t" role={timer.ready ? 'status' : undefined}>{timer.ready ? t('Ready') : clock(timer.left)}</div>
+        <div className="t" dir={timer.ready ? undefined : 'ltr'} role={timer.ready ? 'status' : undefined}>{timer.ready ? t('Ready') : clock(timer.left)}</div>
         <div className="bar"><i style={{ width: pct + '%' }} /></div>
       </div>
       <div className="acts">
-        <Button size="sm" icon="minus" onClick={() => addRest(-15)}>15s</Button>
-        <Button size="sm" icon="plus" onClick={() => addRest(15)}>15s</Button>
+        <Button size="sm" icon="minus" aria-label={t('Decrease') + ' 15'} onClick={() => addRest(-15)}><span dir="ltr">15</span></Button>
+        <Button size="sm" icon="plus" aria-label={t('Increase') + ' 15'} onClick={() => addRest(15)}><span dir="ltr">15</span></Button>
         {!timer.ready && <Button size="sm" className="pause" icon={timer.paused ? 'play' : 'pause'}
           aria-label={t(timer.paused ? 'Resume' : 'Pause')} aria-pressed={!!timer.paused}
           onClick={timer.paused ? resumeRest : pauseRest} />}
