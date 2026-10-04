@@ -41,12 +41,17 @@ const PLANS = {
   '5x5': { routines: FIVE_BY_FIVE, schedule: [[1, '5x5-a'], [3, '5x5-b'], [5, '5x5-c']] }
 }
 
-const build = routines =>
-  routines.map(([, name, emoji, list]) => ({ id: uid(), name, emoji, ex: list.map(([id, sets, reps]) => ({ id, sets, reps, weight: 0 })) }))
+const build = (routines, nameOf = name => name) =>
+  routines.map(([, name, emoji, list]) => ({ id: uid(), name: nameOf(name), emoji, ex: list.map(([id, sets, reps]) => ({ id, sets, reps, weight: 0 })) }))
+
+// The catalogue is authored relative to a Monday-start week. Rotating it by the user's chosen
+// first day preserves the training rhythm while making a Sunday-first Arabic profile start on
+// Sunday rather than looking like it ignored the profile setting.
+const rotateDay = (day, weekStart = 1) => ((day - 1 + Number(weekStart || 0)) % 7 + 7) % 7
 
 // Fresh routine objects (new ids) — [push, pull, legs]. The demo build seeds a history on
 // top of exactly these three, so this entry point keeps its shape.
-export const starterRoutines = () => build(PPL)
+export const starterRoutines = (nameOf) => build(PPL, nameOf)
 
 // [{ id, days }] for the chooser. The day count is read off the schedule rather than stored
 // beside it, so the two can never disagree.
@@ -54,15 +59,15 @@ export const starterPlanOptions = () =>
   Object.entries(PLANS).map(([id, { schedule }]) => ({ id, days: schedule.length }))
 
 // The weekdays a plan would claim, or null for an unknown id.
-export const starterPlanDays = id => PLANS[id]?.schedule.map(([day]) => day) ?? null
+export const starterPlanDays = (id, weekStart = 1) => PLANS[id]?.schedule.map(([day]) => rotateDay(day, weekStart)) ?? null
 
 // Fresh routines plus the weekdays to put them on, or null for an unknown id — a caller that
 // treats null as "change nothing" can never half-apply a plan.
-export const buildStarterPlan = id => {
+export const buildStarterPlan = (id, { weekStart = 1, nameOf } = {}) => {
   const plan = PLANS[id]
   if (!plan) return null
-  const routines = build(plan.routines)
+  const routines = build(plan.routines, nameOf)
   // key → the id just minted for it, so the schedule below names its routine
   const byKey = Object.fromEntries(plan.routines.map(([key], i) => [key, routines[i].id]))
-  return { routines, schedule: plan.schedule.map(([day, key]) => ({ day, routineId: byKey[key] })) }
+  return { routines, schedule: plan.schedule.map(([day, key]) => ({ day: rotateDay(day, weekStart), routineId: byKey[key] })) }
 }
