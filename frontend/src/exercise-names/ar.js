@@ -1,8 +1,10 @@
-// Arabic exercise-name pack.
-// Intentionally starts with the most common/core movements and falls back to the
-// canonical English catalogue name for entries not translated yet.
-// Keep names concise and searchable; English remains searchable via exerciseNameSearchText.
-export default {
+import { EXDB } from '../lib/exercises-data.js'
+import { arabicExerciseName } from './ar-generator.js'
+
+// Reviewed exceptions for the most-used movements. Everything else is generated from the
+// same Arabic training glossary, so new upstream exercises receive an Arabic title instead
+// of silently falling back to English.
+const MANUAL = {
   "0001": "تمرين بطن ثلاثة أرباع",
   "0002": "انحناء جانبي 45 درجة",
   "0003": "دراجة هوائية للبطن",
@@ -10,7 +12,7 @@ export default {
   "0007": "سحب علوي جانبي بالتبادل",
   "0009": "متوازي صدر بمساعدة (ركوع)",
   "0011": "رفع الركبتين معلقًا بمساعدة",
-  "0025": "ضغط صدر بالبار",
+  "0025": "ضغط الصدر بالبار",
   "0027": "تجديف منحني بالبار",
   "0032": "رفعة ميتة بالبار",
   "0042": "سكوات أمامي بالبار",
@@ -19,19 +21,23 @@ export default {
   "0088": "رفع السمانة جالسًا بالبار",
   "0175": "كرنش بالكابل من الركوع",
   "0180": "تجديف جالس بالكابل المنخفض",
-  "0219": "ضغط كتف بالكابل",
-  "0241": "دفع ترايسبس بالكابل (مقبض V)",
-  "0294": "بايسبس بالدمبل",
-  "0361": "ضغط كتف بذراع واحدة بالدمبل",
+  "0219": "ضغط الكتف بالكابل",
+  "0241": "دفع الترايسبس بالكابل (مقبض V)",
+  "0294": "ثني البايسبس بالدمبل",
+  "0361": "ضغط الكتف بذراع واحدة بالدمبل",
   "0413": "سكوات بالدمبل",
   "0585": "تمديد الأرجل على الجهاز",
   "0586": "ثني الأرجل مستلقيًا على الجهاز",
   "0599": "ثني الأرجل جالسًا على الجهاز",
-  "0652": "تمرين العقلة",
-  "0662": "تمرين الضغط",
+  "0652": "العقلة",
+  "0662": "الضغط الأرضي",
   "0739": "ضغط الأرجل 45 درجة",
   "1368": "تدوير الكاحل",
   "1370": "رفع السمانة بالبار من الأرض",
   "3293": "عقلة الرامي",
   "3294": "ضغط الرامي"
 }
+
+export default Object.fromEntries(
+  EXDB.map(ex => [ex.id, MANUAL[ex.id] || arabicExerciseName(ex.n)])
+)
