@@ -29,15 +29,15 @@
       "files": {
         "glb": {
           "name": "jog.glb",
-          "sha256": "BOOTSTRAP"
+          "sha256": "3e20fe0299cd78c9534f4c1320a4e2e4f31f8b4ae51598a69065f93a43a0c020"
         },
         "mp4": {
           "name": "jog.mp4",
-          "sha256": "BOOTSTRAP"
+          "sha256": "1fd1ed6fbc038a88d35fc19608694c4504f5b49458a891cda558e0f97734ecc4"
         },
         "png": {
           "name": "jog.png",
-          "sha256": "BOOTSTRAP"
+          "sha256": "dc215bdf4a8610638eb5a975c3ac8ef809b7d2a39c94a6589f08e2697844037d"
         }
       }
     },
