@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
 
 // Built-in PT650 thumbnails never fetch the inherited exercise image catalogue. An approved
-// animated exercise gets a play marker; everything else gets a neutral schematic tile.
+// animated exercise gets a play marker; everything else gets a neutral unavailable tile.
 vi.mock('../store/useStore.js', () => ({ useStore: () => null }))
 const { Thumb } = await import('./Media.jsx')
 
@@ -22,10 +22,10 @@ function mount(el) {
 afterEach(() => { act(() => { mounted.splice(0).forEach(({ root, host }) => { root.unmount(); host.remove() }) }) })
 
 describe('Thumb', () => {
-  it('ignores a legacy built-in still and shows the schematic tile', () => {
+  it('ignores a legacy built-in still and shows the neutral unavailable tile', () => {
     const { host } = mount(<Thumb ex={{ id: 'a', img: 'a.jpg' }} />)
     expect(host.querySelector('img')).toBeNull()
-    expect(host.querySelector('.thumb.thumb-x[data-pt650-media="schematic"]')).toBeTruthy()
+    expect(host.querySelector('.thumb.thumb-x[data-pt650-media="unavailable"]')).toBeTruthy()
     expect(host.querySelector('[data-icon="dumbbell"]')).toBeTruthy()
   })
 
@@ -40,8 +40,8 @@ describe('Thumb', () => {
     expect(host.querySelector('[data-icon="dumbbell"]')).toBeTruthy()
   })
 
-  it('an exercise without media has the schematic tile from the start', () => {
+  it('an exercise without media has the neutral unavailable tile from the start', () => {
     const { host } = mount(<Thumb ex={{ id: 'c' }} />)
-    expect(host.querySelector('.thumb-x[data-pt650-media="schematic"]')).toBeTruthy()
+    expect(host.querySelector('.thumb-x[data-pt650-media="unavailable"]')).toBeTruthy()
   })
 })

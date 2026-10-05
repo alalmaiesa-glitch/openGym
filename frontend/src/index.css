@@ -906,18 +906,15 @@ body.chips-dragging *{cursor:inherit}
 .exmedia .giftoggle{inset-inline-start:9px}
 .exmedia .gifhint .icn,.exmedia .giftoggle .icn{font-size:13px}
 
-/* PT650 built-in exercise media: only PT650-authored animation models are rendered.
-   The inherited catalogue image/GIF filenames remain data-only compatibility fields and
-   are never requested by components/Media.jsx. Unmodelled exercises get this schematic
-   stage until their exact movement is authored and approved. */
+/* PT650 built-in exercise media: only exercise-specific PT650-authored animation models render.
+   The inherited catalogue image/GIF filenames remain data-only compatibility fields and are
+   never requested by components/Media.jsx. Unmodelled exercises render no demo at all. */
 .pt650-anim-stage{width:100%;height:320px;display:block;background:#090b0d;overflow:hidden}
 .pt650-anim-svg{width:100%;height:100%;display:block}
 .pt650-built-in-media.has-model{cursor:pointer}
-.pt650-built-in-media.schematic{cursor:default}
 .exmedia.compact .pt650-anim-stage{height:120px}
 .exmedia.mini .pt650-anim-stage{height:84px}
 .pt650-thumb.ready{color:var(--acc);background:var(--acc-soft)}
-.pt650-fallback-svg{opacity:.9}
 
 /* superset: both exercises are on screen together, so the media has to give way. */
 .exmedia.compact img{height:120px}

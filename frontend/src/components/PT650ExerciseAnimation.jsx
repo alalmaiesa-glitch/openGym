@@ -245,35 +245,107 @@ function PushUpAnimation({ playing }) {
   )
 }
 
+
+function ThreeQuarterSitUpAnimation({ playing }) {
+  return (
+    <StageSvg playing={playing}>
+      <path d="M126 300H528" stroke="rgba(225,231,238,.22)" strokeWidth="5" strokeLinecap="round" />
+
+      {/* Legs remain planted while the torso curls from the hips to roughly 45 degrees. */}
+      <g fill="none" stroke="#d7dde3" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M350 248L430 214L496 292" strokeWidth="24" />
+        <path d="M346 252L414 232L474 294" strokeWidth="18" opacity=".72" />
+        <path d="M482 294H518M456 296H490" strokeWidth="12" />
+      </g>
+
+      <g>
+        <g fill="none" stroke="#d7dde3" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M350 248L248 248" strokeWidth="30" />
+          <path d="M258 244L224 220L202 238M258 252L226 268L204 252" strokeWidth="15" />
+          <circle cx="197" cy="247" r="24" fill="#b9c1c9" stroke="none" />
+        </g>
+
+        <path d="M332 236Q304 226 276 238Q293 260 327 259Z" fill="var(--acc)" opacity=".72" />
+
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 350 248;48 350 248;48 350 248;0 350 248"
+          keyTimes="0;.42;.58;1"
+          dur="3.2s"
+          repeatCount="indefinite"
+          calcMode="spline"
+          keySplines=".32 .72 0 1;0 0 1 1;.32 .72 0 1"
+        />
+      </g>
+
+      <g opacity=".3" fill="none" stroke="var(--acc)" strokeWidth="3" strokeLinecap="round">
+        <path d="M254 217A116 116 0 0 1 292 151" strokeDasharray="5 8" />
+        <path d="M286 153L298 149L294 162" />
+      </g>
+    </StageSvg>
+  )
+}
+
+function SideBend45Animation({ playing }) {
+  return (
+    <StageSvg playing={playing}>
+      <path d="M166 302H474" stroke="rgba(225,231,238,.22)" strokeWidth="5" strokeLinecap="round" />
+
+      {/* Lower body stays stable; the trunk bends laterally from the waist, alternating sides. */}
+      <g fill="none" stroke="#d7dde3" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M320 192L280 300M320 192L360 300" strokeWidth="23" />
+        <path d="M258 300H295M345 300H382" strokeWidth="12" />
+      </g>
+
+      <g>
+        <g fill="none" stroke="#d7dde3" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M320 192V104" strokeWidth="30" />
+          <path d="M307 116L274 188M333 116L366 188" strokeWidth="16" />
+          <circle cx="320" cy="67" r="24" fill="#b9c1c9" stroke="none" />
+        </g>
+
+        <path d="M304 137Q320 128 336 137L335 174Q320 185 305 174Z" fill="var(--acc)" opacity=".68" />
+
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          values="0 320 192;-22 320 192;0 320 192;22 320 192;0 320 192"
+          keyTimes="0;.22;.44;.72;1"
+          dur="4.6s"
+          repeatCount="indefinite"
+          calcMode="spline"
+          keySplines=".32 .72 0 1;.32 .72 0 1;.32 .72 0 1;.32 .72 0 1"
+        />
+      </g>
+
+      <g opacity=".28" fill="none" stroke="var(--acc)" strokeWidth="3" strokeLinecap="round">
+        <path d="M238 165Q320 107 402 165" strokeDasharray="5 8" />
+        <path d="M242 153L236 166L250 166M398 153L404 166L390 166" />
+      </g>
+    </StageSvg>
+  )
+}
+
 const RENDERERS = Object.freeze({
+  'three-quarter-sit-up-v1': ThreeQuarterSitUpAnimation,
+  'side-bend-45-v1': SideBend45Animation,
   'bench-press-v1': BenchPressAnimation,
   'full-squat-v1': FullSquatAnimation,
   'push-up-v1': PushUpAnimation,
 })
 
-function SchematicFallback() {
-  return (
-    <svg className="pt650-anim-svg pt650-fallback-svg" viewBox="0 0 640 360" aria-hidden="true">
-      <rect width="640" height="360" fill="#090b0d" />
-      <g transform="translate(320 177)" fill="none" stroke="rgba(225,231,238,.42)" strokeWidth="10" strokeLinecap="round">
-        <circle cx="0" cy="-72" r="25" fill="rgba(225,231,238,.18)" stroke="none" />
-        <path d="M0-42V38M0-2L-55 28M0-2L55 28M0 38L-42 98M0 38L42 98" />
-      </g>
-      <circle cx="320" cy="177" r="126" fill="none" stroke="rgba(225,231,238,.12)" strokeWidth="2" strokeDasharray="7 12" />
-    </svg>
-  )
-}
-
 export default function PT650ExerciseAnimation({ exerciseId, playing = true }) {
   const model = animatedModelFor(exerciseId)
   const Renderer = model ? RENDERERS[model.id] : null
+  if (!Renderer) return null
 
   return (
     <div
-      className={'pt650-anim-stage' + (model ? ' has-model' : ' fallback') + (playing ? '' : ' paused')}
-      data-pt650-animation={model?.id || 'schematic-fallback'}
+      className={'pt650-anim-stage has-model' + (playing ? '' : ' paused')}
+      data-pt650-animation={model.id}
     >
-      {Renderer ? <Renderer playing={playing} /> : <SchematicFallback />}
+      <Renderer playing={playing} />
     </div>
   )
 }
