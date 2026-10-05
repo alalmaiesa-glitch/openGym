@@ -34,7 +34,7 @@ function render() {
   act(() => root.render(<Library />))
   return host
 }
-const names = host => [...host.querySelectorAll('.item .tt')].map(el => el.textContent).slice(1)   // drop "Create your own"
+const names = host => [...host.querySelectorAll('.library-item .tt')].map(el => el.textContent)
 const cssSource = readFileSync(resolve(process.cwd(), 'src/index.css'), 'utf8')
 
 beforeEach(() => {
@@ -42,6 +42,29 @@ beforeEach(() => {
   document.body.innerHTML = ''
 })
 afterEach(() => { act(() => { mounted.splice(0).forEach(root => root.unmount()) }) })
+
+describe('PT650 Library density', () => {
+  it('uses text-first compact cards without per-row media thumbnails', () => {
+    const host = render()
+    expect(host.querySelector('.library-controls')).not.toBeNull()
+    expect(host.querySelector('.library-create')).not.toBeNull()
+    expect(host.querySelectorAll('.library-item .thumb')).toHaveLength(0)
+    expect(host.querySelectorAll('.library-item .library-add').length).toBeGreaterThan(0)
+    expect(host.querySelectorAll('.library-item .library-meta').length).toBeGreaterThan(0)
+  })
+
+  it('caps the initial result set at 24 to keep the page visually light', () => {
+    const host = render()
+    expect(host.querySelectorAll('.library-item')).toHaveLength(24)
+  })
+
+  it('ships the dedicated responsive library layout rules', () => {
+    expect(cssSource).toContain('.library-name')
+    expect(cssSource).toContain('-webkit-line-clamp:2')
+    expect(cssSource).toContain('#app:has(>.library-page){max-width:1180px}')
+    expect(cssSource).toContain('.library-actions .tag{display:none}')
+  })
+})
 
 describe('Library favourites', () => {
   it('puts favourites first, marked with a star, and leaves the rest in catalogue order', () => {
@@ -53,7 +76,7 @@ describe('Library favourites', () => {
     const shown = names(host)
     expect(shown.slice(0, 2)).toEqual(plain.filter(n => fav.includes(n)))
     expect(shown.slice(2)).toEqual(plain.filter(n => !fav.includes(n)))
-    const rows = [...host.querySelectorAll('.item')].slice(1)
+    const rows = [...host.querySelectorAll('.library-item')]
     expect(rows[0].querySelector('.fav-star')).not.toBeNull()
     expect(rows[2].querySelector('.fav-star')).toBeNull()
   })
@@ -96,7 +119,7 @@ describe('Library exercise-name casing per language', () => {
     it(`${lang}: every translated row is ${CASED_NAME_LANGS.includes(lang) ? 'left in its own casing' : 'title-cased'}`, () => {
       const pack = packs[`../exercise-names/${lang}.js`]
       _setLangState(lang, {}, null, pack)
-      const rows = [...render().querySelectorAll('.item .tt')].slice(1)   // drop "Create your own"
+      const rows = [...render().querySelectorAll('.library-item .tt')]
       expect(rows.length).toBeGreaterThan(0)
       const translated = rows.filter(el => Object.values(pack).some(n => el.textContent.startsWith(n)))
       expect(translated.length, lang).toBeGreaterThan(0)
