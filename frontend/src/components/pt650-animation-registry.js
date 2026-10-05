@@ -1,4 +1,12 @@
 export const PT650_ANIMATION_MODELS = Object.freeze({
+  '0002': Object.freeze({
+    id: 'side-bend-45-v1',
+    exercise: '45° side bend',
+    medium: 'authored-svg-motion',
+    provenance: 'PT650 original',
+    version: 1,
+    target: ['abs', 'obliques'],
+  }),
   '0025': Object.freeze({
     id: 'bench-press-v1',
     exercise: 'barbell bench press',
