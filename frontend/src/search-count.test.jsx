@@ -70,6 +70,7 @@ describe('exercise search result count', () => {
 
     it(`${where}: counts a body-part filter too, and reads "1 exercise" for one`, () => {
       const host = open()
+      if (where === 'Library') act(() => host.querySelector('.library-filter-toggle').click())
       act(() => chip(host, 'neck').click())
       const neck = EXDB.filter(e => e.bp === 'neck').length
       expect(Number(count(host).textContent)).toBe(neck)
