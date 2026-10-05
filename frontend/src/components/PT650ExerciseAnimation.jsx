@@ -1,61 +1,51 @@
 import { useEffect, useRef } from 'react'
+import { PT650_ANIMATION_MODELS, animatedModelFor } from './pt650-animation-registry.js'
 
-export const PT650_ANIMATION_MODELS = Object.freeze({
-  '0025': Object.freeze({
-    id: 'bench-press-v1',
-    exercise: 'barbell bench press',
-    medium: 'authored-svg-motion',
-    provenance: 'PT650 original',
-    version: 1,
-  }),
-})
+export { PT650_ANIMATION_MODELS, animatedModelFor }
 
-export const animatedModelFor = exerciseId => PT650_ANIMATION_MODELS[String(exerciseId || '')] || null
-
-function BenchPressAnimation({ playing }) {
-  const svgRef = useRef(null)
-
+function useSvgPlayback(playing) {
+  const ref = useRef(null)
   useEffect(() => {
-    const svg = svgRef.current
+    const svg = ref.current
     if (!svg) return
     try {
       if (playing) svg.unpauseAnimations?.()
       else svg.pauseAnimations?.()
     } catch {
-      // Browsers without the SVG animation control API simply keep the loop running.
+      // SVG SMIL playback controls are optional; unsupported browsers simply keep looping.
     }
   }, [playing])
+  return ref
+}
 
+function StageSvg({ playing, children }) {
+  const ref = useSvgPlayback(playing)
   return (
     <svg
-      ref={svgRef}
+      ref={ref}
       className="pt650-anim-svg"
       viewBox="0 0 640 360"
-      role="img"
-      aria-label="Animated barbell bench press demonstration"
+      aria-hidden="true"
       preserveAspectRatio="xMidYMid meet"
     >
-      <defs>
-        <linearGradient id="pt650-floor" x1="0" x2="1">
-          <stop offset="0" stopColor="#111418" />
-          <stop offset=".5" stopColor="#1a1f24" />
-          <stop offset="1" stopColor="#111418" />
-        </linearGradient>
-      </defs>
-
       <rect width="640" height="360" fill="#090b0d" />
-      <ellipse cx="320" cy="306" rx="252" ry="18" fill="url(#pt650-floor)" opacity=".9" />
+      <ellipse cx="320" cy="310" rx="250" ry="17" fill="#15191d" />
+      {children}
+    </svg>
+  )
+}
 
-      {/* Rack and bench: deliberately schematic so the demo reads as animation, never footage. */}
-      <g className="pt650-equipment" fill="none" stroke="rgba(225,231,238,.34)" strokeWidth="8" strokeLinecap="round">
+function BenchPressAnimation({ playing }) {
+  return (
+    <StageSvg playing={playing}>
+      <g fill="none" stroke="rgba(225,231,238,.34)" strokeWidth="8" strokeLinecap="round">
         <path d="M150 104V292M434 104V292" />
         <path d="M132 104H178M410 104H456" />
         <path d="M184 246H430" strokeWidth="18" />
         <path d="M218 255L198 300M396 255L416 300" />
       </g>
 
-      {/* Stylised digital athlete — geometric, non-photorealistic, and PT650-authored. */}
-      <g className="pt650-athlete" fill="none" stroke="#d7dde3" strokeLinecap="round" strokeLinejoin="round">
+      <g fill="none" stroke="#d7dde3" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="182" cy="211" r="23" fill="#b9c1c9" stroke="none" />
         <path d="M209 218Q278 217 366 228" strokeWidth="26" />
         <path d="M360 228L425 205L469 253" strokeWidth="21" />
@@ -65,10 +55,8 @@ function BenchPressAnimation({ playing }) {
         <circle cx="478" cy="222" r="8" fill="#d7dde3" stroke="none" />
       </g>
 
-      {/* Chest target highlight. */}
       <path d="M232 206Q266 193 302 207Q270 232 232 218Z" fill="var(--acc)" opacity=".72" />
 
-      {/* One visible articulated arm is enough in side profile; the path morphs through a realistic press arc. */}
       <path d="M263 202L272 145L292 99" fill="none" stroke="#d7dde3" strokeWidth="18" strokeLinecap="round" strokeLinejoin="round">
         <animate
           attributeName="d"
@@ -80,13 +68,13 @@ function BenchPressAnimation({ playing }) {
           keySplines=".35 0 .2 1;.35 0 .2 1"
         />
       </path>
+
       <circle r="9" fill="#d7dde3">
         <animate attributeName="cx" values="272;235;272" dur="2.8s" repeatCount="indefinite" />
         <animate attributeName="cy" values="145;169;145" dur="2.8s" repeatCount="indefinite" />
       </circle>
 
-      {/* Bar and plates travel vertically with the hand. */}
-      <g className="pt650-bar" stroke="#eef2f5" strokeLinecap="round">
+      <g stroke="#eef2f5" strokeLinecap="round">
         <line x1="166" x2="420" y1="96" y2="96" strokeWidth="8">
           <animate attributeName="y1" values="96;151;96" dur="2.8s" repeatCount="indefinite" />
           <animate attributeName="y2" values="96;151;96" dur="2.8s" repeatCount="indefinite" />
@@ -102,13 +90,166 @@ function BenchPressAnimation({ playing }) {
         </circle>
       </g>
 
-      <g className="pt650-motion-guide" opacity=".28" fill="none" stroke="var(--acc)" strokeWidth="3" strokeLinecap="round">
+      <g opacity=".28" fill="none" stroke="var(--acc)" strokeWidth="3" strokeLinecap="round">
         <path d="M337 92V157" strokeDasharray="5 8" />
         <path d="M329 103L337 91L345 103M329 145L337 157L345 145" />
       </g>
-    </svg>
+    </StageSvg>
   )
 }
+
+function FullSquatAnimation({ playing }) {
+  return (
+    <StageSvg playing={playing}>
+      <path d="M185 300H455" stroke="rgba(225,231,238,.22)" strokeWidth="5" strokeLinecap="round" />
+
+      <g fill="none" stroke="#d7dde3" strokeLinecap="round" strokeLinejoin="round">
+        <circle r="24" fill="#b9c1c9" stroke="none">
+          <animate attributeName="cx" values="293;252;293" dur="3s" repeatCount="indefinite" />
+          <animate attributeName="cy" values="76;134;76" dur="3s" repeatCount="indefinite" />
+        </circle>
+
+        <path d="M300 108L322 178" strokeWidth="27">
+          <animate
+            attributeName="d"
+            values="M300 108L322 178;M262 164L300 226;M300 108L322 178"
+            dur="3s"
+            repeatCount="indefinite"
+          />
+        </path>
+
+        <path d="M322 178L349 238L326 300" strokeWidth="22">
+          <animate
+            attributeName="d"
+            values="M322 178L349 238L326 300;M300 226L380 236L326 300;M322 178L349 238L326 300"
+            dur="3s"
+            repeatCount="indefinite"
+          />
+        </path>
+
+        <path d="M318 178L286 236L274 300" strokeWidth="22">
+          <animate
+            attributeName="d"
+            values="M318 178L286 236L274 300;M297 226L344 246L274 300;M318 178L286 236L274 300"
+            dur="3s"
+            repeatCount="indefinite"
+          />
+        </path>
+
+        <path d="M305 124L270 156M309 126L348 157" strokeWidth="16">
+          <animate
+            attributeName="d"
+            values="M305 124L270 156M309 126L348 157;M271 177L238 205M274 178L315 204;M305 124L270 156M309 126L348 157"
+            dur="3s"
+            repeatCount="indefinite"
+          />
+        </path>
+      </g>
+
+      <path d="M305 164Q329 172 339 202Q316 213 296 195Z" fill="var(--acc)" opacity=".62">
+        <animate
+          attributeName="d"
+          values="M305 164Q329 172 339 202Q316 213 296 195Z;M288 211Q324 210 348 234Q316 252 288 239Z;M305 164Q329 172 339 202Q316 213 296 195Z"
+          dur="3s"
+          repeatCount="indefinite"
+        />
+      </path>
+
+      <g stroke="#eef2f5" strokeLinecap="round">
+        <line x1="226" x2="382" y1="119" y2="119" strokeWidth="8">
+          <animate attributeName="x1" values="226;190;226" dur="3s" repeatCount="indefinite" />
+          <animate attributeName="x2" values="382;346;382" dur="3s" repeatCount="indefinite" />
+          <animate attributeName="y1" values="119;177;119" dur="3s" repeatCount="indefinite" />
+          <animate attributeName="y2" values="119;177;119" dur="3s" repeatCount="indefinite" />
+        </line>
+        <rect x="239" y="101" width="14" height="36" rx="4" fill="#7f8994" stroke="none">
+          <animate attributeName="x" values="239;203;239" dur="3s" repeatCount="indefinite" />
+          <animate attributeName="y" values="101;159;101" dur="3s" repeatCount="indefinite" />
+        </rect>
+        <rect x="355" y="101" width="14" height="36" rx="4" fill="#7f8994" stroke="none">
+          <animate attributeName="x" values="355;319;355" dur="3s" repeatCount="indefinite" />
+          <animate attributeName="y" values="101;159;101" dur="3s" repeatCount="indefinite" />
+        </rect>
+      </g>
+
+      <g opacity=".28" fill="none" stroke="var(--acc)" strokeWidth="3" strokeLinecap="round">
+        <path d="M425 132V236" strokeDasharray="5 8" />
+        <path d="M417 143L425 131L433 143M417 225L425 237L433 225" />
+      </g>
+    </StageSvg>
+  )
+}
+
+function PushUpAnimation({ playing }) {
+  return (
+    <StageSvg playing={playing}>
+      <path d="M120 300H520" stroke="rgba(225,231,238,.22)" strokeWidth="5" strokeLinecap="round" />
+
+      <g fill="none" stroke="#d7dde3" strokeLinecap="round" strokeLinejoin="round">
+        <circle r="22" fill="#b9c1c9" stroke="none">
+          <animate attributeName="cx" values="190;194;190" dur="2.6s" repeatCount="indefinite" />
+          <animate attributeName="cy" values="168;225;168" dur="2.6s" repeatCount="indefinite" />
+        </circle>
+
+        <path d="M216 180L388 218" strokeWidth="28">
+          <animate
+            attributeName="d"
+            values="M216 180L388 218;M220 237L390 258;M216 180L388 218"
+            dur="2.6s"
+            repeatCount="indefinite"
+          />
+        </path>
+
+        <path d="M388 218L488 286" strokeWidth="21">
+          <animate
+            attributeName="d"
+            values="M388 218L488 286;M390 258L488 286;M388 218L488 286"
+            dur="2.6s"
+            repeatCount="indefinite"
+          />
+        </path>
+
+        <path d="M238 188L205 239L171 292" strokeWidth="17">
+          <animate
+            attributeName="d"
+            values="M238 188L205 239L171 292;M241 245L212 267L171 292;M238 188L205 239L171 292"
+            dur="2.6s"
+            repeatCount="indefinite"
+          />
+        </path>
+
+        <path d="M258 193L251 245L235 292" strokeWidth="17">
+          <animate
+            attributeName="d"
+            values="M258 193L251 245L235 292;M261 248L248 270L235 292;M258 193L251 245L235 292"
+            dur="2.6s"
+            repeatCount="indefinite"
+          />
+        </path>
+      </g>
+
+      <path d="M226 181Q262 177 300 195Q275 220 236 207Z" fill="var(--acc)" opacity=".7">
+        <animate
+          attributeName="d"
+          values="M226 181Q262 177 300 195Q275 220 236 207Z;M230 237Q264 232 302 244Q276 264 238 258Z;M226 181Q262 177 300 195Q275 220 236 207Z"
+          dur="2.6s"
+          repeatCount="indefinite"
+        />
+      </path>
+
+      <g opacity=".28" fill="none" stroke="var(--acc)" strokeWidth="3" strokeLinecap="round">
+        <path d="M126 174V242" strokeDasharray="5 8" />
+        <path d="M118 185L126 173L134 185M118 231L126 243L134 231" />
+      </g>
+    </StageSvg>
+  )
+}
+
+const RENDERERS = Object.freeze({
+  'bench-press-v1': BenchPressAnimation,
+  'full-squat-v1': FullSquatAnimation,
+  'push-up-v1': PushUpAnimation,
+})
 
 function SchematicFallback() {
   return (
@@ -125,10 +266,14 @@ function SchematicFallback() {
 
 export default function PT650ExerciseAnimation({ exerciseId, playing = true }) {
   const model = animatedModelFor(exerciseId)
+  const Renderer = model ? RENDERERS[model.id] : null
+
   return (
-    <div className={'pt650-anim-stage' + (model ? ' has-model' : ' fallback') + (playing ? '' : ' paused')}
-      data-pt650-animation={model?.id || 'schematic-fallback'}>
-      {model?.id === 'bench-press-v1' ? <BenchPressAnimation playing={playing} /> : <SchematicFallback />}
+    <div
+      className={'pt650-anim-stage' + (model ? ' has-model' : ' fallback') + (playing ? '' : ' paused')}
+      data-pt650-animation={model?.id || 'schematic-fallback'}
+    >
+      {Renderer ? <Renderer playing={playing} /> : <SchematicFallback />}
     </div>
   )
 }
