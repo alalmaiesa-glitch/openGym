@@ -5,8 +5,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
 
-// A still that will not load (offline and never cached, a lapsed session on a gated instance)
-// gets the neutral tile an exercise without media has, not the browser's broken-image glyph (#281).
+// Built-in PT650 thumbnails never fetch the inherited exercise image catalogue. An approved
+// animated exercise gets a play marker; everything else gets a neutral schematic tile.
 vi.mock('../store/useStore.js', () => ({ useStore: () => null }))
 const { Thumb } = await import('./Media.jsx')
 
@@ -22,24 +22,26 @@ function mount(el) {
 afterEach(() => { act(() => { mounted.splice(0).forEach(({ root, host }) => { root.unmount(); host.remove() }) }) })
 
 describe('Thumb', () => {
-  it('shows the still, and the neutral tile once it fails to load', () => {
+  it('ignores a legacy built-in still and shows the schematic tile', () => {
     const { host } = mount(<Thumb ex={{ id: 'a', img: 'a.jpg' }} />)
-    const img = host.querySelector('img.thumb')
-    expect(img.getAttribute('src')).toMatch(/a\.jpg$/)
-    act(() => { img.dispatchEvent(new Event('error')) })
     expect(host.querySelector('img')).toBeNull()
-    expect(host.querySelector('.thumb.thumb-x')).toBeTruthy()
+    expect(host.querySelector('.thumb.thumb-x[data-pt650-media="schematic"]')).toBeTruthy()
+    expect(host.querySelector('[data-icon="dumbbell"]')).toBeTruthy()
   })
 
-  it('another exercise in the same place tries its own still', () => {
-    const { host, root } = mount(<Thumb ex={{ id: 'a', img: 'a.jpg' }} />)
-    act(() => { host.querySelector('img').dispatchEvent(new Event('error')) })
+  it('marks an exercise with an approved PT650 animation without loading an image', () => {
+    const { host, root } = mount(<Thumb ex={{ id: '0025', img: 'legacy.jpg' }} />)
+    expect(host.querySelector('img')).toBeNull()
+    expect(host.querySelector('.pt650-thumb.ready[data-pt650-media="animated"]')).toBeTruthy()
+    expect(host.querySelector('[data-icon="play"]')).toBeTruthy()
+
     act(() => root.render(<Thumb ex={{ id: 'b', img: 'b.jpg' }} />))
-    expect(host.querySelector('img.thumb').getAttribute('src')).toMatch(/b\.jpg$/)
+    expect(host.querySelector('.pt650-thumb.ready')).toBeNull()
+    expect(host.querySelector('[data-icon="dumbbell"]')).toBeTruthy()
   })
 
-  it('an exercise without media has the tile from the start', () => {
+  it('an exercise without media has the schematic tile from the start', () => {
     const { host } = mount(<Thumb ex={{ id: 'c' }} />)
-    expect(host.querySelector('.thumb-x')).toBeTruthy()
+    expect(host.querySelector('.thumb-x[data-pt650-media="schematic"]')).toBeTruthy()
   })
 })
