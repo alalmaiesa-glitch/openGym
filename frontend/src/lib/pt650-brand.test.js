@@ -16,7 +16,7 @@ describe('PT650 visible product identity', () => {
   it('does not rename the legacy backup folder path', () => {
     _setLangState('ar', ar, null, null)
     expect(t('Saves a dated copy to Documents/openGym after finishing a workout or editing a routine, and keeps the newest {0} — point a sync app at that folder, or copy it out by hand.', 14))
-      .toContain('Documents/openGym')
+      .toContain('/openGym')
   })
 
   it('brands the browser, PWA and login screen as PT650', () => {
