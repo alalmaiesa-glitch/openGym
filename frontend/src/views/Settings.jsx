@@ -137,7 +137,7 @@ export default function Settings() {
       })
     } else {
       // Update available but no APK asset — open the releases page
-      window.open('https://gitlab.com/DuarteSantos8/opengym/-/releases', '_blank', 'noopener')
+      window.open(REPO + '/releases', '_blank', 'noopener')
     }
   }
 
@@ -579,7 +579,11 @@ export default function Settings() {
         newer (checksum verified, see onUpdateRowClick). On the web the app updates with its
         server, so the row points at the APK for the phone instead. iOS has no APK: nothing. */}
     {(!MOBILE || android) && <Section title={t('Updates')}
-      footer={MOBILE ? t('Releases are checked on gitlab.com. The download is verified against its checksum before the installer opens.') : t('The web app updates together with your server. The Android app installs its own updates from here.')}>
+      footer={MOBILE
+        ? (baseLang(lang) === 'ar'
+          ? 'يتم التحقق من إصدارات هذه النسخة على GitHub، ويُتحقق من بصمة الملف قبل فتح المثبّت.'
+          : 'Releases are checked from this edition on GitHub and the download checksum is verified before installation.')
+        : t('The web app updates together with your server. The Android app installs its own updates from here.')}>
       {MOBILE
         ? <Row icon="download" iconTint="var(--acc)"
             title={updateInfo?.hasUpdate ? t('Update to openGym v{0}', updateInfo.latestVersion) : t('Check for updates')}
@@ -587,8 +591,8 @@ export default function Settings() {
             accessory="chevron"
             onClick={() => (updateInfo?.hasUpdate ? onUpdateRowClick() : checkNow())} />
         : <Row icon="download" iconTint="var(--acc)" title={t('Get the Android app')}
-            subtitle={t('Download the APK from opengym.duarte-santos.ch')} accessory="chevron"
-            onClick={() => window.open('https://opengym.duarte-santos.ch/#download', '_blank', 'noopener')} />}
+            subtitle={baseLang(lang) === 'ar' ? 'إصدارات هذه النسخة على GitHub' : 'Releases for this edition on GitHub'} accessory="chevron"
+            onClick={() => window.open(REPO + '/releases', '_blank', 'noopener')} />}
     </Section>}
 
     {/* The version, at the bottom of Settings — which is where the support template has been
@@ -597,8 +601,8 @@ export default function Settings() {
         are running, or whether an update actually installed. */}
     <div className="dim small" style={{ textAlign: 'center', marginTop: 4, lineHeight: 1.6 }}>
       openGym v{__APP_VERSION__} · {t('free & open source (AGPL v3)')}<br />
-      <a href="https://github.com/DuarteSantos8/openGym" target="_blank" rel="noopener">source code</a> · exercise data: hasaneyldrm/exercises-dataset (MIT)<br />
-      exercise images and animations © <a href="https://gymvisual.com/" target="_blank" rel="noopener">Gym visual</a>
+      <a href={REPO} target="_blank" rel="noopener">{baseLang(lang) === 'ar' ? 'الكود المصدري' : 'source code'}</a> · {baseLang(lang) === 'ar' ? 'بيانات التمارين: MIT' : 'exercise data: MIT'}<br />
+      {baseLang(lang) === 'ar' ? 'وسائط التمارين الخارجية غير مضمّنة في هذه النسخة' : 'third-party exercise media is not bundled in this edition'}
     </div>
   </div>
 }
