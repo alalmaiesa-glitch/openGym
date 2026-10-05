@@ -75,6 +75,35 @@ jobs:
         working-directory: frontend
 
 
+  pt650-factory-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: AssiamahS/opengym3d
+          ref: ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae
+          path: _factory/opengym3d
+      - name: Validate PT650 3D Factory inputs
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('.')
+          factory = json.loads((root / 'frontend/pt650-3d-factory.json').read_text())
+          assert factory['format'] == 'pt650-3d-factory/1'
+          assert factory['upstream']['commit'] == 'ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae'
+          for item in factory['exercises']:
+              spec = json.loads((root / '_factory/opengym3d' / item['spec']).read_text())
+              assert spec['id'] == item['slug'], (spec['id'], item['slug'])
+              assert spec['mocap'] == item['motion'], (spec['mocap'], item['motion'])
+              assert item['motionLicense'] == 'CC0-1.0'
+              assert spec.get('camera') == item['camera']
+              assert spec.get('movement', {}).get('pattern') == 'jumping_jack'
+          print('PT650 3D Factory inputs are pinned and exact')
+          PY
+
+
   mcp:
     runs-on: ubuntu-latest
     steps:
