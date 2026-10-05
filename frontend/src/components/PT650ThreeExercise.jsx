@@ -6,7 +6,12 @@ function loadRuntime() {
     runtimePromise = Promise.all([
       import('three'),
       import('three/examples/jsm/loaders/GLTFLoader.js'),
-    ]).then(([THREE, loader]) => ({ THREE, GLTFLoader: loader.GLTFLoader }))
+      import('three/examples/jsm/controls/OrbitControls.js'),
+    ]).then(([THREE, loader, controls]) => ({
+      THREE,
+      GLTFLoader: loader.GLTFLoader,
+      OrbitControls: controls.OrbitControls,
+    }))
   }
   return runtimePromise
 }
@@ -65,6 +70,7 @@ export default function PT650ThreeExercise({ model, playing = true, fallback = n
     let clock = null
     let mixer = null
     let root = null
+    let controls = null
 
     const renderOnce = () => {
       if (!disposed && renderer && scene && camera) renderer.render(scene, camera)
@@ -75,29 +81,35 @@ export default function PT650ThreeExercise({ model, playing = true, fallback = n
       frameRef.current = requestAnimationFrame(animate)
       if (mixer && clock) mixer.update(clock.getDelta())
       else if (clock) clock.getDelta()
+      controls?.update()
       renderOnce()
     }
 
-    loadRuntime().then(({ THREE, GLTFLoader }) => {
+    loadRuntime().then(({ THREE, GLTFLoader, OrbitControls }) => {
       if (disposed) return
 
+      const viewer = model.viewer || {}
       scene = new THREE.Scene()
-      camera = new THREE.PerspectiveCamera(32, 1, 0.01, 200)
+      camera = new THREE.PerspectiveCamera(viewer.fov || 32, 1, 0.01, 200)
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' })
       renderer.setClearColor(0x000000, 0)
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
       renderer.outputColorSpace = THREE.SRGBColorSpace
+      renderer.toneMapping = THREE.ACESFilmicToneMapping
+      renderer.toneMappingExposure = 1.04
       renderer.shadowMap.enabled = false
       host.appendChild(renderer.domElement)
       renderer.domElement.className = 'pt650-three-canvas'
       renderer.domElement.setAttribute('aria-hidden', 'true')
 
-      const hemi = new THREE.HemisphereLight(0xf2f5f7, 0x0b0d10, 2.2)
-      const key = new THREE.DirectionalLight(0xffffff, 2.6)
-      key.position.set(3, 5, 4)
-      const fill = new THREE.DirectionalLight(0x7fa5ff, 0.9)
-      fill.position.set(-4, 2, -3)
-      scene.add(hemi, key, fill)
+      const hemi = new THREE.HemisphereLight(0xf4f6f8, 0x090b0d, 1.65)
+      const key = new THREE.DirectionalLight(0xffffff, 2.15)
+      key.position.set(3.5, 5.5, 4.5)
+      const fill = new THREE.DirectionalLight(0xb9cfff, 0.62)
+      fill.position.set(-4.5, 2.5, -3.5)
+      const rim = new THREE.DirectionalLight(0xffffff, 0.48)
+      rim.position.set(-2.5, 4, 5)
+      scene.add(hemi, key, fill, rim)
 
       const loader = new GLTFLoader()
       loader.setCrossOrigin('anonymous')
@@ -126,13 +138,39 @@ export default function PT650ThreeExercise({ model, playing = true, fallback = n
           const size = box.getSize(new THREE.Vector3())
           const center = box.getCenter(new THREE.Vector3())
           const maxDim = Math.max(size.x, size.y, size.z) || 1
-          const distance = maxDim * 1.55
+          const distance = maxDim * (viewer.distance || 1.55)
+          const dir = new THREE.Vector3(...(viewer.direction || [0.85, 0.25, 1])).normalize()
+          const target = new THREE.Vector3(
+            center.x,
+            center.y + size.y * (viewer.targetY ?? 0.04),
+            center.z,
+          )
 
-          camera.position.set(center.x + distance * 0.85, center.y + maxDim * 0.25, center.z + distance)
-          camera.lookAt(center.x, center.y + size.y * 0.04, center.z)
+          camera.position.copy(target).addScaledVector(dir, distance)
+          camera.lookAt(target)
           camera.near = Math.max(0.01, distance / 100)
           camera.far = distance * 12
           camera.updateProjectionMatrix()
+
+          controls = new OrbitControls(camera, renderer.domElement)
+          controls.target.copy(target)
+          controls.enablePan = false
+          controls.enableDamping = true
+          controls.dampingFactor = 0.075
+          controls.rotateSpeed = 0.52
+          controls.zoomSpeed = 0.62
+          controls.minDistance = distance * (viewer.zoomMin || 0.9)
+          controls.maxDistance = distance * (viewer.zoomMax || 1.22)
+          controls.update()
+
+          const azimuth = controls.getAzimuthalAngle()
+          const polar = controls.getPolarAngle()
+          const orbitAzimuth = viewer.orbitAzimuth ?? 0.34
+          const orbitPolar = viewer.orbitPolar ?? 0.28
+          controls.minAzimuthAngle = azimuth - orbitAzimuth
+          controls.maxAzimuthAngle = azimuth + orbitAzimuth
+          controls.minPolarAngle = Math.max(0.35, polar - orbitPolar)
+          controls.maxPolarAngle = Math.min(Math.PI - 0.35, polar + orbitPolar)
 
           const clip = gltf.animations.find(a => a.name === model.clip) || gltf.animations[0]
           if (!clip) {
@@ -188,6 +226,7 @@ export default function PT650ThreeExercise({ model, playing = true, fallback = n
       resizeObserver?.disconnect()
       if (mixer) mixer.stopAllAction()
       if (scene && root) scene.remove(root)
+      controls?.dispose()
       renderer?.dispose()
       if (renderer?.domElement?.parentNode === host) host.removeChild(renderer.domElement)
       mixerRef.current = null
@@ -209,6 +248,8 @@ export default function PT650ThreeExercise({ model, playing = true, fallback = n
       className={'pt650-three-stage ' + state}
       data-pt650-3d={model.id}
       data-pt650-3d-license={model.license}
+      data-pt650-muscle-highlight={model.muscleHighlight || 'none'}
+      data-pt650-camera={model.camera || 'auto'}
     >
       {state === 'loading' && <span className="pt650-three-loader" aria-hidden="true" />}
     </div>
