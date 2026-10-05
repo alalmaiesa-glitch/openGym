@@ -29,15 +29,15 @@
       "files": {
         "glb": {
           "name": "run.glb",
-          "sha256": "BOOTSTRAP"
+          "sha256": "981aeda7dae97cdeafb8a5f34e8c211cf5adef29abcb3f1f24c6cbe8a445bd05"
         },
         "mp4": {
           "name": "run.mp4",
-          "sha256": "BOOTSTRAP"
+          "sha256": "ac233337b0d4ebb2e3d99403f2caf706c1e1192cf317de72055a29430c5eff00"
         },
         "png": {
           "name": "run.png",
-          "sha256": "BOOTSTRAP"
+          "sha256": "01ea1608d642078c43f187721615e132116dbd1625d69a657be5a99aeaabb917"
         }
       }
     },
