@@ -66,7 +66,7 @@ a different exercise.
 | Exercise ID | Exercise | Model | Medium | Provenance |
 | --- | --- | --- | --- | --- |
 | `0001` | 3/4 sit-up | `three-quarter-sit-up-v1` | authored SVG motion | PT650 original |
-| `0002` | 45° side bend | `side-bend-45-v1` | authored SVG motion | PT650 original |
+| `0002` | 45° side bend | `side-bend-45-v2` | authored SVG motion | PT650 original |
 | `0025` | barbell bench press | `bench-press-v1` | authored SVG motion | PT650 original |
 | `0043` | barbell full squat | `full-squat-v1` | authored SVG motion | PT650 original |
 | `0662` | push-up | `push-up-v1` | authored SVG motion | PT650 original |
@@ -80,3 +80,17 @@ exercise-specific animation is authored and approved.
 New models must be added through the animation registry rather than by embedding ad-hoc media URLs
 in exercise cards. Every new entry must include its exact exercise ID, canonical catalogue name,
 medium, provenance and version, and must remain covered by the registry binding test.
+
+
+## Athlete V2 visual standard
+
+Beginning with exercise `0002` (45° side bend), PT650 exercise motion should use the Athlete V2
+visual standard where practical:
+
+- recognizable athletic anatomy rather than stick figures
+- stable joints that should not move during the exercise
+- motion originating from the correct joint or body segment
+- restrained target-muscle highlighting
+- no decorative motion arrows when the movement itself is readable
+- neutral, non-photorealistic styling that cannot be mistaken for filmed footage
+- a clean front/side camera choice selected for the exercise rather than reused generically
