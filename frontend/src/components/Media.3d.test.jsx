@@ -20,7 +20,9 @@ vi.mock('./PT650ThreeExercise.jsx', () => ({
     <div
       className="pt650-three-test"
       data-pt650-3d={model.id}
-      data-clip={model.clip}
+      data-clip={model.clip || ''}
+      data-asset={model.asset}
+      data-video={model.previewVideo}
       data-playing={playing ? 'yes' : 'no'}
     />
   ),
@@ -42,9 +44,11 @@ afterEach(() => {
 describe('PT650 built-in 3D media', () => {
   it('prefers the registered 3D push-up over its transitional SVG animation', () => {
     act(() => root.render(<Media ex={{ id: '0662', n: 'push-up' }} />))
-    expect(host.querySelector('.exmedia')?.dataset.pt650Media).toBe('push-up-3d-v1')
-    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-pt650-3d')).toBe('push-up-3d-v1')
-    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-clip')).toBe('Pushup')
+    expect(host.querySelector('.exmedia')?.dataset.pt650Media).toBe('push-up-3d-v2')
+    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-pt650-3d')).toBe('push-up-3d-v2')
+    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-clip')).toBe('')
+    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-asset')).toMatch(/\/assets\/push_up\.glb$/)
+    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-video')).toMatch(/\/assets\/push_up\.mp4$/)
   })
 
   it('keeps existing exercise-specific SVG media until a 3D replacement is registered', () => {
