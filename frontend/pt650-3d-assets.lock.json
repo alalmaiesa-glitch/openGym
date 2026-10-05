@@ -1,0 +1,27 @@
+{
+  "format": "pt650-3d-asset-lock/1",
+  "source": "OpenGym3D GitHub Pages rendered outputs",
+  "sourceRepo": "AssiamahS/opengym3d",
+  "sourceCommit": "ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae",
+  "baseUrl": "https://assiamahs.github.io/opengym3d/assets",
+  "assets": [
+    {
+      "exerciseId": "0662",
+      "slug": "push_up",
+      "files": {
+        "glb": { "name": "push_up.glb", "sha256": "BOOTSTRAP" },
+        "mp4": { "name": "push_up.mp4", "sha256": "BOOTSTRAP" },
+        "png": { "name": "push_up.png", "sha256": "BOOTSTRAP" }
+      }
+    },
+    {
+      "exerciseId": "3360",
+      "slug": "bear_crawl",
+      "files": {
+        "glb": { "name": "bear_crawl.glb", "sha256": "BOOTSTRAP" },
+        "mp4": { "name": "bear_crawl.mp4", "sha256": "BOOTSTRAP" },
+        "png": { "name": "bear_crawl.png", "sha256": "BOOTSTRAP" }
+      }
+    }
+  ]
+}
