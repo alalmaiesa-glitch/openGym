@@ -85,6 +85,16 @@ CI and Pages deployment fail closed instead of silently serving new media.
 The runtime registry therefore contains same-origin URLs only; the browser does not depend on
 OpenGym3D hosting after a successful PT650 build.
 
+## Runtime independence
+
+Three.js is pinned as a PT650 frontend dependency at `0.170.0`. The interactive viewer uses
+native dynamic imports for `three` and `three/examples/jsm/loaders/GLTFLoader.js`, so Vite
+builds them into lazy chunks that are downloaded only when a registered 3D exercise is opened.
+
+There is no runtime import from esm.sh, unpkg, jsDelivr or another JavaScript CDN. Combined with
+the same-origin GLB/MP4/PNG mirror above, the complete exercise-viewing path can run from the
+PT650 deployment alone after the build finishes.
+
 ## Production expansion
 
 For an exercise that does not have a suitable CC0 motion:

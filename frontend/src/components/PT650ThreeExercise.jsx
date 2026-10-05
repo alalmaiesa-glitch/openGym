@@ -1,14 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 
-const THREE_MODULE = 'https://esm.sh/three@0.170.0'
-const GLTF_LOADER_MODULE = 'https://esm.sh/three@0.170.0/examples/jsm/loaders/GLTFLoader.js'
-
 let runtimePromise = null
 function loadRuntime() {
   if (!runtimePromise) {
     runtimePromise = Promise.all([
-      import(/* @vite-ignore */ THREE_MODULE),
-      import(/* @vite-ignore */ GLTF_LOADER_MODULE),
+      import('three'),
+      import('three/examples/jsm/loaders/GLTFLoader.js'),
     ]).then(([THREE, loader]) => ({ THREE, GLTFLoader: loader.GLTFLoader }))
   }
   return runtimePromise
