@@ -80,3 +80,18 @@ exercise-specific animation is authored and approved.
 New models must be added through the animation registry rather than by embedding ad-hoc media URLs
 in exercise cards. Every new entry must include its exact exercise ID, canonical catalogue name,
 medium, provenance and version, and must remain covered by the registry binding test.
+
+
+## 3D migration priority
+
+PT650 is migrating approved built-in exercise demonstrations to interactive 3D GLB media.
+
+The preferred production order is:
+
+1. PT650 3D registry entry with recorded licence and provenance.
+2. Interactive GLB playback using the PT650 3D runtime.
+3. Existing exercise-specific SVG animation only as a temporary compatibility fallback.
+4. No generic human fallback and no real-person footage.
+
+The first 3D exercise is `0662` — `push-up`, using the CC0 `Pushup` clip from the
+Mesh2Motion pack recorded by OpenGym3D. See `docs/PT650_3D_PIPELINE.md`.
