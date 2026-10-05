@@ -14,7 +14,7 @@
       "exerciseId": "pt650-0001",
       "slug": "jumping_jack",
       "spec": "exercises/jumping_jack.json",
-      "motion": "motions/cc0/mesh2motion/human-addon-animations.glb#Jumping Jacks",
+      "motion": "cc0/mesh2motion/human-addon-animations.glb#Jumping Jacks",
       "motionLicense": "CC0-1.0",
       "camera": "front",
       "outputs": [
