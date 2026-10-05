@@ -1,37 +1,48 @@
 import { describe, expect, it } from 'vitest'
+import { readFileSync } from 'node:fs'
 import { EXIDX } from '../lib/exercises.js'
 import { PT650_3D_MODELS, threeDModelFor } from './pt650-3d-registry.js'
 
-describe('PT650 3D exercise registry', () => {
-  it('starts with the CC0 Mesh2Motion push-up from OpenGym3D', () => {
-    expect(threeDModelFor('0662')).toMatchObject({
-      id: 'push-up-3d-v1',
+describe('PT650 OpenGym3D registry', () => {
+  it('binds the first final 3D asset to the exact PT650 exercise', () => {
+    const model = threeDModelFor('0662')
+    expect(model).toMatchObject({
+      id: 'push-up-3d-v2',
       exercise: 'push-up',
-      medium: 'interactive-glb',
-      engine: 'three-js',
-      clip: 'Pushup',
-      source: 'Mesh2Motion via OpenGym3D',
-      license: 'CC0-1.0',
-      version: 1,
+      medium: 'opengym3d-rendered-glb',
+      sourceRepo: 'AssiamahS/opengym3d',
+      humanLicense: 'CC0-1.0',
+      motionLicense: 'CC0-1.0',
+      version: 2,
     })
+    expect(EXIDX['0662']?.n).toBe(model.exercise)
   })
 
-  it('pins every remote asset to an immutable upstream commit', () => {
-    for (const model of Object.values(PT650_3D_MODELS)) {
-      expect(model.asset).toContain('/ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae/')
-      expect(model.asset).not.toContain('/main/')
-    }
+  it('uses the final rendered exercise outputs, not the raw motion pack', () => {
+    const model = threeDModelFor('0662')
+    expect(model.asset).toMatch(/\/assets\/push_up\.glb$/)
+    expect(model.previewVideo).toMatch(/\/assets\/push_up\.mp4$/)
+    expect(model.poster).toMatch(/\/assets\/push_up\.png$/)
+    expect(model.asset).not.toContain('/motions/')
   })
 
-  it('binds every 3D model to the exact PT650 catalogue exercise', () => {
+  it('records provenance and redistributable licences for every public 3D model', () => {
     for (const [exerciseId, model] of Object.entries(PT650_3D_MODELS)) {
       expect(EXIDX[exerciseId]?.n).toBe(model.exercise)
+      expect(model.sourceRepo).toBeTruthy()
+      expect(model.sourceCommit).toMatch(/^[0-9a-f]{40}$/)
+      expect(model.pipelineLicense).toBe('MIT')
+      expect(model.humanLicense).toBe('CC0-1.0')
+      expect(model.motionLicense).toBe('CC0-1.0')
     }
   })
 
-  it('ships only redistributable models in the public 3D registry', () => {
-    const allowed = new Set(['CC0-1.0', 'CC-BY-4.0', 'MIT', 'own'])
-    for (const model of Object.values(PT650_3D_MODELS)) expect(allowed.has(model.license)).toBe(true)
+  it('keeps a rendered 3D video fallback for devices without WebGL', () => {
+    const source = readFileSync(new URL('./PT650ThreeExercise.jsx', import.meta.url), 'utf8')
+    expect(source).toContain('model.previewVideo')
+    expect(source).toContain('pt650-three-video')
+    expect(source).toContain('playsInline')
+    expect(source).toContain('muted')
   })
 
   it('does not pretend an exercise has 3D media when it is not registered', () => {

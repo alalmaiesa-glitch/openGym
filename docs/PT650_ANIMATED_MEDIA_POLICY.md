@@ -93,5 +93,6 @@ The preferred production order is:
 3. Existing exercise-specific SVG animation only as a temporary compatibility fallback.
 4. No generic human fallback and no real-person footage.
 
-The first 3D exercise is `0662` — `push-up`, using the CC0 `Pushup` clip from the
-Mesh2Motion pack recorded by OpenGym3D. See `docs/PT650_3D_PIPELINE.md`.
+The first 3D exercise is `0662` — `push-up`, using OpenGym3D's final MakeHuman/MPFB2-rendered
+exercise asset driven by the CC0 Mesh2Motion `Pushup` motion. The interactive GLB is primary and
+the rendered MP4 is the non-WebGL fallback. See `docs/PT650_3D_PIPELINE.md`.

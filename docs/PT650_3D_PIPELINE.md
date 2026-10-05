@@ -1,12 +1,10 @@
-# PT650 — 3D Exercise Pipeline
+# PT650 — OpenGym3D / CC0 3D Exercise Pipeline
 
-PT650 is migrating built-in exercise demonstrations from authored SVG motion to interactive 3D GLB assets.
+PT650 is migrating built-in exercise demonstrations from hand-authored SVG motion to generated 3D exercise media.
 
-## Phase 1 architecture
+## Source path adopted
 
-The first live 3D exercise is PT650 exercise `0662` — `push-up`.
-
-Pipeline:
+PT650 now follows the OpenGym3D production pattern:
 
 ```
 PT650 exercise id
@@ -14,66 +12,75 @@ PT650 exercise id
       v
 frontend/src/components/pt650-3d-registry.js
       |
-      v
-CC0 GLB asset + exact animation clip
+      +--> OpenGym3D final GLB
+      |      MakeHuman / MPFB2 anatomical avatar
+      |      + CC0 / own-capture motion
+      |      + Blender headless retarget/export
+      |
+      +--> OpenGym3D rendered MP4 fallback
       |
       v
 PT650ThreeExercise.jsx
       |
-      v
-lazy Three.js runtime -> AnimationMixer -> PT650 exercise sheet
+      +--> WebGL / Three.js interactive playback
+      +--> MP4 fallback when WebGL/runtime is unavailable
 ```
 
-The 3D path has priority over the legacy SVG path. SVG remains only as a temporary compatibility
-fallback while the 3D library is expanded.
+The 3D path has priority over the legacy SVG path. SVG is transitional only.
 
-## First asset
+## First integrated exercise
 
 - PT650 exercise ID: `0662`
 - Canonical name: `push-up`
-- PT650 model id: `push-up-3d-v1`
-- GLB clip: `Pushup`
-- Source project: OpenGym3D
-- Source repository: `AssiamahS/opengym3d`
-- Source commit: `ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae`
-- Motion source: Mesh2Motion human animation pack
-- Licence: CC0-1.0
-- OpenGym3D repository code licence: MIT
+- PT650 model id: `push-up-3d-v2`
+- OpenGym3D spec: `exercises/push_up.json`
+- 3D asset: `site/assets/push_up.glb`
+- rendered fallback: `site/assets/push_up.mp4`
+- camera: side
+- source project: OpenGym3D
+- source repository: `AssiamahS/opengym3d`
+- source commit recorded for pipeline provenance: `ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae`
+- human: MakeHuman / MPFB2 anatomical avatar
+- human asset licence: CC0-1.0
+- motion: Mesh2Motion `Pushup`
+- motion licence: CC0-1.0
+- OpenGym3D code licence: MIT
 
-The remote source is pinned to an immutable upstream commit. PT650 must never depend on a mutable
-`main` URL for production 3D media.
+The OpenGym3D asset library explicitly records the push-up motion as CC0 and the MPFB2 human as
+CC0-compatible generated output. PT650 records those fields separately rather than treating a
+single licence string as sufficient provenance.
 
 ## Runtime rules
 
-1. Load Three.js only when a registered 3D exercise is opened.
-2. Do not add a multi-megabyte 3D runtime to the initial PT650 bundle.
-3. The exact named animation clip must be selected from the GLB.
-4. Missing WebGL, loading failure, or runtime failure falls back to the existing exercise-specific
-   SVG model when one exists.
-5. A 3D model must be bound to the exact PT650 exercise ID and canonical name.
-6. Public PT650 3D assets may use only redistributable sources recorded in the registry.
-7. Mixamo/app-only or demo-only motion data must not be entered into the public PT650 registry.
+1. Open a registered 3D exercise through the PT650 3D registry only.
+2. Prefer the final OpenGym3D exercise GLB, not the raw Mesh2Motion animation pack.
+3. The final GLB must represent the exact exercise and camera angle approved for that PT650 ID.
+4. If WebGL, Three.js loading, or the GLB fails, use the rendered 3D MP4 fallback.
+5. Do not fall back from 3D to a generic human animation.
+6. Real-person footage is prohibited.
+7. Public PT650 3D assets may use only redistributable sources recorded in the registry.
+8. Mixamo/app-only and demo-only source motion must not enter the public PT650 registry.
 
-## Asset migration plan
+## Current storage stage
 
-Phase 1 uses the upstream CC0 GLB directly from a commit-pinned URL to prove the PT650 runtime
-integration without duplicating a 5+ MB binary during the architecture change.
+Phase 1 references OpenGym3D's published final exercise assets so the runtime integration can be
+validated without committing large binary files to PT650.
 
-The next asset step is to mirror approved CC0 GLBs into PT650-controlled static storage during the
-build pipeline, validate their hashes, and serve them from the PT650 origin. The registry structure
-is intentionally independent of the final storage URL so this migration does not change exercise UI
-code.
+This is intentionally temporary. Phase 2 mirrors approved assets into PT650-controlled static
+storage and verifies file hashes during CI. The registry is storage-independent so that change
+does not require rewriting the exercise UI.
 
-## Production direction
+## Production expansion
 
-The OpenGym3D pipeline is the reference production path:
+For an exercise that does not have a suitable CC0 motion:
 
-- MakeHuman / MPFB2 anatomical avatar
-- CC0 motion where available
-- own-capture motion for exercises missing suitable open motion
-- Blender headless retarget/export
-- GLB output
-- joint/anatomy QA before publication
-- PT650 registry entry only after licence and exercise-binding checks pass
+1. record one clean exercise repetition specifically for PT650;
+2. extract pose motion locally using the OpenGym3D MediaPipe lane;
+3. mark the motion source as PT650-owned;
+4. retarget to the MPFB2 / MakeHuman rig in headless Blender;
+5. generate GLB + MP4;
+6. run joint/anatomy QA;
+7. register the asset only after exercise binding and licence checks pass.
 
-SVG exercise demos are transitional and are not the target visual standard.
+This lets PT650 scale beyond the finite Mesh2Motion CC0 pack without ever using real-person
+instructional footage in the product.

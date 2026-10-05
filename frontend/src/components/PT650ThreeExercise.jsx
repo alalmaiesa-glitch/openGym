@@ -14,6 +14,35 @@ function loadRuntime() {
   return runtimePromise
 }
 
+function VideoFallback({ model, playing }) {
+  const videoRef = useRef(null)
+
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+    if (playing) video.play().catch(() => {})
+    else video.pause()
+  }, [playing])
+
+  if (!model?.previewVideo) return null
+
+  return (
+    <video
+      ref={videoRef}
+      className="pt650-three-video"
+      src={model.previewVideo}
+      poster={model.poster || undefined}
+      autoPlay={playing}
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      aria-hidden="true"
+      data-pt650-3d-video={model.id}
+    />
+  )
+}
+
 export default function PT650ThreeExercise({ model, playing = true, fallback = null }) {
   const hostRef = useRef(null)
   const mixerRef = useRef(null)
@@ -173,7 +202,9 @@ export default function PT650ThreeExercise({ model, playing = true, fallback = n
   }, [playing])
 
   if (!model) return fallback
-  if (state === 'unsupported' || state === 'error') return fallback
+  if (state === 'unsupported' || state === 'error') {
+    return model.previewVideo ? <VideoFallback model={model} playing={playing} /> : fallback
+  }
 
   return (
     <div

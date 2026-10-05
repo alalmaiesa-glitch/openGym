@@ -990,6 +990,11 @@ body.chips-dragging *{cursor:inherit}
     linear-gradient(180deg,#0a0c0f,#070809);
 }
 .pt650-three-canvas{width:100%;height:100%;display:block;touch-action:none}
+.pt650-three-video{
+  width:100%;height:320px;display:block;object-fit:contain;background:#070809;
+}
+.exmedia.compact .pt650-three-video{height:120px}
+.exmedia.mini .pt650-three-video{height:84px}
 .pt650-three-loader{
   position:absolute;inset:0;margin:auto;width:28px;height:28px;border-radius:50%;
   border:2px solid rgba(255,255,255,.14);border-top-color:var(--acc);
