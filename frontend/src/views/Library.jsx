@@ -40,10 +40,12 @@ export default function Library() {
     <div className="hdr library-head"><div><h1>{t('Exercises')}</h1><div className="sub">{exCount(EXDB.length)}</div></div>
       <Button size="sm" variant="tinted" icon="target" onClick={() => nav('/muscles')}>{t('By muscle')}</Button>
     </div>
-    <div className={'search' + (narrowed ? ' has-count' : '')} style={{ marginBottom: 10 }}><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-      <input className="input" placeholder={t('Search…')} value={q} onChange={e => { setQ(e.target.value); setShown(24) }} />
-      {narrowed && <span className="search-count" role="status" aria-label={exCount(f.length)}>{fmtNum(f.length)}</span>}</div>
-    {profile && <div className="small dim row" style={{ margin: '-4px 2px 10px', gap: 6, alignItems: 'center' }}>
+    <div className="library-controls">
+      <div className={'search library-search' + (narrowed ? ' has-count' : '')}><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+        <input className="input" placeholder={t('Search…')} value={q} onChange={e => { setQ(e.target.value); setShown(24) }} />
+        {narrowed && <span className="search-count" role="status" aria-label={exCount(f.length)}>{fmtNum(f.length)}</span>}
+      </div>
+    {profile && <div className="small dim row library-profile">
       <Icon name="dumbbell" style={{ fontSize: 13 }} />
       {showAll ? t('Showing all equipment') : t('Showing what you have in "{0}"', profile.name)}
       <button className="chip nocap" style={{ marginInlineStart: 'auto', padding: '3px 10px', fontSize: 12 }} onClick={() => setShowAll(v => !v)}>
@@ -53,20 +55,21 @@ export default function Library() {
     {/* Changing body part keeps the equipment filter (issue #71): the eqOn fallback above drops
         it only for the current view if the new body part has nothing under it, without forgetting
         the choice. "All" clears it, since it spans every body part. */}
-    <div className="chips" ref={bpStrip} style={{ marginBottom: eqOpts.length > 1 ? 8 : 12 }}>
+    <div className="chips library-chips" ref={bpStrip}>
       <button className={'chip nocap' + (!bp ? ' on' : '')} onClick={() => { setBp(''); setEq(''); setShown(24) }}>{t('All')}</button>
       {BODYPARTS.map(b => <button key={b} className={'chip' + (bp === b ? ' on' : '')} onClick={() => { setBp(b); setShown(24) }}>{t(b)}</button>)}
     </div>
-    {eqOpts.length > 1 && <div className="chips" ref={eqStrip} style={{ marginBottom: 12 }}>
+    {eqOpts.length > 1 && <div className="chips library-chips" ref={eqStrip}>
       <button className={'chip nocap' + (!eqOn ? ' on' : '')} onClick={() => { setEq(''); setShown(24) }}>{t('Any equipment')}</button>
       {eqOpts.map(x => <button key={x} className={'chip' + (eqOn === x ? ' on' : '')} onClick={() => { setEq(x); setShown(24) }}>{t(x)}</button>)}
     </div>}
+    </div>
     <div className="list library-list">
-      <div className="item library-create" {...tappable(() => customExSheet(null, ex => exerciseDetailSheet(ex), q.trim()))}>
+      <button className="item library-create" {...tappable(() => customExSheet(null, ex => exerciseDetailSheet(ex), q.trim()))}>
         <Icon name="sparkles" />
-        <div className="grow"><div className="tt">{t('Create your own exercise')}</div></div>
+        <span>{t('Create your own exercise')}</span>
         <Icon name="plus" className="chev" />
-      </div>
+      </button>
       {f.slice(0, shown).map(e => {
         const best = bestWeightFor(S, e.id)
         return <div key={e.id} className="item library-item" {...tappable(() => exerciseDetailSheet(e))}>
