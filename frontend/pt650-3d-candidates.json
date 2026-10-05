@@ -1,0 +1,64 @@
+{
+  "format": "pt650-3d-candidate-audit/1",
+  "sourceRepo": "AssiamahS/opengym3d",
+  "sourceCommit": "ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae",
+  "policy": "CC0 motion + non-draft exercise spec + exact movement match",
+  "candidates": [
+    {
+      "upstream": "push_up",
+      "motion": "Mesh2Motion Pushup",
+      "motionLicense": "CC0-1.0",
+      "decision": "registered",
+      "exerciseId": "0662",
+      "reason": "exact movement match"
+    },
+    {
+      "upstream": "bear_crawl",
+      "motion": "Mesh2Motion Crawl",
+      "motionLicense": "CC0-1.0",
+      "decision": "registered",
+      "exerciseId": "3360",
+      "reason": "exact movement match"
+    },
+    {
+      "upstream": "jog",
+      "motion": "Mesh2Motion Jog",
+      "motionLicense": "CC0-1.0",
+      "decision": "registered",
+      "exerciseId": "0685",
+      "reason": "PT650 run instructions explicitly describe jogging in place"
+    },
+    {
+      "upstream": "run",
+      "motion": "Mesh2Motion Sprint",
+      "motionLicense": "CC0-1.0",
+      "decision": "rejected-for-0685",
+      "exerciseId": null,
+      "reason": "PT650 0685 describes jogging in place, not a treadmill sprint"
+    },
+    {
+      "upstream": "jumping_jack",
+      "motion": "Mesh2Motion Jumping Jacks",
+      "motionLicense": "CC0-1.0",
+      "decision": "unmatched",
+      "exerciseId": null,
+      "reason": "no exact PT650 catalogue exercise"
+    },
+    {
+      "upstream": "walk",
+      "motion": "Mesh2Motion Walk",
+      "motionLicense": "CC0-1.0",
+      "decision": "unmatched",
+      "exerciseId": null,
+      "reason": "PT650 has walking variants but no exact flat walk exercise"
+    },
+    {
+      "upstream": "seated_meditation",
+      "motion": "Mesh2Motion Meditate",
+      "motionLicense": "CC0-1.0",
+      "decision": "unmatched",
+      "exerciseId": null,
+      "reason": "no exact PT650 catalogue exercise"
+    }
+  ]
+}
