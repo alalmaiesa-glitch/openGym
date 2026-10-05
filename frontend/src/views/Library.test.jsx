@@ -47,6 +47,8 @@ describe('PT650 Library density', () => {
   it('uses text-first compact cards without per-row media thumbnails', () => {
     const host = render()
     expect(host.querySelector('.library-controls')).not.toBeNull()
+    expect(host.querySelector('.library-filter-toggle')).not.toBeNull()
+    expect(host.querySelector('.library-filter-panel')).toBeNull()
     expect(host.querySelector('.library-create')).not.toBeNull()
     expect(host.querySelectorAll('.library-item .thumb')).toHaveLength(0)
     expect(host.querySelectorAll('.library-item .library-add').length).toBeGreaterThan(0)
@@ -101,6 +103,7 @@ describe('Library favourites', () => {
     const legs = EXDB.find(e => e.bp !== 'chest')
     mocks.S.favEx = [chest[4].id, legs.id]
     const host = render()
+    act(() => host.querySelector('.library-filter-toggle').click())
     const chip = [...host.querySelectorAll('.chips .chip')].find(b => b.textContent === 'chest')
     act(() => chip.click())
     const shown = names(host)
