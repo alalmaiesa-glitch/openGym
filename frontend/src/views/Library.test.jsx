@@ -50,6 +50,8 @@ describe('PT650 Library density', () => {
     expect(host.querySelector('.library-filter-toggle')).not.toBeNull()
     expect(host.querySelector('.library-filter-panel')).toBeNull()
     expect(host.querySelector('.library-create')).not.toBeNull()
+    expect(host.querySelector('.library-hero')).not.toBeNull()
+    expect(host.querySelectorAll('.library-card-mark').length).toBeGreaterThan(0)
     expect(host.querySelectorAll('.library-item .thumb')).toHaveLength(0)
     expect(host.querySelectorAll('.library-item .library-add').length).toBeGreaterThan(0)
     expect(host.querySelectorAll('.library-item .library-meta').length).toBeGreaterThan(0)
@@ -63,7 +65,8 @@ describe('PT650 Library density', () => {
   it('ships the dedicated responsive library layout rules', () => {
     expect(cssSource).toContain('.library-name')
     expect(cssSource).toContain('-webkit-line-clamp:2')
-    expect(cssSource).toContain('#app:has(>.library-page){max-width:1180px}')
+    expect(cssSource).toContain('#app:has(>.library-page){max-width:1240px')
+    expect(cssSource).toContain('grid-template-columns:repeat(3,minmax(0,1fr))')
     expect(cssSource).toContain('.library-actions .tag{display:none}')
   })
 })

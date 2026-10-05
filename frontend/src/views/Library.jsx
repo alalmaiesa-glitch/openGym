@@ -10,6 +10,7 @@ import { t, exerciseNameFor, exerciseNameClass } from '../lib/i18n.js'
 import { exerciseDetailSheet, addToRoutineSheet, customExSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
 import { Button } from '../components/ui.jsx'
+import { animatedModelFor } from '../components/PT650ExerciseAnimation.jsx'
 import { tappable, useRevealActiveChip } from '../lib/use-sheet-keyboard.js'
 import { isFav, sortFavouritesFirst } from '../lib/favourites.js'
 
@@ -41,72 +42,84 @@ export default function Library() {
   const clearEquipment = () => { setEq(''); setShown(24) }
 
   return <div className="library-page">
-    <div className="hdr library-head"><div><h1>{t('Exercises')}</h1><div className="sub">{exCount(EXDB.length)}</div></div>
-      <Button size="sm" variant="tinted" icon="target" onClick={() => nav('/muscles')}>{t('By muscle')}</Button>
-    </div>
-
-    <div className="library-controls">
-      <div className="library-search-row">
-        <div className={'search library-search' + (narrowed ? ' has-count' : '')}>
-          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-          <input className="input" placeholder={t('Search…')} value={q} onChange={e => { setQ(e.target.value); setShown(24) }} />
-          {narrowed && <span className="search-count" role="status" aria-label={exCount(f.length)}>{fmtNum(f.length)}</span>}
+    <section className="library-hero">
+      <div className="library-headline">
+        <div className="library-title-group">
+          <span className="library-title-mark"><Icon name="dumbbell" /></span>
+          <div>
+            <h1>{t('Exercises')}</h1>
+            <div className="library-total">{exCount(EXDB.length)}</div>
+          </div>
         </div>
-        <button
-          className={'library-filter-toggle' + (filtersOpen ? ' on' : '')}
-          aria-expanded={filtersOpen}
-          aria-label={t('Any equipment')}
-          title={t('Any equipment')}
-          onClick={() => setFiltersOpen(v => !v)}
-        >
-          <Icon name="filter" />
-          {filterCount > 0 && <span className="library-filter-badge">{fmtNum(filterCount)}</span>}
-        </button>
+
+        <div className="library-head-actions">
+          <Button size="sm" variant="tinted" icon="target" onClick={() => nav('/muscles')}>{t('By muscle')}</Button>
+          <button className="library-create" {...tappable(() => customExSheet(null, ex => exerciseDetailSheet(ex), q.trim()))}>
+            <Icon name="sparkles" />
+            <span>{t('Create your own exercise')}</span>
+            <Icon name="plus" className="library-create-plus" />
+          </button>
+        </div>
       </div>
 
-      {!filtersOpen && (bp || eqOn) && <div className="library-active-filters">
-        {bp && <button className="library-active-chip" onClick={clearBodyPart}>
-          <span>{t(bp)}</span><Icon name="xmark" />
-        </button>}
-        {eqOn && <button className="library-active-chip" onClick={clearEquipment}>
-          <span>{t(eqOn)}</span><Icon name="xmark" />
-        </button>}
-      </div>}
-
-      {filtersOpen && <div className="library-filter-panel">
-        {profile && <div className="small dim row library-profile">
-          <Icon name="dumbbell" style={{ fontSize: 13 }} />
-          <span className="library-profile-text">
-            {showAll ? t('Showing all equipment') : t('Showing what you have in "{0}"', profile.name)}
-          </span>
-          <button className="chip nocap" onClick={() => setShowAll(v => !v)}>
-            {showAll ? t('Filter by "{0}"', profile.name) : t('Show all equipment')}
+      <div className="library-controls">
+        <div className="library-search-row">
+          <div className={'search library-search' + (narrowed ? ' has-count' : '')}>
+            <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+            <input className="input" placeholder={t('Search…')} value={q} onChange={e => { setQ(e.target.value); setShown(24) }} />
+            {narrowed && <span className="search-count" role="status" aria-label={exCount(f.length)}>{fmtNum(f.length)}</span>}
+          </div>
+          <button
+            className={'library-filter-toggle' + (filtersOpen ? ' on' : '')}
+            aria-expanded={filtersOpen}
+            aria-label={t('Any equipment')}
+            title={t('Any equipment')}
+            onClick={() => setFiltersOpen(v => !v)}
+          >
+            <Icon name="filter" />
+            {filterCount > 0 && <span className="library-filter-badge">{fmtNum(filterCount)}</span>}
           </button>
-        </div>}
-
-        {/* Body part and equipment stay one-line, horizontally scrollable strips. They are hidden
-            until the user asks for filters so the library opens as a calm search-first page. */}
-        <div className="chips library-chips" ref={bpStrip}>
-          <button className={'chip nocap' + (!bp ? ' on' : '')} onClick={clearBodyPart}>{t('All')}</button>
-          {BODYPARTS.map(b => <button key={b} className={'chip' + (bp === b ? ' on' : '')} onClick={() => { setBp(b); setShown(24) }}>{t(b)}</button>)}
         </div>
 
-        {eqOpts.length > 1 && <div className="chips library-chips" ref={eqStrip}>
-          <button className={'chip nocap' + (!eqOn ? ' on' : '')} onClick={clearEquipment}>{t('Any equipment')}</button>
-          {eqOpts.map(x => <button key={x} className={'chip' + (eqOn === x ? ' on' : '')} onClick={() => { setEq(x); setShown(24) }}>{t(x)}</button>)}
+        {!filtersOpen && (bp || eqOn) && <div className="library-active-filters">
+          {bp && <button className="library-active-chip" onClick={clearBodyPart}>
+            <span>{t(bp)}</span><Icon name="xmark" />
+          </button>}
+          {eqOn && <button className="library-active-chip" onClick={clearEquipment}>
+            <span>{t(eqOn)}</span><Icon name="xmark" />
+          </button>}
         </div>}
-      </div>}
-    </div>
+
+        {filtersOpen && <div className="library-filter-panel">
+          {profile && <div className="small dim row library-profile">
+            <Icon name="dumbbell" style={{ fontSize: 13 }} />
+            <span className="library-profile-text">
+              {showAll ? t('Showing all equipment') : t('Showing what you have in "{0}"', profile.name)}
+            </span>
+            <button className="chip nocap" onClick={() => setShowAll(v => !v)}>
+              {showAll ? t('Filter by "{0}"', profile.name) : t('Show all equipment')}
+            </button>
+          </div>}
+
+          <div className="chips library-chips" ref={bpStrip}>
+            <button className={'chip nocap' + (!bp ? ' on' : '')} onClick={clearBodyPart}>{t('All')}</button>
+            {BODYPARTS.map(b => <button key={b} className={'chip' + (bp === b ? ' on' : '')} onClick={() => { setBp(b); setShown(24) }}>{t(b)}</button>)}
+          </div>
+
+          {eqOpts.length > 1 && <div className="chips library-chips" ref={eqStrip}>
+            <button className={'chip nocap' + (!eqOn ? ' on' : '')} onClick={clearEquipment}>{t('Any equipment')}</button>
+            {eqOpts.map(x => <button key={x} className={'chip' + (eqOn === x ? ' on' : '')} onClick={() => { setEq(x); setShown(24) }}>{t(x)}</button>)}
+          </div>}
+        </div>}
+      </div>
+    </section>
 
     <div className="list library-list">
-      <button className="item library-create" {...tappable(() => customExSheet(null, ex => exerciseDetailSheet(ex), q.trim()))}>
-        <Icon name="sparkles" />
-        <span>{t('Create your own exercise')}</span>
-        <Icon name="plus" className="chev" />
-      </button>
       {f.slice(0, shown).map(e => {
         const best = bestWeightFor(S, e.id)
-        return <div key={e.id} className="item library-item" {...tappable(() => exerciseDetailSheet(e))}>
+        const hasDemo = !!animatedModelFor(e.id)
+        return <div key={e.id} className={'item library-item' + (hasDemo ? ' has-demo' : '')} {...tappable(() => exerciseDetailSheet(e))}>
+          <div className="library-card-mark" aria-hidden="true"><Icon name={hasDemo ? 'play' : 'dumbbell'} /></div>
           <div className="grow">
             <div className={`tt library-name ${exerciseNameClass(e)}`}>{isFav(S, e.id) && <Icon name="starFill" className="fav-star" />}{exerciseNameFor(e)}</div>
             <div className="ss library-meta capitalize">{t(MUSCLE_NAME[e.tg] || e.tg || e.bp)}<span>·</span>{t(e.eq)}</div>
