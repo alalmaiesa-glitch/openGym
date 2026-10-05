@@ -47,7 +47,7 @@ export default function PT650ThreeExercise({ model, playing = true, fallback = n
     const animate = () => {
       if (disposed) return
       frameRef.current = requestAnimationFrame(animate)
-      if (playing && mixer && clock) mixer.update(clock.getDelta())
+      if (mixer && clock) mixer.update(clock.getDelta())
       else if (clock) clock.getDelta()
       renderOnce()
     }
