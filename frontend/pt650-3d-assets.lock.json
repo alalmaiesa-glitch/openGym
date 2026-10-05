@@ -25,19 +25,19 @@
     },
     {
       "exerciseId": "0685",
-      "slug": "run",
+      "slug": "jog",
       "files": {
         "glb": {
-          "name": "run.glb",
-          "sha256": "981aeda7dae97cdeafb8a5f34e8c211cf5adef29abcb3f1f24c6cbe8a445bd05"
+          "name": "jog.glb",
+          "sha256": "3e20fe0299cd78c9534f4c1320a4e2e4f31f8b4ae51598a69065f93a43a0c020"
         },
         "mp4": {
-          "name": "run.mp4",
-          "sha256": "ac233337b0d4ebb2e3d99403f2caf706c1e1192cf317de72055a29430c5eff00"
+          "name": "jog.mp4",
+          "sha256": "1fd1ed6fbc038a88d35fc19608694c4504f5b49458a891cda558e0f97734ecc4"
         },
         "png": {
-          "name": "run.png",
-          "sha256": "01ea1608d642078c43f187721615e132116dbd1625d69a657be5a99aeaabb917"
+          "name": "jog.png",
+          "sha256": "dc215bdf4a8610638eb5a975c3ac8ef809b7d2a39c94a6589f08e2697844037d"
         }
       }
     },

@@ -59,19 +59,33 @@ The 3D path has priority over the legacy SVG path. SVG is transitional only.
 - motion: Mesh2Motion `Crawl` — CC0-1.0
 - OpenGym3D code licence: MIT
 
-### Run
+### Run / jog in place
 
 - PT650 exercise ID: `0685`
-- Canonical name: `run`
-- PT650 model id: `run-3d-v1`
-- OpenGym3D spec: `exercises/run.json`
+- Canonical PT650 name: `run`
+- PT650 dataset instructions: jogging in place
+- PT650 model id: `run-jog-in-place-3d-v2`
+- OpenGym3D spec: `exercises/jog.json`
 - camera: front
 - human: MakeHuman / MPFB2 anatomical avatar — CC0-1.0
-- motion: Mesh2Motion `Sprint` — CC0-1.0
+- motion: Mesh2Motion `Jog` — CC0-1.0
 - OpenGym3D code licence: MIT
+- rejected alternative: OpenGym3D `run.json` / `Sprint`, because it does not match the PT650
+  exercise instructions closely enough
 
 All integrated source specs use redistributable CC0 motion. PT650 records human, motion,
 pipeline and source provenance separately rather than treating one licence label as sufficient.
+
+## CC0 candidate audit
+
+The current OpenGym3D CC0 exercise lane was audited against the PT650 catalogue and recorded in
+`frontend/pt650-3d-candidates.json`.
+
+Only three movements currently pass the exact-binding gate: push-up, bear crawl, and the PT650
+`run` entry bound to OpenGym3D's jog-in-place motion. Jumping jack, flat walk and seated
+meditation remain unmatched because PT650 has no exact catalogue row for those movements.
+The OpenGym3D sprint motion is explicitly rejected for PT650 `0685` because the PT650 source
+instructions describe jogging in place.
 
 ## Runtime rules
 

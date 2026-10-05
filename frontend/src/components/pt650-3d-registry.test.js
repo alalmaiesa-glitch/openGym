@@ -21,13 +21,15 @@ describe('PT650 mirrored 3D registry', () => {
       version: 1,
     })
     expect(threeDModelFor('0685')).toMatchObject({
-      id: 'run-3d-v1',
+      id: 'run-jog-in-place-3d-v2',
       exercise: 'run',
       camera: 'front',
-      motion: 'Mesh2Motion Sprint',
+      motion: 'Mesh2Motion Jog',
+      upstreamExerciseSpec: 'exercises/jog.json',
+      semanticBinding: 'PT650 run instructions specify jogging in place',
       humanLicense: 'CC0-1.0',
       motionLicense: 'CC0-1.0',
-      version: 1,
+      version: 2,
     })
 
     for (const [exerciseId, model] of Object.entries(PT650_3D_MODELS)) {
@@ -116,6 +118,21 @@ describe('PT650 mirrored 3D registry', () => {
     expect(source).toContain('camera.position.copy(home.position)')
     expect(source).toContain('controls.target.copy(home.target)')
     expect(source).toContain('playing ? speed : 0')
+  })
+
+
+  it('keeps the audited CC0 candidate decisions explicit', () => {
+    const audit = JSON.parse(readFileSync(new URL('../../pt650-3d-candidates.json', import.meta.url), 'utf8'))
+    expect(audit.format).toBe('pt650-3d-candidate-audit/1')
+    const registered = audit.candidates
+      .filter(x => x.decision === 'registered')
+      .map(x => x.exerciseId)
+      .sort()
+    expect(registered).toEqual(['0662', '0685', '3360'])
+    expect(Object.keys(PT650_3D_MODELS).sort()).toEqual(registered)
+    expect(audit.candidates.find(x => x.upstream === 'run')?.decision).toBe('rejected-for-0685')
+    expect(audit.candidates.find(x => x.upstream === 'jog')?.exerciseId).toBe('0685')
+    for (const item of audit.candidates) expect(item.motionLicense).toBe('CC0-1.0')
   })
 
   it('does not invent 3D media for unregistered exercises', () => {
