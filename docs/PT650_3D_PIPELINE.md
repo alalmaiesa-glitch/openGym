@@ -126,3 +126,23 @@ surface readability without recolouring the model. Target-muscle activation rema
 OpenGym3D-authored `MuscleHeat` vertex-colour data baked into the GLB, so PT650 does not infer or
 paint muscle regions at runtime. Primary and secondary muscle metadata are recorded beside each
 PT650 registry entry and must stay consistent with the approved upstream exercise specification.
+
+
+## Viewer controls V1
+
+The interactive 3D viewer owns its playback controls instead of relying on the legacy
+tap-anywhere media behavior.
+
+Controls are deliberately compact:
+
+- play / pause
+- restart the motion at frame zero
+- playback speed: `0.5×`, `1×`, `1.5×`
+- reset the camera to the exercise's approved instructional view
+
+Desktop shows the three speed choices together. Narrow mobile layouts collapse them into one
+speed button that cycles through the same values. Camera drag/zoom remains independent from
+playback, so orbit gestures do not accidentally pause the exercise.
+
+The parent media card no longer handles tap-to-pause for registered 3D exercises. This prevents
+control clicks and OrbitControls gestures from bubbling into a second playback toggle.
