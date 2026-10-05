@@ -95,6 +95,20 @@ describe('PT650 mirrored 3D registry', () => {
     expect(pkg.dependencies.three).toBe('0.170.0')
   })
 
+
+  it('ships compact in-viewer controls for playback, speed and camera reset', () => {
+    const source = readFileSync(new URL('./PT650ThreeExercise.jsx', import.meta.url), 'utf8')
+    expect(source).toContain('const SPEEDS = [0.5, 1, 1.5]')
+    expect(source).toContain('data-pt650-control="play"')
+    expect(source).toContain('data-pt650-control="restart"')
+    expect(source).toContain('data-pt650-control="speed"')
+    expect(source).toContain('data-pt650-control="camera-reset"')
+    expect(source).toContain('mixerRef.current?.setTime(0)')
+    expect(source).toContain('camera.position.copy(home.position)')
+    expect(source).toContain('controls.target.copy(home.target)')
+    expect(source).toContain('playing ? speed : 0')
+  })
+
   it('does not invent 3D media for unregistered exercises', () => {
     expect(threeDModelFor('0001')).toBeNull()
     expect(threeDModelFor('does-not-exist')).toBeNull()
