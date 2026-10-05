@@ -26,6 +26,15 @@ on your phone, synced across your devices, behind your own passkey login.
 
 </div>
 
+> [!IMPORTANT]
+> **Arabic-first derivative:** this fork defaults to Arabic with full RTL support, Arabic exercise
+> names and instructions, and preserves English as an optional language. It intentionally does
+> **not** bundle, automatically download, or remotely load the inherited third-party exercise
+> images/animations while their rights remain unresolved. Built-in exercises work with neutral
+> placeholders; add only original or independently cleared media. See [NOTICE.md](NOTICE.md).
+>
+> Original project: [DuarteSantos8/openGym](https://github.com/DuarteSantos8/openGym).
+
 <table align="center">
 <tr>
 <td align="center"><img src="assets/screenshots/home.png" alt="Home screen" width="230"><br><sub><b>Home</b> · today's workout and weight</sub></td>
@@ -51,8 +60,9 @@ if you want to try it before installing anything.
 
 **Planning**
 
-- A routine per weekday over a library of **1,324 exercises** with animated demos, searchable and
-  browsable by muscle on a body map. Filter by the equipment you own.
+- A routine per weekday over a library of **1,324 exercises**, with Arabic names and instructions,
+  searchable and browsable by muscle on a body map. Exercise media is optional and not bundled in
+  this edition. Filter by the equipment you own.
 - Four starter plans (Push/Pull/Legs, Upper/Lower, Full Body, 5×5) that load as ordinary,
   editable routines.
 - Move a session to another day without touching the weekly plan. The week starts on Monday or
@@ -115,15 +125,15 @@ The full list of what changed release by release is in the [changelog](CHANGELOG
 You need [Docker](https://docs.docker.com/get-docker/) with Compose.
 
 ```bash
-git clone https://github.com/DuarteSantos8/openGym
+git clone https://github.com/alalmaiesa-glitch/openGym
 cd openGym
 cp .env.example .env
-docker compose pull      # prebuilt images, amd64 + arm64 (skip this to build from source)
-docker compose up -d
+docker compose up -d --build
 ```
 
-Open <http://localhost:8080>, tap **Create profile**, and you're in. The first start downloads
-the exercise media (about 140 MB) once.
+Open <http://localhost:8080>, tap **Create profile**, and you're in. This edition does not
+download the inherited exercise images or animations; built-in exercises show neutral placeholders
+until independently cleared/original media is supplied.
 
 To reach it from your phone with passkeys you need HTTPS on a domain; that's a two-line change in
 `.env`. The [self-hosting guide](docs/SELF_HOSTING.md) walks through Cloudflare Tunnel, Caddy,
@@ -131,10 +141,9 @@ Traefik and nginx, and there are separate guides for
 [HTTPS on a LAN](docs/SELF_HOSTING_HTTPS.md) and [Kubernetes](docs/SELF_HOSTING_KUBERNETES.md).
 
 > [!NOTE]
-> Images are published from the same tag to `registry.gitlab.com/duartesantos8/opengym/{api,web}`
-> (what `docker-compose.yml` pulls) and `ghcr.io/duartesantos8/opengym-{api,web}`. Swap the
-> `image:` lines if you prefer GHCR, or run `docker compose up -d --build` to build locally. Either
-> way you don't need Node on the host.
+> The bundled Compose file builds this fork from source so it cannot silently pull the upstream
+> application. Release container images may also be published from this repository, but local
+> source builds remain the reference path for this Arabic edition.
 
 <details>
 <summary><b>Configuration reference</b> (all through <code>.env</code>)</summary>
@@ -186,7 +195,7 @@ Details and build instructions: [docs/MOBILE.md](docs/MOBILE.md).
 <p align="center">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/architecture-dark.png">
-  <img src="docs/diagrams/architecture.png" alt="Architecture: the phone talks HTTPS to nginx (web), which serves the app and proxies /api to the Node api; the api stores JSON in ./data. A one-shot media service downloads exercise media on first start; the AI coach and MCP server are optional." width="520">
+  <img src="docs/diagrams/architecture.png" alt="Architecture: the phone talks HTTPS to nginx (web), which serves the app and proxies /api to the Node api; the api stores JSON in ./data. Exercise media is optional and locally supplied; the AI coach and MCP server are optional." width="520">
 </picture>
 </p>
 
@@ -331,8 +340,8 @@ version's source under the same license.
 > [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset) under MIT. The
 > images and animations are third-party content under neither MIT nor the AGPL, and their ownership
 > is disputed: the dataset attributes them to [Gym visual](https://gymvisual.com/), while
-> [ExerciseDB/AscendAPI](https://exercisedb.io/faq) claims to own them. openGym doesn't redistribute
-> them (your instance downloads them on first start) and doesn't relicense them. To reuse that
-> media, clear it with the rights holder first.
+> [ExerciseDB/AscendAPI](https://exercisedb.io/faq) claims to own them. This Arabic edition neither
+> redistributes nor downloads them by default. To add exercise media, use material you created
+> yourself or independently cleared for this use.
 
 Full third-party notices, including the body-diagram geometry, are in [NOTICE.md](NOTICE.md).
