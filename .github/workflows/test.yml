@@ -62,6 +62,19 @@ jobs:
         working-directory: frontend
 
 
+  pt650-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      # PT650 3D media is mirrored from the reviewed upstream render only after its bytes
+      # match the committed SHA256 lock. A changed or missing upstream file fails closed.
+      - run: node scripts/mirror-pt650-3d-assets.mjs --check
+        working-directory: frontend
+
+
   mcp:
     runs-on: ubuntu-latest
     steps:
