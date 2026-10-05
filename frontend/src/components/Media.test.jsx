@@ -72,6 +72,13 @@ describe('Media gifSize', () => {
     expect(host.querySelector('.pt650-anim-stage[data-pt650-animation="bench-press-v1"]')).toBeTruthy()
     expect(host.querySelector('.exmedia.mini')).toBeFalsy()
   })
+
+  it('renders no generic built-in demo when an exercise-specific animation is not approved yet', () => {
+    act(() => root.render(<Media ex={{ id: '0026', n: 'unmodelled exercise', img: 'legacy.jpg', gif: 'legacy.gif' }} />))
+    expect(host.querySelector('.exmedia')).toBeNull()
+    expect(host.querySelector('.pt650-anim-stage')).toBeNull()
+    expect(host.querySelector('img')).toBeNull()
+  })
 })
 
 /* ---------------------------------------------------------------- custom exercises -------- */
