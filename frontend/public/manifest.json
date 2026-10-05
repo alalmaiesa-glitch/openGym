@@ -1,6 +1,6 @@
 {
-  "name": "openGym",
-  "short_name": "openGym",
+  "name": "PT650",
+  "short_name": "PT650",
   "description": "متتبع شخصي عربي للتمارين ووزن الجسم",
   "start_url": "./",
   "scope": "./",
