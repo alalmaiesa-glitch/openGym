@@ -585,7 +585,7 @@ h4.sec{
   .library-add:hover{background:color-mix(in srgb,var(--acc) 20%,transparent)}
   .library-create:hover{background:var(--surface)}
 }
-@media (min-width:1000px){
+@media (min-width:1001px){
   #app:has(>.library-page){max-width:1180px}
   #app .library-list{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
 }
