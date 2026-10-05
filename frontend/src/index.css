@@ -842,7 +842,7 @@ body.chips-dragging *{cursor:inherit}
 }
 .wprog{height:4px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin-bottom:16px}
 .wprog i{display:block;height:100%;background:var(--acc);border-radius:99px;transition:width var(--med) var(--ease)}
-.exmedia{position:relative;border-radius:var(--r-lg);overflow:hidden;background:#fff;margin-bottom:12px}
+.exmedia{position:relative;border-radius:var(--r-lg);overflow:hidden;background:#090b0d;margin-bottom:12px}
 .exmedia img{width:100%;height:320px;object-fit:contain;display:block}
 .exmedia .gifhint,.exmedia .giftoggle{
   position:absolute;bottom:9px;display:inline-flex;align-items:center;gap:4px;
@@ -853,13 +853,23 @@ body.chips-dragging *{cursor:inherit}
 .exmedia .gifhint{inset-inline-end:9px}
 .exmedia .giftoggle{inset-inline-start:9px}
 .exmedia .gifhint .icn,.exmedia .giftoggle .icn{font-size:13px}
-/* superset: both exercises are on screen together, so the animations have to give way —
-   at 180px you had to scroll a full screen between two exercises done back-to-back */
+
+/* PT650 built-in exercise media: only PT650-authored animation models are rendered.
+   The inherited catalogue image/GIF filenames remain data-only compatibility fields and
+   are never requested by components/Media.jsx. Unmodelled exercises get this schematic
+   stage until their exact movement is authored and approved. */
+.pt650-anim-stage{width:100%;height:320px;display:block;background:#090b0d;overflow:hidden}
+.pt650-anim-svg{width:100%;height:100%;display:block}
+.pt650-built-in-media.has-model{cursor:pointer}
+.pt650-built-in-media.schematic{cursor:default}
+.exmedia.compact .pt650-anim-stage{height:120px}
+.exmedia.mini .pt650-anim-stage{height:84px}
+.pt650-thumb.ready{color:var(--acc);background:var(--acc-soft)}
+.pt650-fallback-svg{opacity:.9}
+
+/* superset: both exercises are on screen together, so the media has to give way. */
 .exmedia.compact img{height:120px}
 .exmedia.mini img{height:84px}
-/* both the animation and the still failed to load: a neutral tile instead of the browser's
-   broken-image glyph; same heights as the picture so the card does not jump. tap retries. */
-.exmedia.broken{background:var(--surface-2)}
 .exmedia-x{width:100%;height:320px;display:flex;align-items:center;justify-content:center;color:var(--label-3);font-size:34px}
 .exmedia.compact .exmedia-x{height:120px}
 .exmedia.mini .exmedia-x{height:84px}
