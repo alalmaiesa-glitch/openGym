@@ -68,10 +68,18 @@ export const dateLocale = () => DATE_LOCALES[lang] || 'en-GB'
 export const getVersion = () => version
 
 // Translate a source string; {0},{1}… are replaced with args (also on the English fallback).
+export const PRODUCT_NAME = 'PT650'
+
+const brandProductName = value => String(value)
+  // Keep the legacy on-device backup folder literal: renaming it would strand existing backups.
+  .replaceAll('/openGym', '/__PT650_TECH_FOLDER__')
+  .replaceAll('openGym', PRODUCT_NAME)
+  .replaceAll('/__PT650_TECH_FOLDER__', '/openGym')
+
 export function t(s, ...args) {
   let v = dict[s] || s
   for (let i = 0; i < args.length; i++) v = v.replaceAll('{' + i + '}', args[i])
-  return v
+  return brandProductName(v)
 }
 
 // Instructions for an exercise in the current language (English steps as fallback).

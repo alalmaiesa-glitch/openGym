@@ -33,6 +33,9 @@ on your phone, synced across your devices, behind your own passkey login.
 > images/animations while their rights remain unresolved. Built-in exercises work with neutral
 > placeholders; add only original or independently cleared media. See [NOTICE.md](NOTICE.md).
 >
+> **PT650 media rule:** all built-in exercise demonstration videos are animated only.
+> Real-person footage is not permitted. See [docs/PT650_ANIMATED_MEDIA_POLICY.md](docs/PT650_ANIMATED_MEDIA_POLICY.md).
+>
 > Original project: [DuarteSantos8/openGym](https://github.com/DuarteSantos8/openGym).
 
 <table align="center">

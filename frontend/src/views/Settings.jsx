@@ -600,7 +600,7 @@ export default function Settings() {
         address bar and no about box, so without this there is no way to tell which build you
         are running, or whether an update actually installed. */}
     <div className="dim small" style={{ textAlign: 'center', marginTop: 4, lineHeight: 1.6 }}>
-      openGym v{__APP_VERSION__} · {t('free & open source (AGPL v3)')}<br />
+      PT650 v{__APP_VERSION__} · {t('free & open source (AGPL v3)')}<br />
       <a href={REPO} target="_blank" rel="noopener">{baseLang(lang) === 'ar' ? 'الكود المصدري' : 'source code'}</a> · {baseLang(lang) === 'ar' ? 'بيانات التمارين: MIT' : 'exercise data: MIT'}<br />
       {baseLang(lang) === 'ar' ? 'وسائط التمارين الخارجية غير مضمّنة في هذه النسخة' : 'third-party exercise media is not bundled in this edition'}
     </div>
