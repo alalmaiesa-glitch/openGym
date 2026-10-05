@@ -4,6 +4,8 @@ import { t } from '../lib/i18n.js'
 import Icon from './Icon.jsx'
 import CustomMedia, { CustomThumb } from './CustomMedia.jsx'
 import PT650ExerciseAnimation, { animatedModelFor } from './PT650ExerciseAnimation.jsx'
+import PT650ThreeExercise from './PT650ThreeExercise.jsx'
+import { threeDModelFor } from './pt650-3d-registry.js'
 
 // Built-in PT650 exercise instruction media never loads the inherited real-person image/GIF
 // library. Only approved, exercise-specific PT650 animations render here. If a movement does
@@ -21,7 +23,9 @@ function BuiltinMedia({ ex, id, compact, minimizable }) {
   if (minimizable && gifSize === 'off') return null
 
   const mini = minimizable && gifSize === 'mini'
-  const model = animatedModelFor(ex.id)
+  const model3d = threeDModelFor(ex.id)
+  const model2d = animatedModelFor(ex.id)
+  const model = model3d || model2d
   if (!model) return null
 
   const toggleSize = e => {
@@ -38,7 +42,13 @@ function BuiltinMedia({ ex, id, compact, minimizable }) {
       data-exercise-id={ex.id}
       data-pt650-media={model.id}
     >
-      <PT650ExerciseAnimation exerciseId={ex.id} playing={playing} />
+      {model3d
+        ? <PT650ThreeExercise
+            model={model3d}
+            playing={playing}
+            fallback={<PT650ExerciseAnimation exerciseId={ex.id} playing={playing} />}
+          />
+        : <PT650ExerciseAnimation exerciseId={ex.id} playing={playing} />}
       {minimizable && (
         <button className="giftoggle" onClick={toggleSize}>
           <Icon name={mini ? 'expand' : 'minimize'} />{mini ? t('Expand') : t('Minimize')}
@@ -60,7 +70,7 @@ export function Thumb(p) {
 }
 
 function BuiltinThumb({ ex }) {
-  const ready = !!animatedModelFor(ex?.id)
+  const ready = !!(threeDModelFor(ex?.id) || animatedModelFor(ex?.id))
   return (
     <div className={'thumb thumb-x pt650-thumb' + (ready ? ' ready' : '')} data-pt650-media={ready ? 'animated' : 'unavailable'}>
       <Icon name={ready ? 'play' : 'dumbbell'} />
