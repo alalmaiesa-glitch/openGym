@@ -3,6 +3,16 @@
 openGym — Copyright (C) 2026 Duarte Santos.
 openGym's own code is licensed under the **GNU AGPL v3.0** (see [LICENSE](LICENSE)).
 
+## Arabic edition derivative
+
+This repository is a derivative of openGym and keeps the original copyright and AGPL terms.
+Changes made in this fork are distributed under the same **AGPL-3.0-or-later** terms.
+
+This Arabic edition applies a stricter default to the unresolved exercise images and animations:
+it **does not bundle, automatically download, or remotely load them**. Built-in exercises remain
+fully usable with text, instructions, logging and neutral placeholders. Exercise media should be
+added only when it is original to this edition or independently cleared for this use.
+
 ## App store exception
 
 As an additional permission under section 7 of the AGPL v3.0, the copyright holder permits
