@@ -28,11 +28,13 @@ PT650ThreeExercise.jsx
 
 The 3D path has priority over the legacy SVG path. SVG is transitional only.
 
-## First integrated exercise
+## Integrated CC0 exercises
+
+### Push-up
 
 - PT650 exercise ID: `0662`
 - Canonical name: `push-up`
-- PT650 model id: `push-up-3d-v2`
+- PT650 model id: `push-up-3d-v3`
 - OpenGym3D spec: `exercises/push_up.json`
 - 3D asset: `site/assets/push_up.glb`
 - rendered fallback: `site/assets/push_up.mp4`
@@ -46,9 +48,19 @@ The 3D path has priority over the legacy SVG path. SVG is transitional only.
 - motion licence: CC0-1.0
 - OpenGym3D code licence: MIT
 
-The OpenGym3D asset library explicitly records the push-up motion as CC0 and the MPFB2 human as
-CC0-compatible generated output. PT650 records those fields separately rather than treating a
-single licence string as sufficient provenance.
+### Bear crawl
+
+- PT650 exercise ID: `3360`
+- Canonical name: `bear crawl`
+- PT650 model id: `bear-crawl-3d-v1`
+- OpenGym3D spec: `exercises/bear_crawl.json`
+- camera: side
+- human: MakeHuman / MPFB2 anatomical avatar — CC0-1.0
+- motion: Mesh2Motion `Crawl` — CC0-1.0
+- OpenGym3D code licence: MIT
+
+Both source specs are non-draft and use redistributable CC0 motion. PT650 records human, motion,
+pipeline and source provenance separately rather than treating one licence label as sufficient.
 
 ## Runtime rules
 
@@ -63,12 +75,15 @@ single licence string as sufficient provenance.
 
 ## Current storage stage
 
-Phase 1 references OpenGym3D's published final exercise assets so the runtime integration can be
-validated without committing large binary files to PT650.
+PT650 is now in Phase 2: approved OpenGym3D outputs are mirrored during CI/deployment into
+`frontend/public/pt650-3d/` and served from the PT650 origin.
 
-This is intentionally temporary. Phase 2 mirrors approved assets into PT650-controlled static
-storage and verifies file hashes during CI. The registry is storage-independent so that change
-does not require rewriting the exercise UI.
+The source URLs remain external only at build time. Every GLB, MP4 and PNG is SHA256-locked in
+`frontend/pt650-3d-assets.lock.json`. If upstream bytes change, disappear, or fail their hash,
+CI and Pages deployment fail closed instead of silently serving new media.
+
+The runtime registry therefore contains same-origin URLs only; the browser does not depend on
+OpenGym3D hosting after a successful PT650 build.
 
 ## Production expansion
 
