@@ -589,9 +589,6 @@ h4.sec{
   #app:has(>.library-page){max-width:1180px}
   #app .library-list{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
 }
-@media (max-width:999px){
-  #app .library-list{display:flex;flex-direction:column;gap:10px}
-}
 @media (max-width:520px){
   .library-head{align-items:flex-start}
   .library-head .btn{padding-inline:10px}
