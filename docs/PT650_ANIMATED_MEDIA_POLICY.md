@@ -55,3 +55,19 @@ Source/provenance must be recorded before an animation is shipped.
 This rule applies to built-in exercise instruction/demo media. It does not prohibit a user from
 attaching their own private progress/form-check media to their own local profile; such user media
 is not PT650-provided instructional content.
+
+
+## Pilot implementation
+
+The first approved PT650-authored exercise model is:
+
+- Exercise ID: `0025`
+- Exercise: `barbell bench press`
+- Model: `bench-press-v1`
+- Medium: authored SVG motion
+- External media dependency: none
+- Provenance: PT650 original
+
+The inherited built-in image/GIF catalogue is not requested by the PT650 built-in media component.
+Exercises without an approved exact model render a neutral schematic fallback until their own
+exercise-specific animation is authored and approved.
