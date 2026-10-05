@@ -57,17 +57,24 @@ attaching their own private progress/form-check media to their own local profile
 is not PT650-provided instructional content.
 
 
-## Pilot implementation
+## Animation library
 
-The first approved PT650-authored exercise model is:
+PT650 now uses a small internal exercise-animation registry. Each approved animation is bound to
+one exact catalogue exercise ID and name; tests fail if an animation is accidentally attached to
+a different exercise.
 
-- Exercise ID: `0025`
-- Exercise: `barbell bench press`
-- Model: `bench-press-v1`
-- Medium: authored SVG motion
-- External media dependency: none
-- Provenance: PT650 original
+| Exercise ID | Exercise | Model | Medium | Provenance |
+| --- | --- | --- | --- | --- |
+| `0025` | barbell bench press | `bench-press-v1` | authored SVG motion | PT650 original |
+| `0043` | barbell full squat | `full-squat-v1` | authored SVG motion | PT650 original |
+| `0662` | push-up | `push-up-v1` | authored SVG motion | PT650 original |
 
 The inherited built-in image/GIF catalogue is not requested by the PT650 built-in media component.
 Exercises without an approved exact model render a neutral schematic fallback until their own
 exercise-specific animation is authored and approved.
+
+## Expansion rule
+
+New models must be added through the animation registry rather than by embedding ad-hoc media URLs
+in exercise cards. Every new entry must include its exact exercise ID, canonical catalogue name,
+medium, provenance and version, and must remain covered by the registry binding test.
