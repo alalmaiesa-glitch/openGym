@@ -109,3 +109,20 @@ For an exercise that does not have a suitable CC0 motion:
 
 This lets PT650 scale beyond the finite Mesh2Motion CC0 pack without ever using real-person
 instructional footage in the product.
+
+
+## Viewer V2
+
+PT650 does not use one generic camera for every movement. Each registered 3D exercise now carries
+a small viewer profile that controls field of view, framing direction, target height, zoom range
+and the permitted orbit envelope.
+
+The default instructional view remains the upstream-approved side camera. Users may rotate only
+within a narrow range around that view and may zoom within bounded limits. Pan is disabled so the
+animated subject cannot be lost outside the exercise frame.
+
+The viewer uses a restrained three-point light rig plus ACES filmic tone mapping. This improves
+surface readability without recolouring the model. Target-muscle activation remains the
+OpenGym3D-authored `MuscleHeat` vertex-colour data baked into the GLB, so PT650 does not infer or
+paint muscle regions at runtime. Primary and secondary muscle metadata are recorded beside each
+PT650 registry entry and must stay consistent with the approved upstream exercise specification.
