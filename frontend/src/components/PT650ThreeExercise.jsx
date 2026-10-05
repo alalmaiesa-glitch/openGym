@@ -70,6 +70,7 @@ export default function PT650ThreeExercise({
   useEffect(() => {
     const host = hostRef.current
     if (!host || !model) return
+    setState('loading')
 
     // happy-dom/jsdom and old WebViews do not expose WebGL. Keep tests deterministic and
     // use the rendered 3D video fallback on unsupported devices.
@@ -87,6 +88,7 @@ export default function PT650ThreeExercise({
     let mixer = null
     let root = null
     let controls = null
+    let windowResize = null
 
     const renderOnce = () => {
       if (!disposed && renderer && scene && camera) renderer.render(scene, camera)
@@ -235,7 +237,8 @@ export default function PT650ThreeExercise({
         resizeObserver = new ResizeObserver(resize)
         resizeObserver.observe(host)
       } else {
-        window.addEventListener('resize', resize)
+        windowResize = resize
+        window.addEventListener('resize', windowResize)
       }
 
       animate()
@@ -247,7 +250,7 @@ export default function PT650ThreeExercise({
       disposed = true
       cancelAnimationFrame(frameRef.current)
       resizeObserver?.disconnect()
-      if (!resizeObserver && typeof window !== 'undefined') window.removeEventListener('resize', () => {})
+      if (windowResize && typeof window !== 'undefined') window.removeEventListener('resize', windowResize)
       if (mixer) mixer.stopAllAction()
       if (scene && root) scene.remove(root)
       controls?.dispose()
