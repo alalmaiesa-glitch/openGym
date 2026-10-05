@@ -59,7 +59,18 @@ The 3D path has priority over the legacy SVG path. SVG is transitional only.
 - motion: Mesh2Motion `Crawl` — CC0-1.0
 - OpenGym3D code licence: MIT
 
-Both source specs are non-draft and use redistributable CC0 motion. PT650 records human, motion,
+### Run
+
+- PT650 exercise ID: `0685`
+- Canonical name: `run`
+- PT650 model id: `run-3d-v1`
+- OpenGym3D spec: `exercises/run.json`
+- camera: front
+- human: MakeHuman / MPFB2 anatomical avatar — CC0-1.0
+- motion: Mesh2Motion `Sprint` — CC0-1.0
+- OpenGym3D code licence: MIT
+
+All integrated source specs use redistributable CC0 motion. PT650 records human, motion,
 pipeline and source provenance separately rather than treating one licence label as sufficient.
 
 ## Runtime rules
@@ -117,9 +128,9 @@ PT650 does not use one generic camera for every movement. Each registered 3D exe
 a small viewer profile that controls field of view, framing direction, target height, zoom range
 and the permitted orbit envelope.
 
-The default instructional view remains the upstream-approved side camera. Users may rotate only
-within a narrow range around that view and may zoom within bounded limits. Pan is disabled so the
-animated subject cannot be lost outside the exercise frame.
+The default instructional view remains the upstream-approved camera for each exercise (front or
+side). Users may rotate only within a narrow range around that view and may zoom within bounded
+limits. Pan is disabled so the animated subject cannot be lost outside the exercise frame.
 
 The viewer uses a restrained three-point light rig plus ACES filmic tone mapping. This improves
 surface readability without recolouring the model. Target-muscle activation remains the
