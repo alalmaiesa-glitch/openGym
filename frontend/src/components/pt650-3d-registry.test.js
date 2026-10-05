@@ -67,6 +67,17 @@ describe('PT650 mirrored 3D registry', () => {
     expect(source).toContain('muted')
   })
 
+  it('loads Three.js lazily from the PT650 bundle with no runtime CDN', () => {
+    const source = readFileSync(new URL('./PT650ThreeExercise.jsx', import.meta.url), 'utf8')
+    const pkg = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8'))
+    expect(source).toContain("import('three')")
+    expect(source).toContain("import('three/examples/jsm/loaders/GLTFLoader.js')")
+    expect(source).not.toContain('esm.sh')
+    expect(source).not.toContain('@vite-ignore')
+    expect(source).not.toMatch(/https?:\/\//)
+    expect(pkg.dependencies.three).toBe('0.170.0')
+  })
+
   it('does not invent 3D media for unregistered exercises', () => {
     expect(threeDModelFor('0001')).toBeNull()
     expect(threeDModelFor('does-not-exist')).toBeNull()
