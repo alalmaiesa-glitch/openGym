@@ -20,6 +20,15 @@ describe('PT650 mirrored 3D registry', () => {
       motionLicense: 'CC0-1.0',
       version: 1,
     })
+    expect(threeDModelFor('0685')).toMatchObject({
+      id: 'run-3d-v1',
+      exercise: 'run',
+      camera: 'front',
+      motion: 'Mesh2Motion Sprint',
+      humanLicense: 'CC0-1.0',
+      motionLicense: 'CC0-1.0',
+      version: 1,
+    })
 
     for (const [exerciseId, model] of Object.entries(PT650_3D_MODELS)) {
       expect(EXIDX[exerciseId]?.n).toBe(model.exercise)
@@ -45,7 +54,7 @@ describe('PT650 mirrored 3D registry', () => {
       expect(model.humanLicense).toBe('CC0-1.0')
       expect(model.motionLicense).toBe('CC0-1.0')
       expect(model.upstreamExerciseSpec).toMatch(/^exercises\/.+\.json$/)
-      expect(model.camera).toBe('side')
+      expect(['front', 'side']).toContain(model.camera)
       expect(model.muscleHighlight).toBe('baked-vertex-color')
       expect(model.primaryMuscles.length).toBeGreaterThan(0)
       expect(model.viewer).toMatchObject({
@@ -63,7 +72,7 @@ describe('PT650 mirrored 3D registry', () => {
   it('locks every mirrored binary with SHA256 before deployment', () => {
     const lock = JSON.parse(readFileSync(new URL('../../pt650-3d-assets.lock.json', import.meta.url), 'utf8'))
     expect(lock.format).toBe('pt650-3d-asset-lock/1')
-    expect(lock.assets.map(a => a.exerciseId).sort()).toEqual(['0662', '3360'])
+    expect(lock.assets.map(a => a.exerciseId).sort()).toEqual(['0662', '0685', '3360'])
     for (const asset of lock.assets) {
       for (const file of Object.values(asset.files)) {
         expect(file.sha256).toMatch(/^(BOOTSTRAP|[0-9a-f]{64})$/)
