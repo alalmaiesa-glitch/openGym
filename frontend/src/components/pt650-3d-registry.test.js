@@ -120,6 +120,20 @@ describe('PT650 mirrored 3D registry', () => {
     expect(source).toContain('playing ? speed : 0')
   })
 
+
+  it('keeps the audited CC0 candidate decisions explicit', () => {
+    const audit = JSON.parse(readFileSync(new URL('../../pt650-3d-candidates.json', import.meta.url), 'utf8'))
+    expect(audit.format).toBe('pt650-3d-candidate-audit/1')
+    const registered = audit.candidates
+      .filter(x => x.decision === 'registered')
+      .map(x => x.exerciseId)
+      .sort()
+    expect(registered).toEqual(['0662', '0685', '3360'])
+    expect(audit.candidates.find(x => x.upstream === 'run')?.decision).toBe('rejected-for-0685')
+    expect(audit.candidates.find(x => x.upstream === 'jog')?.exerciseId).toBe('0685')
+    for (const item of audit.candidates) expect(item.motionLicense).toBe('CC0-1.0')
+  })
+
   it('does not invent 3D media for unregistered exercises', () => {
     expect(threeDModelFor('0001')).toBeNull()
     expect(threeDModelFor('does-not-exist')).toBeNull()
