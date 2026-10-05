@@ -37,7 +37,7 @@ describe('PT650 mirrored 3D registry', () => {
     }
   })
 
-  it('records redistributable provenance for every public 3D model', () => {
+  it('records redistributable provenance and viewer metadata for every public 3D model', () => {
     for (const model of Object.values(PT650_3D_MODELS)) {
       expect(model.sourceRepo).toBe('AssiamahS/opengym3d')
       expect(model.sourceCommit).toMatch(/^[0-9a-f]{40}$/)
@@ -45,6 +45,18 @@ describe('PT650 mirrored 3D registry', () => {
       expect(model.humanLicense).toBe('CC0-1.0')
       expect(model.motionLicense).toBe('CC0-1.0')
       expect(model.upstreamExerciseSpec).toMatch(/^exercises\/.+\.json$/)
+      expect(model.camera).toBe('side')
+      expect(model.muscleHighlight).toBe('baked-vertex-color')
+      expect(model.primaryMuscles.length).toBeGreaterThan(0)
+      expect(model.viewer).toMatchObject({
+        fov: expect.any(Number),
+        direction: expect.any(Array),
+        distance: expect.any(Number),
+        orbitAzimuth: expect.any(Number),
+        orbitPolar: expect.any(Number),
+        zoomMin: expect.any(Number),
+        zoomMax: expect.any(Number),
+      })
     }
   })
 
@@ -67,11 +79,16 @@ describe('PT650 mirrored 3D registry', () => {
     expect(source).toContain('muted')
   })
 
-  it('loads Three.js lazily from the PT650 bundle with no runtime CDN', () => {
+  it('loads the complete 3D runtime lazily from the PT650 bundle with no runtime CDN', () => {
     const source = readFileSync(new URL('./PT650ThreeExercise.jsx', import.meta.url), 'utf8')
     const pkg = JSON.parse(readFileSync(new URL('../../package.json', import.meta.url), 'utf8'))
     expect(source).toContain("import('three')")
     expect(source).toContain("import('three/examples/jsm/loaders/GLTFLoader.js')")
+    expect(source).toContain("import('three/examples/jsm/controls/OrbitControls.js')")
+    expect(source).toContain('controls.enablePan = false')
+    expect(source).toContain('controls.minAzimuthAngle')
+    expect(source).toContain('controls.maxAzimuthAngle')
+    expect(source).toContain('renderer.toneMapping = THREE.ACESFilmicToneMapping')
     expect(source).not.toContain('esm.sh')
     expect(source).not.toContain('@vite-ignore')
     expect(source).not.toMatch(/https?:\/\//)
