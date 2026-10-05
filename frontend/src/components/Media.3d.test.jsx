@@ -47,8 +47,8 @@ describe('PT650 built-in 3D media', () => {
     expect(host.querySelector('.exmedia')?.dataset.pt650Media).toBe('push-up-3d-v3')
     expect(host.querySelector('.pt650-three-test')?.getAttribute('data-pt650-3d')).toBe('push-up-3d-v3')
     expect(host.querySelector('.pt650-three-test')?.getAttribute('data-clip')).toBe('')
-    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-asset')).toMatch(/\/assets\/push_up\.glb$/)
-    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-video')).toMatch(/\/assets\/push_up\.mp4$/)
+    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-asset')).toMatch(/pt650-3d\/push_up\.glb$/)
+    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-video')).toMatch(/pt650-3d\/push_up\.mp4$/)
   })
 
 
