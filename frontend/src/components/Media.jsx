@@ -4,6 +4,7 @@ import { useStore } from '../store/useStore.js'
 import { t, exerciseNameFor } from '../lib/i18n.js'
 import Icon from './Icon.jsx'
 import CustomMedia, { CustomThumb } from './CustomMedia.jsx'
+import ExerciseMotion from './ExerciseMotion.jsx'
 
 // An exercise's picture, wherever one shows. A custom exercise goes to CustomMedia.jsx — its own
 // photo, GIF, video or link, from the local media store — and never through imgSrc/gifSrc, which
@@ -42,7 +43,7 @@ function BuiltinMedia({ ex, id, compact, minimizable }) {
   return (
     <div className={'exmedia' + (compact ? ' compact' : '') + (mini ? ' mini' : '') + (failed === 'all' ? ' broken' : '')} id={id} onClick={onTap}>
       {failed === 'all'
-        ? <div className="exmedia-x"><Icon name="dumbbell" /></div>
+        ? <ExerciseMotion ex={ex} />
         : <img decoding="async" draggable={false} src={showGif ? gifSrc(ex) : imgSrc(ex)} alt={exerciseNameFor(ex)} onError={onError} />}
       {minimizable && (
         <button className="giftoggle" onClick={toggleSize}>
