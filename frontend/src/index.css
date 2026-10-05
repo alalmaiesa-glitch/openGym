@@ -983,9 +983,22 @@ body.chips-dragging *{cursor:inherit}
    never requested by components/Media.jsx. Unmodelled exercises render no demo at all. */
 .pt650-anim-stage{width:100%;height:320px;display:block;background:#090b0d;overflow:hidden}
 .pt650-anim-svg{width:100%;height:100%;display:block}
+.pt650-three-stage{
+  width:100%;height:320px;position:relative;display:block;overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 62%,rgba(48,209,88,.06),transparent 36%),
+    linear-gradient(180deg,#0a0c0f,#070809);
+}
+.pt650-three-canvas{width:100%;height:100%;display:block;touch-action:none}
+.pt650-three-loader{
+  position:absolute;inset:0;margin:auto;width:28px;height:28px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.14);border-top-color:var(--acc);
+  animation:pt650-three-spin .8s linear infinite;
+}
+@keyframes pt650-three-spin{to{transform:rotate(360deg)}}
 .pt650-built-in-media.has-model{cursor:pointer}
-.exmedia.compact .pt650-anim-stage{height:120px}
-.exmedia.mini .pt650-anim-stage{height:84px}
+.exmedia.compact .pt650-anim-stage,.exmedia.compact .pt650-three-stage{height:120px}
+.exmedia.mini .pt650-anim-stage,.exmedia.mini .pt650-three-stage{height:84px}
 .pt650-thumb.ready{color:var(--acc);background:var(--acc-soft)}
 
 /* superset: both exercises are on screen together, so the media has to give way. */
