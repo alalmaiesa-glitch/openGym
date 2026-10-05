@@ -19,6 +19,7 @@ export default function Library() {
   const [q, setQ] = useState('')
   const [bp, setBp] = useState('')
   const [eq, setEq] = useState('')
+  const [filtersOpen, setFiltersOpen] = useState(false)
   const [showAll, setShowAll] = useState(false)   // ignore the active equipment profile for this session
   const [shown, setShown] = useState(24)
   const bpStrip = useRef(null), eqStrip = useRef(null)
@@ -32,38 +33,71 @@ export default function Library() {
   const f = sortFavouritesFirst(eqOn ? eqFiltered.filter(e => e.eq === eqOn) : eqFiltered, S)
   useRevealActiveChip(bpStrip, bp)
   useRevealActiveChip(eqStrip, eqOn)
-  // A live count at the end of the search field while a search or filter narrows the list
-  // (idea and first version: GitLab !31) — how many are left, before scrolling to find out.
-  const narrowed = !!(q.trim() || bp || eqOn)
+
+  const profileFiltered = !!(profile && !showAll)
+  const filterCount = (bp ? 1 : 0) + (eqOn ? 1 : 0) + (profileFiltered ? 1 : 0)
+  const narrowed = !!(q.trim() || filterCount)
+  const clearBodyPart = () => { setBp(''); setEq(''); setShown(24) }
+  const clearEquipment = () => { setEq(''); setShown(24) }
 
   return <div className="library-page">
     <div className="hdr library-head"><div><h1>{t('Exercises')}</h1><div className="sub">{exCount(EXDB.length)}</div></div>
       <Button size="sm" variant="tinted" icon="target" onClick={() => nav('/muscles')}>{t('By muscle')}</Button>
     </div>
+
     <div className="library-controls">
-      <div className={'search library-search' + (narrowed ? ' has-count' : '')}><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
-        <input className="input" placeholder={t('Search…')} value={q} onChange={e => { setQ(e.target.value); setShown(24) }} />
-        {narrowed && <span className="search-count" role="status" aria-label={exCount(f.length)}>{fmtNum(f.length)}</span>}
+      <div className="library-search-row">
+        <div className={'search library-search' + (narrowed ? ' has-count' : '')}>
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+          <input className="input" placeholder={t('Search…')} value={q} onChange={e => { setQ(e.target.value); setShown(24) }} />
+          {narrowed && <span className="search-count" role="status" aria-label={exCount(f.length)}>{fmtNum(f.length)}</span>}
+        </div>
+        <button
+          className={'library-filter-toggle' + (filtersOpen ? ' on' : '')}
+          aria-expanded={filtersOpen}
+          aria-label={t('Any equipment')}
+          title={t('Any equipment')}
+          onClick={() => setFiltersOpen(v => !v)}
+        >
+          <Icon name="filter" />
+          {filterCount > 0 && <span className="library-filter-badge">{fmtNum(filterCount)}</span>}
+        </button>
       </div>
-    {profile && <div className="small dim row library-profile">
-      <Icon name="dumbbell" style={{ fontSize: 13 }} />
-      {showAll ? t('Showing all equipment') : t('Showing what you have in "{0}"', profile.name)}
-      <button className="chip nocap" style={{ marginInlineStart: 'auto', padding: '3px 10px', fontSize: 12 }} onClick={() => setShowAll(v => !v)}>
-        {showAll ? t('Filter by "{0}"', profile.name) : t('Show all equipment')}
-      </button>
-    </div>}
-    {/* Changing body part keeps the equipment filter (issue #71): the eqOn fallback above drops
-        it only for the current view if the new body part has nothing under it, without forgetting
-        the choice. "All" clears it, since it spans every body part. */}
-    <div className="chips library-chips" ref={bpStrip}>
-      <button className={'chip nocap' + (!bp ? ' on' : '')} onClick={() => { setBp(''); setEq(''); setShown(24) }}>{t('All')}</button>
-      {BODYPARTS.map(b => <button key={b} className={'chip' + (bp === b ? ' on' : '')} onClick={() => { setBp(b); setShown(24) }}>{t(b)}</button>)}
+
+      {!filtersOpen && (bp || eqOn) && <div className="library-active-filters">
+        {bp && <button className="library-active-chip" onClick={clearBodyPart}>
+          <span>{t(bp)}</span><Icon name="xmark" />
+        </button>}
+        {eqOn && <button className="library-active-chip" onClick={clearEquipment}>
+          <span>{t(eqOn)}</span><Icon name="xmark" />
+        </button>}
+      </div>}
+
+      {filtersOpen && <div className="library-filter-panel">
+        {profile && <div className="small dim row library-profile">
+          <Icon name="dumbbell" style={{ fontSize: 13 }} />
+          <span className="library-profile-text">
+            {showAll ? t('Showing all equipment') : t('Showing what you have in "{0}"', profile.name)}
+          </span>
+          <button className="chip nocap" onClick={() => setShowAll(v => !v)}>
+            {showAll ? t('Filter by "{0}"', profile.name) : t('Show all equipment')}
+          </button>
+        </div>}
+
+        {/* Body part and equipment stay one-line, horizontally scrollable strips. They are hidden
+            until the user asks for filters so the library opens as a calm search-first page. */}
+        <div className="chips library-chips" ref={bpStrip}>
+          <button className={'chip nocap' + (!bp ? ' on' : '')} onClick={clearBodyPart}>{t('All')}</button>
+          {BODYPARTS.map(b => <button key={b} className={'chip' + (bp === b ? ' on' : '')} onClick={() => { setBp(b); setShown(24) }}>{t(b)}</button>)}
+        </div>
+
+        {eqOpts.length > 1 && <div className="chips library-chips" ref={eqStrip}>
+          <button className={'chip nocap' + (!eqOn ? ' on' : '')} onClick={clearEquipment}>{t('Any equipment')}</button>
+          {eqOpts.map(x => <button key={x} className={'chip' + (eqOn === x ? ' on' : '')} onClick={() => { setEq(x); setShown(24) }}>{t(x)}</button>)}
+        </div>}
+      </div>}
     </div>
-    {eqOpts.length > 1 && <div className="chips library-chips" ref={eqStrip}>
-      <button className={'chip nocap' + (!eqOn ? ' on' : '')} onClick={() => { setEq(''); setShown(24) }}>{t('Any equipment')}</button>
-      {eqOpts.map(x => <button key={x} className={'chip' + (eqOn === x ? ' on' : '')} onClick={() => { setEq(x); setShown(24) }}>{t(x)}</button>)}
-    </div>}
-    </div>
+
     <div className="list library-list">
       <button className="item library-create" {...tappable(() => customExSheet(null, ex => exerciseDetailSheet(ex), q.trim()))}>
         <Icon name="sparkles" />
@@ -88,4 +122,3 @@ export default function Library() {
     {f.length > shown && <><div style={{ height: 14 }} /><Button onClick={() => setShown(s => s + 24)}>{t('Show more')}</Button></>}
   </div>
 }
-
