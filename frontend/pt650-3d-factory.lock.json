@@ -1,0 +1,16 @@
+{
+  "format": "pt650-3d-factory-lock/1",
+  "generator": "PT650 3D Factory",
+  "upstreamCommit": "ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae",
+  "assets": [
+    {
+      "exerciseId": "pt650-0001",
+      "slug": "jumping_jack",
+      "files": {
+        "glb": { "name": "jumping_jack.glb", "sha256": "BOOTSTRAP" },
+        "mp4": { "name": "jumping_jack.mp4", "sha256": "BOOTSTRAP" },
+        "png": { "name": "jumping_jack.png", "sha256": "BOOTSTRAP" }
+      }
+    }
+  ]
+}
