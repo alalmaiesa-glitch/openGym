@@ -52,6 +52,16 @@ describe('Arabic V1.0 release gate', () => {
     expect(helper).not.toContain('git clone')
   })
 
+  it('keeps the app update channel inside this fork', () => {
+    const updater = read('./update.js')
+    const settings = read('../views/Settings.jsx')
+    expect(updater).toContain('https://api.github.com/repos/alalmaiesa-glitch/openGym/releases/latest')
+    expect(updater).toContain('https://github.com/alalmaiesa-glitch/openGym/releases')
+    expect(updater).not.toContain('gitlab.com/DuarteSantos8/opengym')
+    expect(settings).toContain("REPO + '/releases'")
+    expect(settings).not.toContain('opengym.duarte-santos.ch/#download')
+  })
+
   it('documents derivative licensing and the cleared-media policy', () => {
     const notice = read('../../../NOTICE.md')
     const readme = read('../../../README.md')
