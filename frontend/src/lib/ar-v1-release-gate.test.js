@@ -41,6 +41,7 @@ describe('Arabic V1.0 release gate', () => {
     const compose = read('../../../docker-compose.yml')
     const pages = read('../../../.github/workflows/pages.yml')
     const helper = read('../../../scripts/fetch-media.sh')
+    const pkg = JSON.parse(read('../../package.json'))
 
     expect(compose).not.toContain('git clone --depth 1 https://github.com/hasaneyldrm/exercises-dataset')
     expect(compose).not.toMatch(/^  media:\s*$/m)
@@ -48,6 +49,10 @@ describe('Arabic V1.0 release gate', () => {
     expect(pages).not.toContain('cdn.jsdelivr.net/gh/hasaneyldrm/exercises-dataset')
     expect(pages).not.toContain('VITE_IMG_BASE:')
     expect(pages).not.toContain('VITE_GIF_BASE:')
+    expect(pkg.scripts['build:mobile']).toBe('VITE_MOBILE=1 vite build && cap sync')
+    expect(pkg.scripts['build:mobile']).not.toContain('hasaneyldrm/exercises-dataset')
+    expect(pkg.scripts['build:mobile']).not.toContain('VITE_IMG_BASE')
+    expect(pkg.scripts['build:mobile']).not.toContain('VITE_GIF_BASE')
     expect(helper).toContain('Exercise media download is disabled in this Arabic edition.')
     expect(helper).not.toContain('git clone')
   })
