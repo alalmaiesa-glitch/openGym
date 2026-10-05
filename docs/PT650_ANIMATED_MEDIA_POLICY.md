@@ -39,8 +39,8 @@ The PT650 standard is:
 Animation must demonstrate the actual exercise represented by the exercise ID. A generic movement
 must never be presented as an exact exercise-specific demonstration.
 
-Where an approved animation does not yet exist, PT650 must display a neutral animated/schematic
-fallback rather than substitute footage of a real person.
+Where an approved animation does not yet exist, PT650 must show no built-in demonstration.
+A generic human figure must never be used as a substitute for the actual exercise.
 
 ## Licensing
 
@@ -65,12 +65,14 @@ a different exercise.
 
 | Exercise ID | Exercise | Model | Medium | Provenance |
 | --- | --- | --- | --- | --- |
+| `0001` | 3/4 sit-up | `three-quarter-sit-up-v1` | authored SVG motion | PT650 original |
+| `0002` | 45° side bend | `side-bend-45-v1` | authored SVG motion | PT650 original |
 | `0025` | barbell bench press | `bench-press-v1` | authored SVG motion | PT650 original |
 | `0043` | barbell full squat | `full-squat-v1` | authored SVG motion | PT650 original |
 | `0662` | push-up | `push-up-v1` | authored SVG motion | PT650 original |
 
 The inherited built-in image/GIF catalogue is not requested by the PT650 built-in media component.
-Exercises without an approved exact model render a neutral schematic fallback until their own
+Exercises without an approved exact model render no built-in demo until their own
 exercise-specific animation is authored and approved.
 
 ## Expansion rule
