@@ -72,9 +72,9 @@ export const PRODUCT_NAME = 'PT650'
 
 const brandProductName = value => String(value)
   // Keep the legacy on-device backup folder literal: renaming it would strand existing backups.
-  .replaceAll('Documents/openGym', 'Documents/__PT650_TECH_FOLDER__')
+  .replaceAll('/openGym', '/__PT650_TECH_FOLDER__')
   .replaceAll('openGym', PRODUCT_NAME)
-  .replaceAll('Documents/__PT650_TECH_FOLDER__', 'Documents/openGym')
+  .replaceAll('/__PT650_TECH_FOLDER__', '/openGym')
 
 export function t(s, ...args) {
   let v = dict[s] || s
