@@ -1,4 +1,5 @@
 import { EXDB } from './exercises-data.js'
+import { PT650_NATIVE_EXERCISES } from './pt650-native-exercises.js'
 import { USER_EXERCISE_MUSCLE_OVERRIDES, exerciseMuscleMetadataFor } from './exercise-muscle-batch-1.js'
 import { t, getVersion, exerciseNameSearchText } from './i18n-core.js'
 
@@ -22,7 +23,10 @@ const catalogueExercise = ex => {
   return out
 }
 
-export const CATALOGUE = EXDB.map(catalogueExercise)
+export const CATALOGUE = [
+  ...EXDB.map(catalogueExercise),
+  ...PT650_NATIVE_EXERCISES.map(catalogueExercise),
+]
 
 // The generated dataset already supplies secondary muscles for most exercises. Keep the
 // handful of conservative catalogue additions that are useful to the muscle map here so a
