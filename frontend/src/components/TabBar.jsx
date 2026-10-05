@@ -11,7 +11,7 @@ import Icon from './Icon.jsx'
 // state it took with it is the DOM node itself: focus, the :active tint, any in-flight transition.
 function Tab({ active, icon, label, onClick }) {
   return (
-    <button className={active ? 'on' : ''} onClick={onClick}>
+    <button className={active ? 'on' : ''} aria-current={active ? 'page' : undefined} onClick={onClick}>
       <Icon name={icon} /><span>{label}</span>
     </button>
   )
@@ -43,7 +43,7 @@ export default function TabBar({ onStart }) {
       {/* On the workout screen itself there is nothing to resume, so the button reads as the
           tab it is and stays lit (#29); anywhere else it brings you back to the exercise you
           were on — the marker is kept in S.active.cur and never moves on its own (#21). */}
-      <button className={'start' + (S.active ? ' rec' : '') + (S.active && cur === 'workout' ? ' on' : '')} onClick={startWorkout}>
+      <button className={'start' + (S.active ? ' rec' : '') + (S.active && cur === 'workout' ? ' on' : '')} aria-current={S.active && cur === 'workout' ? 'page' : undefined} onClick={startWorkout}>
         <span className="cir"><Icon name={S.active ? (cur === 'workout' ? 'dumbbell' : 'play') : 'dumbbell'} /></span>
         <span>{S.active ? (cur === 'workout' ? t('Workout') : S.active.editingWorkoutId ? t('Edit workout') : t('Resume')) : t('Start')}</span>
       </button>
