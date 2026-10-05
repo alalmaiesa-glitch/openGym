@@ -16,7 +16,7 @@ vi.mock('../store/useStore.js', () => ({
 }))
 
 vi.mock('./PT650ThreeExercise.jsx', () => ({
-  default: ({ model, playing }) => (
+  default: ({ model, playing, onTogglePlaying }) => (
     <div
       className="pt650-three-test"
       data-pt650-3d={model.id}
@@ -24,7 +24,9 @@ vi.mock('./PT650ThreeExercise.jsx', () => ({
       data-asset={model.asset}
       data-video={model.previewVideo}
       data-playing={playing ? 'yes' : 'no'}
-    />
+    >
+      <button className="pt650-three-test-toggle" onClick={onTogglePlaying}>toggle</button>
+    </div>
   ),
 }))
 
@@ -51,6 +53,15 @@ describe('PT650 built-in 3D media', () => {
     expect(host.querySelector('.pt650-three-test')?.getAttribute('data-video')).toMatch(/pt650-3d\/push_up\.mp4$/)
   })
 
+
+
+  it('lets the in-viewer play control toggle once without the outer media tap toggling it back', () => {
+    act(() => root.render(<Media ex={{ id: '0662', n: 'push-up' }} />))
+    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-playing')).toBe('yes')
+    act(() => host.querySelector('.pt650-three-test-toggle').click())
+    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-playing')).toBe('no')
+    expect(host.querySelector('.gifhint')).toBeNull()
+  })
 
   it('uses the mirrored Bear Crawl 3D model when exercise 3360 opens', () => {
     act(() => root.render(<Media ex={{ id: '3360', n: 'bear crawl' }} />))

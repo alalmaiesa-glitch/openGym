@@ -38,7 +38,7 @@ function BuiltinMedia({ ex, id, compact, minimizable }) {
     <div
       className={'exmedia pt650-built-in-media has-model' + (compact ? ' compact' : '') + (mini ? ' mini' : '')}
       id={id}
-      onClick={onTap}
+      onClick={model3d ? undefined : onTap}
       data-exercise-id={ex.id}
       data-pt650-media={model.id}
     >
@@ -46,6 +46,7 @@ function BuiltinMedia({ ex, id, compact, minimizable }) {
         ? <PT650ThreeExercise
             model={model3d}
             playing={playing}
+            onTogglePlaying={() => setPlaying(p => !p)}
             fallback={<PT650ExerciseAnimation exerciseId={ex.id} playing={playing} />}
           />
         : <PT650ExerciseAnimation exerciseId={ex.id} playing={playing} />}
@@ -54,7 +55,7 @@ function BuiltinMedia({ ex, id, compact, minimizable }) {
           <Icon name={mini ? 'expand' : 'minimize'} />{mini ? t('Expand') : t('Minimize')}
         </button>
       )}
-      {!mini && (
+      {!mini && !model3d && (
         <span className="gifhint">
           <Icon name={playing ? 'pause' : 'play'} />{playing ? t('tap to pause') : t('tap to play')}
         </span>
