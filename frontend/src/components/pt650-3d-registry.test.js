@@ -21,13 +21,15 @@ describe('PT650 mirrored 3D registry', () => {
       version: 1,
     })
     expect(threeDModelFor('0685')).toMatchObject({
-      id: 'run-3d-v1',
+      id: 'run-jog-in-place-3d-v2',
       exercise: 'run',
       camera: 'front',
-      motion: 'Mesh2Motion Sprint',
+      motion: 'Mesh2Motion Jog',
+      upstreamExerciseSpec: 'exercises/jog.json',
+      semanticBinding: 'PT650 run instructions specify jogging in place',
       humanLicense: 'CC0-1.0',
       motionLicense: 'CC0-1.0',
-      version: 1,
+      version: 2,
     })
 
     for (const [exerciseId, model] of Object.entries(PT650_3D_MODELS)) {
