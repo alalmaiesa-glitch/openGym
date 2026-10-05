@@ -129,6 +129,7 @@ describe('PT650 mirrored 3D registry', () => {
       .map(x => x.exerciseId)
       .sort()
     expect(registered).toEqual(['0662', '0685', '3360'])
+    expect(Object.keys(PT650_3D_MODELS).sort()).toEqual(registered)
     expect(audit.candidates.find(x => x.upstream === 'run')?.decision).toBe('rejected-for-0685')
     expect(audit.candidates.find(x => x.upstream === 'jog')?.exerciseId).toBe('0685')
     for (const item of audit.candidates) expect(item.motionLicense).toBe('CC0-1.0')
