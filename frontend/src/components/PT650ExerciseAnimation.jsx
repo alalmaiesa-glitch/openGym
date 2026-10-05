@@ -290,46 +290,86 @@ function ThreeQuarterSitUpAnimation({ playing }) {
 function SideBend45Animation({ playing }) {
   return (
     <StageSvg playing={playing}>
-      <path d="M166 302H474" stroke="rgba(225,231,238,.22)" strokeWidth="5" strokeLinecap="round" />
+      <path d="M166 304H474" stroke="rgba(225,231,238,.18)" strokeWidth="4" strokeLinecap="round" />
 
-      {/* Lower body stays stable; the trunk bends laterally from the waist, alternating sides. */}
-      <g fill="none" stroke="#d7dde3" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M320 192L280 300M320 192L360 300" strokeWidth="23" />
-        <path d="M258 300H295M345 300H382" strokeWidth="12" />
+      {/* PT650 Athlete V2 — front view. Pelvis and legs remain stable while the trunk bends
+          laterally from the waist. This avoids the old whole-body tilt / stick-figure look. */}
+      <g>
+        <path
+          d="M300 188Q320 178 340 188L344 207Q320 219 296 207Z"
+          fill="#cbd2d9"
+        />
+
+        <g fill="none" stroke="#d8dee4" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M306 205Q296 228 289 254L282 299" strokeWidth="23" />
+          <path d="M334 205Q344 228 351 254L358 299" strokeWidth="23" />
+          <path d="M263 301H292M348 301H377" strokeWidth="12" />
+        </g>
+
+        <path d="M302 204Q320 213 338 204" fill="none" stroke="rgba(9,11,13,.35)" strokeWidth="3" />
       </g>
 
       <g>
-        <g fill="none" stroke="#d7dde3" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M320 192V104" strokeWidth="30" />
-          <path d="M307 116L274 188M333 116L366 188" strokeWidth="16" />
-          <circle cx="320" cy="67" r="24" fill="#b9c1c9" stroke="none" />
-        </g>
+        {/* Anatomical upper body: broad shoulders, tapered waist, connected arms and head. */}
+        <path
+          d="M290 105Q320 92 350 105L344 137L339 184Q320 194 301 184L296 137Z"
+          fill="#d8dee4"
+        />
+        <rect x="313" y="82" width="14" height="22" rx="7" fill="#cbd2d9" />
+        <circle cx="320" cy="62" r="23" fill="#cbd2d9" />
 
-        <path d="M304 137Q320 128 336 137L335 174Q320 185 305 174Z" fill="var(--acc)" opacity=".68" />
+        <g fill="none" stroke="#d8dee4" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M294 116Q282 146 277 173Q274 188 271 202" strokeWidth="16" />
+          <path d="M346 116Q358 146 363 173Q366 188 369 202" strokeWidth="16" />
+        </g>
+        <circle cx="270" cy="204" r="8" fill="#cbd2d9" />
+        <circle cx="370" cy="204" r="8" fill="#cbd2d9" />
+
+        {/* Subtle anatomy landmarks keep the avatar readable without becoming photorealistic. */}
+        <path d="M303 121Q320 129 337 121" fill="none" stroke="rgba(9,11,13,.22)" strokeWidth="3" strokeLinecap="round" />
+        <path d="M320 132V176" fill="none" stroke="rgba(9,11,13,.16)" strokeWidth="2.5" strokeLinecap="round" />
+
+        {/* Obliques: the compressed side brightens as the torso bends to that side. */}
+        <path d="M299 139Q307 135 314 142L311 176Q305 180 299 172Z" fill="var(--acc)">
+          <animate
+            attributeName="opacity"
+            values=".42;.92;.42;.20;.42"
+            keyTimes="0;.22;.44;.72;1"
+            dur="4.8s"
+            repeatCount="indefinite"
+          />
+        </path>
+        <path d="M341 139Q333 135 326 142L329 176Q335 180 341 172Z" fill="var(--acc)">
+          <animate
+            attributeName="opacity"
+            values=".42;.20;.42;.92;.42"
+            keyTimes="0;.22;.44;.72;1"
+            dur="4.8s"
+            repeatCount="indefinite"
+          />
+        </path>
 
         <animateTransform
           attributeName="transform"
           type="rotate"
-          values="0 320 192;-22 320 192;0 320 192;22 320 192;0 320 192"
+          values="0 320 190;-20 320 190;0 320 190;20 320 190;0 320 190"
           keyTimes="0;.22;.44;.72;1"
-          dur="4.6s"
+          dur="4.8s"
           repeatCount="indefinite"
           calcMode="spline"
           keySplines=".32 .72 0 1;.32 .72 0 1;.32 .72 0 1;.32 .72 0 1"
         />
       </g>
 
-      <g opacity=".28" fill="none" stroke="var(--acc)" strokeWidth="3" strokeLinecap="round">
-        <path d="M238 165Q320 107 402 165" strokeDasharray="5 8" />
-        <path d="M242 153L236 166L250 166M398 153L404 166L390 166" />
-      </g>
+      {/* Quiet reference line: enough to show that the pelvis is stable, without instructional arrows. */}
+      <path d="M320 190V86" stroke="rgba(225,231,238,.10)" strokeWidth="2" strokeDasharray="5 9" />
     </StageSvg>
   )
 }
 
 const RENDERERS = Object.freeze({
   'three-quarter-sit-up-v1': ThreeQuarterSitUpAnimation,
-  'side-bend-45-v1': SideBend45Animation,
+  'side-bend-45-v2': SideBend45Animation,
   'bench-press-v1': BenchPressAnimation,
   'full-squat-v1': FullSquatAnimation,
   'push-up-v1': PushUpAnimation,
