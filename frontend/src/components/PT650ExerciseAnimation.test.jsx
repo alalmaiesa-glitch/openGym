@@ -14,9 +14,10 @@ describe('PT650 animated built-in exercise media', () => {
       version: 1,
     })
     expect(animatedModelFor('0002')).toMatchObject({
-      id: 'side-bend-45-v1',
+      id: 'side-bend-45-v2',
       exercise: '45° side bend',
       target: ['abs', 'obliques'],
+      version: 2,
     })
     expect(animatedModelFor('0025')).toMatchObject({
       id: 'bench-press-v1',
@@ -50,6 +51,7 @@ describe('PT650 animated built-in exercise media', () => {
     expect(media).toContain('<PT650ExerciseAnimation')
     expect(animation).not.toContain('SchematicFallback')
     expect(animation).not.toContain('schematic-fallback')
+    expect(animation).toContain("'side-bend-45-v2': SideBend45Animation")
   })
 
   it('does not pretend an unmodelled movement has an exact demo', () => {
