@@ -3,41 +3,63 @@ import { readFileSync } from 'node:fs'
 import { EXIDX } from '../lib/exercises.js'
 import { PT650_3D_MODELS, threeDModelFor } from './pt650-3d-registry.js'
 
-describe('PT650 OpenGym3D registry', () => {
-  it('binds the first final 3D asset to the exact PT650 exercise', () => {
-    const model = threeDModelFor('0662')
-    expect(model).toMatchObject({
-      id: 'push-up-3d-v2',
+describe('PT650 mirrored 3D registry', () => {
+  it('binds approved 3D assets to exact PT650 exercises', () => {
+    expect(threeDModelFor('0662')).toMatchObject({
+      id: 'push-up-3d-v3',
       exercise: 'push-up',
-      medium: 'opengym3d-rendered-glb',
-      sourceRepo: 'AssiamahS/opengym3d',
       humanLicense: 'CC0-1.0',
       motionLicense: 'CC0-1.0',
-      version: 2,
+      version: 3,
     })
-    expect(EXIDX['0662']?.n).toBe(model.exercise)
-  })
+    expect(threeDModelFor('3360')).toMatchObject({
+      id: 'bear-crawl-3d-v1',
+      exercise: 'bear crawl',
+      motion: 'Mesh2Motion Crawl',
+      humanLicense: 'CC0-1.0',
+      motionLicense: 'CC0-1.0',
+      version: 1,
+    })
 
-  it('uses the final rendered exercise outputs, not the raw motion pack', () => {
-    const model = threeDModelFor('0662')
-    expect(model.asset).toMatch(/\/assets\/push_up\.glb$/)
-    expect(model.previewVideo).toMatch(/\/assets\/push_up\.mp4$/)
-    expect(model.poster).toMatch(/\/assets\/push_up\.png$/)
-    expect(model.asset).not.toContain('/motions/')
-  })
-
-  it('records provenance and redistributable licences for every public 3D model', () => {
     for (const [exerciseId, model] of Object.entries(PT650_3D_MODELS)) {
       expect(EXIDX[exerciseId]?.n).toBe(model.exercise)
-      expect(model.sourceRepo).toBeTruthy()
+    }
+  })
+
+  it('serves exercise assets from the PT650 origin, not OpenGym3D at runtime', () => {
+    for (const model of Object.values(PT650_3D_MODELS)) {
+      expect(model.asset).toContain('pt650-3d/')
+      expect(model.previewVideo).toContain('pt650-3d/')
+      expect(model.poster).toContain('pt650-3d/')
+      expect(model.asset).not.toMatch(/^https?:/)
+      expect(model.previewVideo).not.toMatch(/^https?:/)
+      expect(model.poster).not.toMatch(/^https?:/)
+    }
+  })
+
+  it('records redistributable provenance for every public 3D model', () => {
+    for (const model of Object.values(PT650_3D_MODELS)) {
+      expect(model.sourceRepo).toBe('AssiamahS/opengym3d')
       expect(model.sourceCommit).toMatch(/^[0-9a-f]{40}$/)
       expect(model.pipelineLicense).toBe('MIT')
       expect(model.humanLicense).toBe('CC0-1.0')
       expect(model.motionLicense).toBe('CC0-1.0')
+      expect(model.upstreamExerciseSpec).toMatch(/^exercises\/.+\.json$/)
     }
   })
 
-  it('keeps a rendered 3D video fallback for devices without WebGL', () => {
+  it('locks every mirrored binary with SHA256 before deployment', () => {
+    const lock = JSON.parse(readFileSync(new URL('../../pt650-3d-assets.lock.json', import.meta.url), 'utf8'))
+    expect(lock.format).toBe('pt650-3d-asset-lock/1')
+    expect(lock.assets.map(a => a.exerciseId).sort()).toEqual(['0662', '3360'])
+    for (const asset of lock.assets) {
+      for (const file of Object.values(asset.files)) {
+        expect(file.sha256).toMatch(/^(BOOTSTRAP|[0-9a-f]{64})$/)
+      }
+    }
+  })
+
+  it('keeps a rendered video fallback for devices without WebGL', () => {
     const source = readFileSync(new URL('./PT650ThreeExercise.jsx', import.meta.url), 'utf8')
     expect(source).toContain('model.previewVideo')
     expect(source).toContain('pt650-three-video')
@@ -45,7 +67,7 @@ describe('PT650 OpenGym3D registry', () => {
     expect(source).toContain('muted')
   })
 
-  it('does not pretend an exercise has 3D media when it is not registered', () => {
+  it('does not invent 3D media for unregistered exercises', () => {
     expect(threeDModelFor('0001')).toBeNull()
     expect(threeDModelFor('does-not-exist')).toBeNull()
   })

@@ -44,11 +44,20 @@ afterEach(() => {
 describe('PT650 built-in 3D media', () => {
   it('prefers the registered 3D push-up over its transitional SVG animation', () => {
     act(() => root.render(<Media ex={{ id: '0662', n: 'push-up' }} />))
-    expect(host.querySelector('.exmedia')?.dataset.pt650Media).toBe('push-up-3d-v2')
-    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-pt650-3d')).toBe('push-up-3d-v2')
+    expect(host.querySelector('.exmedia')?.dataset.pt650Media).toBe('push-up-3d-v3')
+    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-pt650-3d')).toBe('push-up-3d-v3')
     expect(host.querySelector('.pt650-three-test')?.getAttribute('data-clip')).toBe('')
-    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-asset')).toMatch(/\/assets\/push_up\.glb$/)
-    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-video')).toMatch(/\/assets\/push_up\.mp4$/)
+    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-asset')).toMatch(/pt650-3d\/push_up\.glb$/)
+    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-video')).toMatch(/pt650-3d\/push_up\.mp4$/)
+  })
+
+
+  it('uses the mirrored Bear Crawl 3D model when exercise 3360 opens', () => {
+    act(() => root.render(<Media ex={{ id: '3360', n: 'bear crawl' }} />))
+    expect(host.querySelector('.exmedia')?.dataset.pt650Media).toBe('bear-crawl-3d-v1')
+    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-pt650-3d')).toBe('bear-crawl-3d-v1')
+    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-asset')).toMatch(/pt650-3d\/bear_crawl\.glb$/)
+    expect(host.querySelector('.pt650-three-test')?.getAttribute('data-video')).toMatch(/pt650-3d\/bear_crawl\.mp4$/)
   })
 
   it('keeps existing exercise-specific SVG media until a 3D replacement is registered', () => {

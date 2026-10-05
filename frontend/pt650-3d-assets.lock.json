@@ -1,0 +1,27 @@
+{
+  "format": "pt650-3d-asset-lock/1",
+  "source": "OpenGym3D GitHub Pages rendered outputs",
+  "sourceRepo": "AssiamahS/opengym3d",
+  "sourceCommit": "ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae",
+  "baseUrl": "https://assiamahs.github.io/opengym3d/assets",
+  "assets": [
+    {
+      "exerciseId": "0662",
+      "slug": "push_up",
+      "files": {
+        "glb": { "name": "push_up.glb", "sha256": "67bfd1bf9c9c679dfd81f34202c661f954ce0ec4b15baac56a5781a372d11326" },
+        "mp4": { "name": "push_up.mp4", "sha256": "291a9e9bf6ff2f7c32ef1801a7ad0406f3c00047c8bb631d9770838f7228d381" },
+        "png": { "name": "push_up.png", "sha256": "4d9b5f3e97a6b6aec9d0ba50b2e2f7e672ff6610553ee6d40a3907a9fd09f3f9" }
+      }
+    },
+    {
+      "exerciseId": "3360",
+      "slug": "bear_crawl",
+      "files": {
+        "glb": { "name": "bear_crawl.glb", "sha256": "c0dbaeef8a181f8f23803815de7836a6b18795668d73443b28284aa887285378" },
+        "mp4": { "name": "bear_crawl.mp4", "sha256": "717797416fa77e3386b621ca7be81c106f3aa2e7e6ca5710809cd0c7aef904d1" },
+        "png": { "name": "bear_crawl.png", "sha256": "0c5ea1c56e5202a3db6671a1fb6bb9b1442b637b83d5bf94291beb778a1b1596" }
+      }
+    }
+  ]
+}
