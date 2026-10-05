@@ -597,8 +597,8 @@ export default function Settings() {
         are running, or whether an update actually installed. */}
     <div className="dim small" style={{ textAlign: 'center', marginTop: 4, lineHeight: 1.6 }}>
       openGym v{__APP_VERSION__} · {t('free & open source (AGPL v3)')}<br />
-      <a href="https://github.com/DuarteSantos8/openGym" target="_blank" rel="noopener">source code</a> · exercise data: hasaneyldrm/exercises-dataset (MIT)<br />
-      exercise images and animations © <a href="https://gymvisual.com/" target="_blank" rel="noopener">Gym visual</a>
+      <a href={REPO} target="_blank" rel="noopener">{baseLang(lang) === 'ar' ? 'الكود المصدري' : 'source code'}</a> · {baseLang(lang) === 'ar' ? 'بيانات التمارين: MIT' : 'exercise data: MIT'}<br />
+      {baseLang(lang) === 'ar' ? 'وسائط التمارين الخارجية غير مضمّنة في هذه النسخة' : 'third-party exercise media is not bundled in this edition'}
     </div>
   </div>
 }
