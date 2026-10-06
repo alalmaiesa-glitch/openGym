@@ -187,6 +187,80 @@ create table if not exists pt650.challenge_enrollments (
 create index if not exists challenge_enrollments_user_idx
   on pt650.challenge_enrollments (user_id, status, enrolled_at desc);
 
+-- The sponsor's reward pool is reserved at enrollment time, not after the athlete finishes.
+-- This is the fairness guarantee behind "achieve the goal, receive the reward": if budget is
+-- exhausted the athlete cannot join, rather than discovering that only after doing the work.
+create table if not exists pt650.challenge_budgets (
+  challenge_id text not null,
+  challenge_version integer not null,
+  currency text not null,
+  total_amount bigint not null check (total_amount >= 0),
+  reserved_amount bigint not null default 0 check (reserved_amount >= 0),
+  settled_amount bigint not null default 0 check (settled_amount >= 0),
+  updated_at timestamptz not null default now(),
+  primary key (challenge_id, challenge_version),
+  foreign key (challenge_id, challenge_version)
+    references pt650.challenges(challenge_id, version),
+  check (reserved_amount + settled_amount <= total_amount)
+);
+
+create table if not exists pt650.challenge_reward_reservations (
+  enrollment_id uuid primary key references pt650.challenge_enrollments(id) on delete restrict,
+  amount bigint not null check (amount > 0),
+  currency text not null,
+  state text not null default 'reserved'
+    check (state in ('reserved','settled','released')),
+  reserved_at timestamptz not null default now(),
+  settled_at timestamptz,
+  released_at timestamptz
+);
+
+-- One transaction locks the budget row, checks capacity and creates the reservation.
+-- Call this from the enrollment transaction; a false result means "sold out" BEFORE activity.
+create or replace function pt650.reserve_challenge_reward(
+  p_enrollment_id uuid,
+  p_challenge_id text,
+  p_challenge_version integer,
+  p_amount bigint,
+  p_currency text
+)
+returns boolean
+language plpgsql
+as $
+declare
+  b pt650.challenge_budgets%rowtype;
+begin
+  if p_amount <= 0 then
+    raise exception 'reward amount must be positive';
+  end if;
+
+  select * into b
+  from pt650.challenge_budgets
+  where challenge_id = p_challenge_id and challenge_version = p_challenge_version
+  for update;
+
+  if not found then
+    return false;
+  end if;
+
+  if b.total_amount - b.reserved_amount - b.settled_amount < p_amount then
+    return false;
+  end if;
+
+  insert into pt650.challenge_reward_reservations
+    (enrollment_id, amount, currency)
+  values
+    (p_enrollment_id, p_amount, p_currency);
+
+  update pt650.challenge_budgets
+  set reserved_amount = reserved_amount + p_amount,
+      updated_at = now()
+  where challenge_id = p_challenge_id and challenge_version = p_challenge_version;
+
+  return true;
+end;
+$;
+
 -- Sharded-by-user counters are updated asynchronously from verified events.
 create table if not exists pt650.challenge_progress (
   enrollment_id uuid primary key references pt650.challenge_enrollments(id) on delete cascade,
