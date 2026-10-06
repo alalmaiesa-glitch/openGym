@@ -170,6 +170,18 @@ Deno.serve(async (req: Request) => {
       }
       const row = first(data)
       if (!row) throw new Error("bad training sync response")
+
+      // Health indexing is a derived side-effect of a successful workout-cloud write. A Health
+      // bridge failure must never roll back or misreport the already-saved training document.
+      if (row.outcome === "written" && Array.isArray(state.bodyweight) && state.bodyweight.length) {
+        const { error: healthBridgeError } = await admin.rpc("pt650_health_ingest_bodyweight_batch", {
+          p_user_id: user.id,
+          p_unit: state.unit === "lb" ? "lb" : "kg",
+          p_entries: state.bodyweight
+        })
+        if (healthBridgeError) console.error("pt650-health-weight-bridge", healthBridgeError.message)
+      }
+
       const payload = {
         rev: Number(row.rev || 0),
         stateTs: Number(row.state_ts || 0),
