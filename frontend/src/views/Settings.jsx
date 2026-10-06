@@ -835,6 +835,9 @@ function PlatformAccountSection({ lang }) {
   const identity = usePlatformIdentity()
   const [account, setAccount] = useState(null)
   const [busy, setBusy] = useState(false)
+  const [syncing, setSyncing] = useState(false)
+  const sync = useStore(s => s.sync)
+  const syncNow = useStore(s => s.syncNow)
   const ar = baseLang(lang) === 'ar'
 
   useEffect(() => {
@@ -849,6 +852,22 @@ function PlatformAccountSection({ lang }) {
   if (!identity.session?.access_token) return null
 
   const email = account?.email || identity.session?.user?.email || (ar ? 'حساب PT650' : 'PT650 account')
+  const syncText = {
+    ok: ar ? 'متزامن بين أجهزتك' : 'Synced across your devices',
+    pending: ar ? 'تغييرات محفوظة محليًا وتُرفع الآن' : 'Changes saved locally and uploading',
+    offline: ar ? 'دون اتصال — محفوظ محليًا وستتم المزامنة تلقائيًا' : 'Offline — saved locally and will sync automatically',
+    error: ar ? 'تعذرت المزامنة الآن — بياناتك محفوظة على هذا الجهاز' : 'Sync is unavailable — your data is safe on this device',
+    auth: ar ? 'أعد تسجيل الدخول لاستئناف المزامنة' : 'Sign in again to resume sync',
+    held: ar ? 'المزامنة بانتظار تأكيد الحساب' : 'Sync is waiting for account confirmation',
+    local: ar ? 'محفوظ على هذا الجهاز' : 'Saved on this device'
+  }[sync?.status] || (ar ? 'حالة المزامنة غير معروفة' : 'Sync status unavailable')
+
+  const runSync = async () => {
+    if (syncing) return
+    setSyncing(true)
+    try { await syncNow() } finally { setSyncing(false) }
+  }
+
   const signOut = () => confirmSheet({
     title: ar ? 'تسجيل الخروج من PT650؟' : 'Sign out of PT650?',
     message: ar
@@ -858,6 +877,7 @@ function PlatformAccountSection({ lang }) {
     danger: true,
     onConfirm: async () => {
       setBusy(true)
+      try { await syncNow() } catch {}
       await platformSignOut()
       setBusy(false)
     },
@@ -867,13 +887,17 @@ function PlatformAccountSection({ lang }) {
     <Section
       title={ar ? 'حساب PT650' : 'PT650 account'}
       footer={ar
-        ? 'Move والمكافآت والخدمات المتصلة تستخدم هذا الحساب. مزامنة سجل التدريب بين الأجهزة تأتي في المرحلة التالية.'
-        : 'Move, rewards and connected services use this account. Cross-device workout sync comes in the next phase.'}
+        ? 'الخطة والجلسات والأوزان والإعدادات تُحفظ محليًا أولًا ثم تتزامن مع حساب PT650. الجلسة التدريبية الجارية تبقى على الجهاز حتى إنهائها.'
+        : 'Plans, completed sessions, weights and settings save locally first, then sync to your PT650 account. An in-progress workout stays on the current device until finished.'}
     >
       <Row icon="person" iconTint="var(--acc)" title={email}
         subtitle={ar ? 'الحساب الرئيسي لخدمات PT650' : 'Primary identity for PT650 services'} />
       <Row icon="shield" iconTint="var(--green)" title={ar ? 'الخدمات المتصلة' : 'Connected services'}
         subtitle={ar ? 'Move · Rewards · التالي: Nutrition · Health · Machine Scan' : 'Move · Rewards · next: Nutrition · Health · Machine Scan'} />
+      <Row icon="link" iconTint={sync?.status === 'ok' ? 'var(--green)' : 'var(--orange)'}
+        title={ar ? 'مزامنة التدريب' : 'Training sync'}
+        subtitle={syncing ? (ar ? 'جارٍ التحقق والمزامنة…' : 'Checking and syncing…') : syncText}
+        accessory="chevron" onClick={syncing ? undefined : runSync} />
       {account?.id && <AccountIdRow id={account.id} />}
       <Row icon="signOut" iconTint="var(--red)" title={ar ? 'تسجيل الخروج' : 'Sign out'} danger
         onClick={busy ? undefined : signOut} />

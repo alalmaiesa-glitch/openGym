@@ -19,6 +19,8 @@ import { linkTokenFromSearch, stripLinkFromUrl } from '../lib/device-link.js'
 import { loadRemote, chooseLocal, forgetRemote, connect, normalizeServerUrl, renewToken } from '../lib/remote.js'
 import { loadCoachDevice, saveCoachDevice, coachDeviceSettings } from '../lib/coach-device.js'
 import { RTL_LANGS } from '../lib/i18n-core.js'
+import { platformApi } from '../lib/platform-api.js'
+import { platformSessionUserId, platformStoredSession } from '../lib/platform-auth.js'
 import { DEFAULT_TEMPLATE_ID } from '../lib/structuralBalanceTemplates.js'
 
 import { WC_DEFAULT } from '../lib/workout-controls.js'
@@ -242,6 +244,19 @@ export function restoredStateFor(local, remote, dirty = false) {
 }
 
 export const useStore = create((set, get) => {
+  const platformOwner = () => {
+    if (!DEMO) return null
+    try { return localStorage.getItem(PLATFORM_LOCAL_OWNER_KEY) || null } catch { return null }
+  }
+  const platformSyncUid = () => {
+    const owner = platformOwner()
+    if (!owner) return null
+    const sessionUid = platformSessionUserId(platformStoredSession())
+    return sessionUid === owner ? owner : null
+  }
+  const syncIdentity = () => get()?.user || (platformSyncUid() ? { id: platformSyncUid(), platform: true } : null)
+  const usingPlatformCloud = () => !!platformSyncUid() && !get()?.user
+  const pushDelay = () => usingPlatformCloud() ? 5000 : 1500
   let pushTm = null
   let saveTm = null
   let toldTooLarge = false
@@ -335,10 +350,10 @@ export const useStore = create((set, get) => {
   const setSync = patch => {
     const cur = get().sync
     const next = { ...cur, ...patch }
-    next.status = statusOf(next, get().user)
+    next.status = statusOf(next, syncIdentity())
     if (Object.keys(next).some(k => (k === 'lastError' ? !sameError(next[k], cur[k]) : next[k] !== cur[k]))) set({ sync: next })
   }
-  const isNetworkError = e => e && e.status == null   // fetch itself failed, or gave up: no response at all
+  const isNetworkError = e => e && (e.status == null || e.status === 0)   // fetch itself failed, timed out, or gave up: no response at all
   const refused = e => e?.status === 401 || e?.code === 'not-paired'
   // The server answered: whatever was wrong with the connection is over.
   const reached = (extra = {}) => setSync({ offline: false, auth: false, lastError: null, ...extra })
@@ -417,7 +432,10 @@ export const useStore = create((set, get) => {
       // The marker goes first: a tab that loads the copy in between gets an older base than the
       // copy's, which costs one merge at worst — never a newer one, which would lose data.
       saveMarker(base)
-      localStorage.setItem(KEY, JSON.stringify(S))
+      const encoded = JSON.stringify(S)
+      localStorage.setItem(KEY, encoded)
+      const pt650Uid = platformOwner()
+      if (pt650Uid) localStorage.setItem(PLATFORM_LOCAL_STATE_PREFIX + pt650Uid, encoded)
       toldNoRoom = false
     } catch (e) {
       saved = false
@@ -435,20 +453,20 @@ export const useStore = create((set, get) => {
     // server — goes to the file at once. Until it does, the file holds the copy it replaced,
     // which looks newer, and a start in between would take that one back (restoreFromMirror).
     if (MOBILE) nativePersist(!stamp)
-    if (push && get().user) {
+    if (push && syncIdentity()) {
       // Before boot has pulled, the copy in hand may be older than the server's: a push now
       // would carry it with a stale (or no) baseRev. It waits for finishBoot.
       if (!get().ready) { pushPending = true; return }
       clearTimeout(pushTm)
-      pushTm = setTimeout(() => get().pushState(), 1500)
+      pushTm = setTimeout(() => get().pushState(), pushDelay())
     }
   }
   // Boot's last step: from here on changes push, and one made during boot goes now.
   const finishBoot = (extra = {}) => {
     set({ ready: true, ...extra })
-    if (pushPending && get().user) {
+    if (pushPending && syncIdentity()) {
       clearTimeout(pushTm)
-      pushTm = setTimeout(() => get().pushState(), 1500)
+      pushTm = setTimeout(() => get().pushState(), pushDelay())
     }
     pushPending = false
   }
@@ -459,7 +477,7 @@ export const useStore = create((set, get) => {
   // server is pushed on the same occasion. A phone that sat in a pocket all afternoon and a
   // desktop tab left open all week used to show, and then push, whatever they last had.
   const checkRev = async (force = false) => {
-    if (!get().user || !get().ready || document.visibilityState === 'hidden') return
+    if (!syncIdentity() || !get().ready || document.visibilityState === 'hidden') return
     if (!force && Date.now() - lastCheck < CHECK_MIN_MS) return
     lastCheck = Date.now()
     // A sign-in still deciding what becomes of this copy: no check of its own. One whose adoption
@@ -470,7 +488,9 @@ export const useStore = create((set, get) => {
     const { base } = metaOf()
     if (!base || owes()) return get().pullState()
     try {
-      const { rev } = await api('/api/data/rev')
+      const { rev } = usingPlatformCloud()
+        ? await platformApi('training-rev')
+        : await api('/api/data/rev')
       if (rev !== base.rev) return get().pullState()
       confirmed(get().S)   // nothing moved on either side
     } catch (e) {
@@ -522,10 +542,17 @@ export const useStore = create((set, get) => {
     // replaced whatever another device had written in the meantime.
     const force = forceNext
     forceNext = false
-    const body = { state: S }
-    if (!force && base) body.baseRev = base.rev
+    const cloudState = usingPlatformCloud() ? { ...S, active: null } : S
+    const body = { state: cloudState }
+    // PT650 cloud never performs a blind overwrite: even reset/import writes are conditional
+    // and merge on conflict. The legacy self-host path keeps its historical force behaviour.
+    if (usingPlatformCloud()) {
+      if (base) body.baseRev = base.rev
+    } else if (!force && base) body.baseRev = base.rev
     try {
-      const r = await api('/api/data', { method: 'PUT', body: JSON.stringify(body) })
+      const r = usingPlatformCloud()
+        ? await platformApi('training-state', { method: 'POST', body })
+        : await api('/api/data', { method: 'PUT', body: JSON.stringify(body) })
       // A server from before revisions answers without one — then there is nothing to hold the
       // next push to, and the marker must not pretend otherwise.
       if (r.rev == null) dropSync()
@@ -606,7 +633,9 @@ export const useStore = create((set, get) => {
   window.addEventListener('storage', e => {
     if (e.key !== SYNC_KEY || !e.newValue) return
     const user = get().user
-    if (!user || localStorage.getItem('gym_owner') !== user.id) return
+    const platformUid = platformOwner()
+    if (!user && !platformUid) return
+    if (user && localStorage.getItem('gym_owner') !== user.id) return
     let theirs = null
     try { theirs = JSON.parse(e.newValue) } catch { return }
     if (theirs?.rev == null || theirs.rev === metaOf().base?.rev) return
@@ -930,7 +959,7 @@ export const useStore = create((set, get) => {
   const user0 = (() => { try { return JSON.parse(localStorage.getItem('gym_user')) || null } catch { return null } })()
   adoptHold = !!user0 && readAdopt()?.uid === user0.id
   const sync0 = { offline: false, pending: storedOwed(), auth: false, lastError: null, lastSynced: (() => { try { return +localStorage.getItem(SYNCED_AT_KEY) || 0 } catch { return 0 } })(), server: serverBase(), held: adoptHold }
-  sync0.status = statusOf(sync0, user0)
+  sync0.status = statusOf(sync0, user0 || (platformSyncUid() ? { id: platformSyncUid(), platform: true } : null))
 
   return {
     S: S0,
@@ -1073,10 +1102,10 @@ export const useStore = create((set, get) => {
       if (MOBILE && S.autoBackup) writeAutoBackup(S)
     },
 
-    // Public PT650 uses one Supabase identity but keeps workout state local in this phase.
-    // The active browser copy is therefore namespaced per PT650 account. On the first account
-    // after the old demo, the existing local copy is adopted instead of deleted; later accounts
-    // get their own isolated copy. Sign-out parks the current copy and clears the active one.
+    // Public PT650 is local-first: every account has its own durable browser copy, and the same
+    // state is revision-synced to Supabase after identity validation. On the first account after
+    // the old demo, the existing local copy is adopted instead of deleted; later accounts get
+    // their own isolated copy. Sign-out parks the current copy and clears the active one.
     switchPlatformLocalAccount(uid) {
       if (!DEMO) return
       const nextUid = typeof uid === 'string' && uid ? uid : null
@@ -1206,7 +1235,7 @@ export const useStore = create((set, get) => {
     // many asked), and the promise returned covers that follow-up too, so a caller that awaits
     // before signing out knows the last change is on the server.
     async pushState() {
-      if (!get().user) return
+      if (!syncIdentity()) return
       clearTimeout(pushTm)
       pushTm = null
       if (adoptHold) return   // the sign-in has not decided what this copy is yet (adoptProfile)
@@ -1227,7 +1256,7 @@ export const useStore = create((set, get) => {
         try {
           if (pushTm) { clearTimeout(pushTm); pushTm = null; await get().pushState() }
           else if (pushing) await pushing
-          const res = await api('/api/data')
+          const res = usingPlatformCloud() ? await platformApi('training-state') : await api('/api/data')
           lastCheck = Date.now()
           reached()
           const { state, rev } = res
@@ -1247,6 +1276,26 @@ export const useStore = create((set, get) => {
           // revisions. The newer copy wins as before, except that a copy still owed to the
           // server (dirty) is merged instead of pushed over whatever is there.
           if (!base) {
+            if (usingPlatformCloud()) {
+              const localWorthKeeping = hasData(S) || Number(S?._ts || 0) > 0
+              if (state && localWorthKeeping) {
+                mergeInto(S, state, rev)
+                pushPending = false
+                await get().pushState()
+                return
+              }
+              if (state) {
+                const next = Object.assign(clone(DEF), state)
+                next.active = carryActive(S, next)
+                adopt(next, rev)
+                confirmed(get().S)
+                return
+              }
+              writeSync(rev, 0)
+              if (localWorthKeeping) await get().pushState()
+              else confirmed(get().S)
+              return
+            }
             if (dirty && state) { mergeInto(S, state, rev); pushPending = false; await get().pushState(); return }
             const restored = restoredStateFor(S, state, false)
             if (restored) { adopt(restored, rev); confirmed(get().S) }
@@ -1271,7 +1320,7 @@ export const useStore = create((set, get) => {
     // "Sync now": what is waiting goes, the server's copy is checked, and the answer is the
     // `sync` every screen reads — status 'ok' when the two agree.
     async syncNow() {
-      if (!get().user) { setSync({}); return get().sync }
+      if (!syncIdentity()) { setSync({}); return get().sync }
       // Held for a sign-in's question: "Sync now" is asking it (again), and the sync follows.
       if (adoptHold) { await get().resumeAdoption(); if (adoptHold) return get().sync }
       if (pulling) await pulling
@@ -1288,7 +1337,7 @@ export const useStore = create((set, get) => {
     // `media` counts the custom exercises whose photo or video the server has not confirmed
     // (lib/media-owed.js); present only when there are any, and they are owed on their own.
     unsyncedChanges() {
-      if (!get().user) return { owed: false, count: 0 }
+      if (!syncIdentity()) return { owed: false, count: 0 }
       const media = pendingRefCount(get().S)
       const withMedia = media ? { media } : {}
       if (!owes()) return { owed: media > 0, count: 0, ...withMedia }
@@ -1514,9 +1563,10 @@ export const useStore = create((set, get) => {
         finishBoot({ needsMobileOnboarding: !remote && !hasData(get().S) })
         return
       }
-      // Static PT650 build (GitHub Pages): connected services now authenticate through
-      // Supabase. Training state remains local in this phase, but the app no longer bypasses
-      // the account screen by forcing guest mode. Existing local data is preserved.
+      // Static PT650 build (GitHub Pages): boot the local copy immediately. App.jsx validates
+      // the Supabase identity, switches to that account's isolated local state, then calls the
+      // same push/pull engine below through the pt650-platform Edge Function. Offline use never
+      // waits for the cloud and existing local data is preserved.
       if (DEMO) {
         get().setGuest(false)
         finishBoot()

@@ -73,3 +73,20 @@ test('unified PT650 profiles are auth-linked and server-only', () => {
   expectSql(account, /pt650_account_update_profile/)
   expectSql(account, /grant execute[\s\S]*to service_role/i)
 })
+
+
+test('PT650 workout cloud state is revisioned, auth-linked and server-only', () => {
+  const training = readFileSync(resolve(process.cwd(), 'platform/sql/012_training_cloud_sync.sql'), 'utf8')
+  expectSql(training, /create table if not exists pt650\.training_states/i)
+  expectSql(training, /user_id uuid primary key references auth\.users\(id\) on delete cascade/i)
+  expectSql(training, /revision bigint not null default 1/i)
+  expectSql(training, /state jsonb not null/i)
+  expectSql(training, /alter table pt650\.training_states enable row level security/i)
+  expectSql(training, /revoke all on table pt650\.training_states from public, anon, authenticated/i)
+  expectSql(training, /for update/i)
+  expectSql(training, /p_base_revision is null or p_base_revision <> v_current\.revision/i)
+  expectSql(training, /'conflict'::text/)
+  expectSql(training, /octet_length\(p_state::text\)/i)
+  expectSql(training, /2500000/)
+  expectSql(training, /grant execute[\s\S]*to service_role/i)
+})

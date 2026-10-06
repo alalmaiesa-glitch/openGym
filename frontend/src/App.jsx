@@ -74,6 +74,7 @@ function Shell() {
   const platformAuthed = !!platformIdentity.session?.access_token
   const platformUid = platformSessionUserId(platformIdentity.session)
   const switchPlatformLocalAccount = useStore(s => s.switchPlatformLocalAccount)
+  const syncNow = useStore(s => s.syncNow)
   // iOS: whether timer sounds get past the ring/silent switch (Settings → Sounds). Page-level,
   // so it is applied here on load and on change rather than at each beep.
   useEffect(() => { setPlayOnSilent(!!S.soundOnSilent) }, [S.soundOnSilent])
@@ -177,6 +178,11 @@ function Shell() {
     if (!ready || !platformAuthed) return
     platformApi('account').catch(() => {})
   }, [ready, platformAuthed, platformUid])
+
+  useEffect(() => {
+    if (!ready || !platformAuthed || !platformUid) return
+    syncNow().catch(() => {})
+  }, [ready, platformAuthed, platformUid, syncNow])
   if ((!ready || !platformIdentity.ready) && !authed) return (
     <div id="app">
       <div style={{ paddingTop: '44vh', display: 'flex', justifyContent: 'center', fontSize: 34, color: 'var(--label-3)' }}>

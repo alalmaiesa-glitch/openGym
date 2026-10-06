@@ -53,3 +53,21 @@ test('Edge API updates profile only through the authenticated user identity', ()
   assert.match(edge, /p_user_id: user\.id/)
   assert.match(edge, /displayName\.length > 80/)
 })
+
+
+test('Edge training sync is JWT-owned, revisioned and body-bounded', () => {
+  assert.match(edge, /action === "training-rev"/)
+  assert.match(edge, /action === "training-state"/)
+  assert.match(edge, /admin\.rpc\("pt650_training_revision", \{ p_user_id: user\.id \}\)/)
+  assert.match(edge, /admin\.rpc\("pt650_training_get", \{ p_user_id: user\.id \}\)/)
+  assert.match(edge, /admin\.rpc\("pt650_training_put"/)
+  assert.match(edge, /p_user_id: user\.id/)
+  assert.match(edge, /boundedJson\(req, 2_700_000\)/)
+  assert.match(edge, /row\.outcome === "conflict" \? 409 : 200/)
+})
+
+test('Edge training sync separates cheap revision polling from bounded state writes', () => {
+  assert.match(edge, /rate\(user\.id, "training-rev", 180, 60\)/)
+  assert.match(edge, /rate\(user\.id, "training-read", 120, 3600\)/)
+  assert.match(edge, /rate\(user\.id, "training-write", 900, 3600\)/)
+})
