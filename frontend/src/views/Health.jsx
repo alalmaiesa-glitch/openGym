@@ -45,7 +45,8 @@ const COPY = ar => ar ? {
   recent: 'الأنشطة الحديثة',
   noActivities: 'لا توجد أنشطة بعد. جلسات PT650 Move الموثقة ستظهر هنا تلقائيًا.',
   sources: 'مصادر البيانات',
-  active: 'متصل',
+  connected: 'متصل',
+  available: 'متاح',
   planned: 'قادم',
   disabled: 'متوقف',
   openMove: 'ابدأ PT650 Move',
@@ -57,7 +58,7 @@ const COPY = ar => ar ? {
   sourceAttested: 'من المصدر',
   privacy: 'الموقع الخام لا يُخزن داخل سجل Health. مسارات GPS الحساسة تُعامل كبيانات منفصلة محمية.',
   medical: 'هذه المؤشرات مخصصة للتدريب والمتابعة وليست تشخيصًا طبيًا.',
-  adaptersNote: 'Active يعني أن البيانات تتدفق فعليًا الآن. Planned يعني أن الـAdapter لم يُفعّل بعد.'
+  adaptersNote: 'متصل يعني أن لهذا الحساب بيانات فعلية من المصدر. متاح يعني أن الـAdapter جاهز، وقادم يعني أنه لم يُفعّل بعد.'
 } : {
   title: 'PT650 Health',
   subtitle: 'One health and endurance record for training, movement, sleep, recovery and wearables.',
@@ -70,7 +71,8 @@ const COPY = ar => ar ? {
   recent: 'Recent activities',
   noActivities: 'No activities yet. Verified PT650 Move sessions will appear here automatically.',
   sources: 'Data sources',
-  active: 'Connected',
+  connected: 'Connected',
+  available: 'Available',
   planned: 'Planned',
   disabled: 'Disabled',
   openMove: 'Start PT650 Move',
@@ -82,7 +84,7 @@ const COPY = ar => ar ? {
   sourceAttested: 'Source-attested',
   privacy: 'Raw location is not stored inside the Health record. Sensitive GPS routes remain separate protected data.',
   medical: 'These signals support training and tracking; they are not medical diagnoses.',
-  adaptersNote: 'Active means data can flow today. Planned means that adapter is not enabled yet.'
+  adaptersNote: 'Connected means this account has source data. Available means the adapter is implemented; Planned means it is not enabled yet.'
 }
 
 function MetricCard({ metric, payload, ar }) {
@@ -132,6 +134,7 @@ export default function Health() {
   const metricEntries = useMemo(() => Object.entries(summary?.latest || {}), [summary])
   const activeSources = adapters.filter(x => x.status === 'active')
   const plannedSources = adapters.filter(x => x.status === 'planned')
+  const connectedProviders = new Set((summary?.sources || []).filter(x => x.status === 'active').map(x => x.provider))
   const totals = summary?.activity30d || {}
 
   return (
@@ -211,7 +214,7 @@ export default function Health() {
           {activeSources.map(x => (
             <div className="health-source-row" key={x.provider}>
               <div><strong>{x.display_name}</strong><span>{(x.capabilities || []).join(' · ')}</span></div>
-              <span className="health-source-state active">{C.active}</span>
+              <span className="health-source-state active">{connectedProviders.has(x.provider) ? C.connected : C.available}</span>
             </div>
           ))}
           {plannedSources.map(x => (
