@@ -21,6 +21,7 @@ import { startWarmup } from './coach/warmup.js';
 import { dayReminderPush, restTimerPush, testPush } from './push-messages.js';
 import { verifyError } from './verify-error.js';
 import { machineScanRoutes } from './machine-scan.js';
+import { platformRoutes } from './platform/routes.js';
 import {
   hashPassword, verifyPassword, needsRehash, passwordProblem, passwordLength, nameKey, BusyError,
   MIN_LENGTH, MAX_LENGTH, makeResetCode, hashResetCode, resetCodeMatches, RESET_TTL_MS, warmUp,
@@ -2345,6 +2346,9 @@ const routes = {
 
   /* ---------- PT650 Machine Scan ---------- */
   ...machineScanRoutes({ json, readBody, readSession }),
+
+  /* ---------- PT650 Platform / Move ---------- */
+  ...platformRoutes({ json, readBody, readSession }),
 
   /* ---------- photos & videos ---------- */
   // Absent, not refusing, when MEDIA_UPLOADS=0: a 404 is what a server from before the feature
