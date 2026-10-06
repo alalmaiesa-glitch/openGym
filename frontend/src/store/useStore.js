@@ -249,6 +249,7 @@ export const useStore = create((set, get) => {
   }
   const syncIdentity = () => get()?.user || (platformOwner() ? { id: platformOwner(), platform: true } : null)
   const usingPlatformCloud = () => !!platformOwner() && !get()?.user
+  const pushDelay = () => usingPlatformCloud() ? 5000 : 1500
   let pushTm = null
   let saveTm = null
   let toldTooLarge = false
@@ -345,7 +346,7 @@ export const useStore = create((set, get) => {
     next.status = statusOf(next, syncIdentity())
     if (Object.keys(next).some(k => (k === 'lastError' ? !sameError(next[k], cur[k]) : next[k] !== cur[k]))) set({ sync: next })
   }
-  const isNetworkError = e => e && e.status == null   // fetch itself failed, or gave up: no response at all
+  const isNetworkError = e => e && (e.status == null || e.status === 0)   // fetch itself failed, timed out, or gave up: no response at all
   const refused = e => e?.status === 401 || e?.code === 'not-paired'
   // The server answered: whatever was wrong with the connection is over.
   const reached = (extra = {}) => setSync({ offline: false, auth: false, lastError: null, ...extra })
@@ -450,7 +451,7 @@ export const useStore = create((set, get) => {
       // would carry it with a stale (or no) baseRev. It waits for finishBoot.
       if (!get().ready) { pushPending = true; return }
       clearTimeout(pushTm)
-      pushTm = setTimeout(() => get().pushState(), 1500)
+      pushTm = setTimeout(() => get().pushState(), pushDelay())
     }
   }
   // Boot's last step: from here on changes push, and one made during boot goes now.
@@ -458,7 +459,7 @@ export const useStore = create((set, get) => {
     set({ ready: true, ...extra })
     if (pushPending && syncIdentity()) {
       clearTimeout(pushTm)
-      pushTm = setTimeout(() => get().pushState(), 1500)
+      pushTm = setTimeout(() => get().pushState(), pushDelay())
     }
     pushPending = false
   }
@@ -534,7 +535,8 @@ export const useStore = create((set, get) => {
     // replaced whatever another device had written in the meantime.
     const force = forceNext
     forceNext = false
-    const body = { state: S }
+    const cloudState = usingPlatformCloud() ? { ...S, active: null } : S
+    const body = { state: cloudState }
     // PT650 cloud never performs a blind overwrite: even reset/import writes are conditional
     // and merge on conflict. The legacy self-host path keeps its historical force behaviour.
     if (usingPlatformCloud()) {
