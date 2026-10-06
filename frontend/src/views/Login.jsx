@@ -193,9 +193,9 @@ export default function Login() {
 
       <div className="login-hero-copy">
         <span className="login-eyebrow">{DEMO ? (publicAr ? 'PT650 · نظام الرياضي الذكي' : 'PT650 · Athlete OS') : t('Exercises')}</span>
-        <h1>{DEMO ? (publicAr ? 'تدرّب. تحرّك. تعافَ.' : 'Train. Move. Recover.') : 'PT650'}</h1>
+        <h1>PT650</h1>
         <p>{DEMO
-          ? (publicAr ? 'التدريب، النشاط الموثق والخدمات الذكية القادمة تحت حساب PT650 واحد.' : 'Training, verified activity and upcoming intelligent services under one PT650 account.')
+          ? (publicAr ? 'تدرّب. تحرّك. تعافَ — التدريب، النشاط الموثق والخدمات الذكية القادمة تحت حساب واحد.' : 'Train. Move. Recover — training, verified activity and upcoming intelligent services under one account.')
           : t('Your workouts. Your weights. Your profile.')}</p>
       </div>
 
