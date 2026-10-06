@@ -102,3 +102,20 @@ test('Health summary reindexes pre-existing workout weights without failing the 
   assert.match(edge, /console\.error\("pt650-health-reindex"/)
   assert.doesNotMatch(edge, /if \(reindexError\) throw reindexError/)
 })
+
+
+test('Wearable control plane is JWT-owned and exposes only safe framework metadata/actions', () => {
+  assert.match(edge, /action === "wearable-framework"/)
+  assert.match(edge, /admin\.rpc\("pt650_wearable_framework", \{ p_user_id: user\.id \}\)/)
+  assert.match(edge, /action === "wearable-priority"/)
+  assert.match(edge, /admin\.rpc\("pt650_wearable_set_priority"/)
+  assert.match(edge, /p_user_id: user\.id/)
+  assert.doesNotMatch(edge, /action === "wearable-token"/)
+  assert.doesNotMatch(edge, /action === "wearable-cursor"/)
+})
+
+test('Wearable source priority input is bounded and rate limited', () => {
+  assert.match(edge, /rate\(user\.id, "wearable-priority", 30, 3600\)/)
+  assert.match(edge, /priority < 0 \|\| priority > 1000/)
+  assert.match(edge, /invalid source priority/)
+})
