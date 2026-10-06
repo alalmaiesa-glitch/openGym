@@ -168,3 +168,76 @@ test('Health Core hardening covers foreign-key access paths and activates implem
   expectSql(hardening, /health_observations_device_idx/i)
   expectSql(hardening, /endurance_activities_device_idx/i)
 })
+
+
+test('Wearable Adapter Framework declares registry auth/sync metadata and source precedence', () => {
+  const framework = readFileSync(resolve(process.cwd(), 'platform/sql/019_wearable_adapter_framework.sql'), 'utf8')
+  expectSql(framework, /auth_strategy text not null/i)
+  expectSql(framework, /sync_strategy text not null/i)
+  expectSql(framework, /default_priority smallint not null/i)
+  expectSql(framework, /requires_native boolean not null/i)
+  expectSql(framework, /uses_token_vault boolean not null/i)
+  expectSql(framework, /when 'pt650_move' then 1000/i)
+  expectSql(framework, /when 'apple_health' then 850/i)
+  expectSql(framework, /when 'garmin' then 820/i)
+})
+
+test('Wearable OAuth secrets are referenced through Supabase Vault, never stored as token plaintext columns', () => {
+  const framework = readFileSync(resolve(process.cwd(), 'platform/sql/019_wearable_adapter_framework.sql'), 'utf8')
+  expectSql(framework, /create table if not exists pt650\.health_connection_token_refs/i)
+  expectSql(framework, /secret_id uuid not null unique/i)
+  expectSql(framework, /vault\.create_secret/i)
+  expectSql(framework, /vault\.update_secret/i)
+  expectSql(framework, /vault\.decrypted_secrets/i)
+  assert.doesNotMatch(framework, /access_token\s+text/i)
+  assert.doesNotMatch(framework, /refresh_token\s+text/i)
+})
+
+test('Wearable sync uses durable cursors, deduped jobs and multi-worker SKIP LOCKED claims', () => {
+  const framework = readFileSync(resolve(process.cwd(), 'platform/sql/019_wearable_adapter_framework.sql'), 'utf8')
+  expectSql(framework, /create table if not exists pt650\.health_sync_cursors/i)
+  expectSql(framework, /create table if not exists pt650\.health_sync_jobs/i)
+  expectSql(framework, /unique index if not exists health_sync_jobs_dedupe_uidx/i)
+  expectSql(framework, /for update skip locked/i)
+  expectSql(framework, /max_attempts integer not null default 8/i)
+})
+
+test('Wearable sync leases are reclaimable and cannot be completed by the wrong worker', () => {
+  const lease = readFileSync(resolve(process.cwd(), 'platform/sql/021_wearable_sync_lease_recovery.sql'), 'utf8')
+  expectSql(lease, /lease_expires_at timestamptz/i)
+  expectSql(lease, /lease_expires_at <= now\(\)/i)
+  expectSql(lease, /interval '5 minutes'/i)
+  expectSql(lease, /locked_by is distinct from p_worker_id/i)
+  expectSql(lease, /sync job lease expired/i)
+})
+
+test('Cross-source dedupe is non-destructive and selects a primary by effective priority plus quality', () => {
+  const framework = readFileSync(resolve(process.cwd(), 'platform/sql/019_wearable_adapter_framework.sql'), 'utf8')
+  expectSql(framework, /create table if not exists pt650\.health_dedupe_groups/i)
+  expectSql(framework, /create table if not exists pt650\.health_dedupe_members/i)
+  expectSql(framework, /pt650_health_effective_priority/i)
+  expectSql(framework, /v_priority > v_group\.primary_priority/i)
+  expectSql(framework, /v_priority = v_group\.primary_priority and p_quality > v_group\.primary_quality/i)
+  assert.doesNotMatch(framework, /delete from pt650\.health_observations/i)
+  assert.doesNotMatch(framework, /delete from pt650\.endurance_activities/i)
+})
+
+test('Wearable account-facing control plane exposes metadata but not decrypted tokens or raw cursors', () => {
+  const control = readFileSync(resolve(process.cwd(), 'platform/sql/020_wearable_framework_control_plane.sql'), 'utf8')
+  expectSql(control, /pt650_wearable_framework/i)
+  expectSql(control, /'tokenStored'/i)
+  expectSql(control, /'sync'/i)
+  assert.doesNotMatch(control, /decrypted_secret/i)
+  assert.doesNotMatch(control, /'cursor'/i)
+})
+
+test('Wearable framework hardening covers provider foreign keys and fixed helper search path', () => {
+  const hardening = readFileSync(resolve(process.cwd(), 'platform/sql/022_wearable_framework_hardening.sql'), 'utf8')
+  expectSql(hardening, /health_connections_provider_idx/i)
+  expectSql(hardening, /health_dedupe_groups_primary_provider_idx/i)
+  expectSql(hardening, /health_dedupe_members_provider_idx/i)
+  expectSql(hardening, /health_dedupe_members_user_idx/i)
+  expectSql(hardening, /health_source_preferences_provider_idx/i)
+  expectSql(hardening, /health_sync_jobs_provider_idx/i)
+  expectSql(hardening, /set search_path = pg_catalog/i)
+})
