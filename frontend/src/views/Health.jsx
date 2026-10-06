@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { platformApi } from '../lib/platform-api.js'
+import { appleHealthCapability, syncAppleHealth } from '../lib/apple-health.js'
 import { getLang } from '../lib/i18n-core.js'
 import Icon from '../components/Icon.jsx'
 import { Button } from '../components/ui.jsx'
@@ -26,7 +27,8 @@ const METRICS = {
   hydration_ml: { ar: 'السوائل', en: 'Hydration', unit: 'ml' },
   fasting_minutes: { ar: 'الصيام', en: 'Fasting', unit: 'min' },
   resting_hr_bpm: { ar: 'نبض الراحة', en: 'Resting HR', unit: 'bpm' },
-  hrv_rmssd_ms: { ar: 'HRV', en: 'HRV', unit: 'ms' },
+  hrv_rmssd_ms: { ar: 'HRV · RMSSD', en: 'HRV · RMSSD', unit: 'ms' },
+  hrv_sdnn_ms: { ar: 'HRV · SDNN', en: 'HRV · SDNN', unit: 'ms' },
   spo2_pct: { ar: 'الأكسجين', en: 'SpO₂', unit: '%' },
   respiratory_rate: { ar: 'التنفس', en: 'Respiratory rate', unit: '/min' },
   body_temp_c: { ar: 'الحرارة', en: 'Temperature', unit: '°C' },
@@ -58,7 +60,12 @@ const COPY = ar => ar ? {
   sourceAttested: 'من المصدر',
   privacy: 'الموقع الخام لا يُخزن داخل سجل Health. مسارات GPS الحساسة تُعامل كبيانات منفصلة محمية.',
   medical: 'هذه المؤشرات مخصصة للتدريب والمتابعة وليست تشخيصًا طبيًا.',
-  adaptersNote: 'متصل يعني أن لهذا الحساب بيانات فعلية من المصدر. متاح يعني أن الـAdapter جاهز، وقادم يعني أنه لم يُفعّل بعد.'
+  adaptersNote: 'متصل يعني أن لهذا الحساب بيانات فعلية من المصدر. متاح يعني أن الـAdapter جاهز، وقادم يعني أنه لم يُفعّل بعد.',
+  connectApple: 'ربط ومزامنة',
+  syncApple: 'مزامنة',
+  syncingApple: 'جارٍ المزامنة…',
+  iphoneRequired: 'يتطلب تطبيق PT650 على iPhone',
+  applePending: 'تم طلب صلاحية القراءة، ولم تُرجع HealthKit بيانات قابلة للقراءة بعد.'
 } : {
   title: 'PT650 Health',
   subtitle: 'One health and endurance record for training, movement, sleep, recovery and wearables.',
@@ -84,7 +91,12 @@ const COPY = ar => ar ? {
   sourceAttested: 'Source-attested',
   privacy: 'Raw location is not stored inside the Health record. Sensitive GPS routes remain separate protected data.',
   medical: 'These signals support training and tracking; they are not medical diagnoses.',
-  adaptersNote: 'Connected means this account has source data. Available means the adapter is implemented; Planned means it is not enabled yet.'
+  adaptersNote: 'Connected means this account has source data. Available means the adapter is implemented; Planned means it is not enabled yet.',
+  connectApple: 'Connect & sync',
+  syncApple: 'Sync',
+  syncingApple: 'Syncing…',
+  iphoneRequired: 'Requires the PT650 iPhone app',
+  applePending: 'Read permission was requested, but HealthKit has not returned readable data yet.'
 }
 
 function MetricCard({ metric, payload, ar }) {
@@ -109,6 +121,9 @@ export default function Health() {
   const [adapters, setAdapters] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [appleNative, setAppleNative] = useState(false)
+  const [syncingApple, setSyncingApple] = useState(false)
+  const [appleNote, setAppleNote] = useState('')
 
   const refresh = async () => {
     setLoading(true)
@@ -138,6 +153,24 @@ export default function Health() {
   }
 
   useEffect(() => { refresh() }, [])
+  useEffect(() => {
+    appleHealthCapability().then(x => setAppleNative(x.available === true)).catch(() => setAppleNative(false))
+  }, [])
+
+  const runAppleSync = async () => {
+    setSyncingApple(true)
+    setAppleNote('')
+    setError('')
+    try {
+      const result = await syncAppleHealth()
+      if (result?.status !== 'active') setAppleNote(C.applePending)
+      await refresh()
+    } catch (e) {
+      setError(e?.message || C.unavailable)
+    } finally {
+      setSyncingApple(false)
+    }
+  }
 
   const metricEntries = useMemo(() => Object.entries(summary?.latest || {}), [summary])
   const activeSources = adapters.filter(x => x.status === 'active')
@@ -158,6 +191,7 @@ export default function Health() {
 
       {loading && <div className="health-notice"><Icon name="timer" /><span>{C.loading}</span></div>}
       {!!error && <div className="health-notice error"><Icon name="warning" /><span>{error}</span></div>}
+      {!!appleNote && <div className="health-notice"><Icon name="info" /><span>{appleNote}</span></div>}
 
       <section className="health-summary-card">
         <div className="health-section-head">
@@ -219,12 +253,24 @@ export default function Health() {
         </div>
 
         <div className="health-source-group">
-          {activeSources.map(x => (
-            <div className="health-source-row" key={x.provider}>
-              <div><strong>{x.display_name}</strong><span>{(x.capabilities || []).join(' · ')}</span></div>
-              <span className="health-source-state active">{connectedProviders.has(x.provider) ? C.connected : C.available}</span>
-            </div>
-          ))}
+          {activeSources.map(x => {
+            const connected = connectedProviders.has(x.provider)
+            const isApple = x.provider === 'apple_health'
+            return (
+              <div className="health-source-row" key={x.provider}>
+                <div><strong>{x.display_name}</strong><span>{(x.capabilities || []).join(' · ')}</span></div>
+                <div className="health-source-actions">
+                  <span className="health-source-state active">{connected ? C.connected : C.available}</span>
+                  {isApple && appleNative && (
+                    <Button size="sm" variant="tinted" disabled={syncingApple} onClick={runAppleSync}>
+                      {syncingApple ? C.syncingApple : connected ? C.syncApple : C.connectApple}
+                    </Button>
+                  )}
+                  {isApple && !appleNative && <small>{C.iphoneRequired}</small>}
+                </div>
+              </div>
+            )
+          })}
           {plannedSources.map(x => (
             <div className="health-source-row" key={x.provider}>
               <div><strong>{x.display_name}</strong><span>{(x.capabilities || []).join(' · ')}</span></div>
