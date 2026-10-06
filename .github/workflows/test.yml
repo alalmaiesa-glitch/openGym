@@ -289,3 +289,19 @@ jobs:
           # canDropPrivileges() fails closed, so a missing `coach` user disables every job —
           # including the fixture provider. Cheaper to assert here than to discover on an instance.
           docker run --rm opengym-api:default id coach
+
+
+  android-native:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: gradle
+      - name: Build PT650 Android native shell
+        working-directory: frontend/android
+        run: |
+          chmod +x gradlew
+          ./gradlew :app:assembleDebug --no-daemon
