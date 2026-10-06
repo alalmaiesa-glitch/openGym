@@ -22,11 +22,13 @@ describe('PT650 Health & Endurance Core V1 UI', () => {
     expect(health).not.toContain('SUPABASE_SERVICE_ROLE_KEY')
   })
 
-  it('distinguishes connected adapters from planned adapters', () => {
+  it('distinguishes adapter availability from account-level connection state', () => {
     expect(health).toContain("x.status === 'active'")
     expect(health).toContain("x.status === 'planned'")
-    expect(health).toContain("Active means data can flow today")
-    expect(health).toContain("Planned means that adapter is not enabled yet")
+    expect(health).toContain('connectedProviders.has(x.provider)')
+    expect(health).toContain('Connected means this account has source data')
+    expect(health).toContain('Available means the adapter is implemented')
+    expect(health).toContain('Planned means it is not enabled yet')
   })
 
   it('states route privacy and avoids medical-diagnosis claims', () => {
