@@ -56,9 +56,9 @@
       "upstream": "seated_meditation",
       "motion": "Mesh2Motion Meditate",
       "motionLicense": "CC0-1.0",
-      "decision": "unmatched",
-      "exerciseId": null,
-      "reason": "no exact PT650 catalogue exercise"
+      "decision": "registered-native",
+      "exerciseId": "pt650-0003",
+      "reason": "added to the PT650 native catalogue for an exact 1:1 CC0 seated-meditation movement match"
     }
   ]
 }
