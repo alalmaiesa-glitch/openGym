@@ -1,4 +1,4 @@
-import { platformConfig, platformSession } from './platform-auth.js'
+import { platformConfig, platformSession, platformSignOut } from './platform-auth.js'
 
 function fail(message, status, code, data) {
   return Object.assign(new Error(message), { status, code, data: data || {} })
@@ -23,7 +23,7 @@ export async function platformApi(action, { method = 'GET', body, timeout = 3000
     })
     let data = null
     try { data = await response.json() } catch {}
-    if (!response.ok) throw fail(data?.error || ('HTTP ' + response.status), response.status, data?.code || 'platform-error', data)
+    if (!response.ok) {\n      if (response.status === 401) await platformSignOut()\n      throw fail(data?.error || ('HTTP ' + response.status), response.status, data?.code || 'platform-error', data)\n    }
     if (!data || typeof data !== 'object') throw fail('Invalid PT650 platform response', response.status, 'bad-response')
     return data
   } catch (e) {
