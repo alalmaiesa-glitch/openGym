@@ -291,7 +291,7 @@ export function machinePrescription(S, machine) {
     .map(Number)
     .filter(w => Number.isFinite(w) && w > 0)
   const previous = median(loads)
-  const bw = lastBW(S || {})
+  const bw = lastBW({ bodyweight: Array.isArray(S?.bodyweight) ? S.bodyweight : [] })
 
   return {
     ...p,
