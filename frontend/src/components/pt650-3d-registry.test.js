@@ -84,12 +84,9 @@ describe('PT650 mirrored 3D registry', () => {
   it('locks every mirrored binary with SHA256 before deployment', () => {
     const lock = JSON.parse(readFileSync(new URL('../../pt650-3d-assets.lock.json', import.meta.url), 'utf8'))
     expect(lock.format).toBe('pt650-3d-asset-lock/1')
-    expect(lock.assets.map(a => a.exerciseId).sort()).toEqual(['0662', '0685', '3360'])
-    const mirroredRegistryIds = Object.entries(PT650_3D_MODELS)
-      .filter(([, model]) => !model.generatedBy)
-      .map(([exerciseId]) => exerciseId)
-      .sort()
-    expect(lock.assets.map(a => a.exerciseId).sort()).toEqual(mirroredRegistryIds)
+    expect(lock.assets.map(a => a.exerciseId).sort()).toEqual(['0662', '0685', '3360', 'pt650-0001'])
+    const deployRegistryIds = Object.keys(PT650_3D_MODELS).sort()
+    expect(lock.assets.map(a => a.exerciseId).sort()).toEqual(deployRegistryIds)
     for (const asset of lock.assets) {
       for (const file of Object.values(asset.files)) {
         expect(file.sha256).toMatch(/^(BOOTSTRAP|[0-9a-f]{64})$/)
