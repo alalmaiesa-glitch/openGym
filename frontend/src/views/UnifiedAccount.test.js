@@ -9,7 +9,8 @@ const identity = readFileSync(resolve(process.cwd(), 'src/lib/platform-identity.
 
 describe('PT650 unified account V1', () => {
   it('does not force GitHub Pages into guest mode anymore', () => {
-    const demoBlock = store.slice(store.indexOf('if (DEMO) {'), store.indexOf('// Opened from a device-link', store.indexOf('if (DEMO) {')))
+    const start = store.indexOf('// Static PT650 build (GitHub Pages)')
+    const demoBlock = store.slice(start, start + 700)
     expect(demoBlock).toContain('setGuest(false)')
     expect(demoBlock).not.toContain('setGuest(true)')
     expect(demoBlock).not.toContain('resetDemo()')
