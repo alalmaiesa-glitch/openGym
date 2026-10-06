@@ -1,0 +1,52 @@
+{
+  "format": "pt650-owned-motion/1",
+  "policy": {
+    "allowedSource": "PT650-owned-capture",
+    "publicProduct": "animated-only",
+    "sourceVideoPublished": false,
+    "requireExactExerciseBinding": true,
+    "requireSha256AfterCapture": true,
+    "forbiddenSources": [
+      "Mixamo",
+      "video-demo",
+      "CMU-app-only",
+      "approximate-motion"
+    ]
+  },
+  "captures": [
+    {
+      "exerciseId": "3470",
+      "exercise": "forward lunge (male)",
+      "target": "forward lunge",
+      "referenceSpec": "AssiamahS/opengym3d@ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae:exercises/lunge.json",
+      "movementPattern": "lunge",
+      "equipment": "body weight",
+      "status": "awaiting-owned-capture",
+      "source": {
+        "kind": "PT650-owned-capture",
+        "videoSha256": null,
+        "motionSha256": null,
+        "redistribution": "derived-animation-only"
+      },
+      "captureProtocol": {
+        "view": "side",
+        "fullBodyVisible": true,
+        "cameraFixed": true,
+        "minimumFps": 30,
+        "requiredSequence": [
+          "neutral standing",
+          "right forward lunge to approximately 90 degrees",
+          "return to standing",
+          "left forward lunge to approximately 90 degrees",
+          "return to standing"
+        ]
+      },
+      "releaseGate": {
+        "poseExtracted": false,
+        "anatomyQaPassed": false,
+        "visualReviewPassed": false,
+        "runtimeRegistered": false
+      }
+    }
+  ]
+}
