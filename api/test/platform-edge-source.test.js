@@ -119,3 +119,17 @@ test('Wearable source priority input is bounded and rate limited', () => {
   assert.match(edge, /priority < 0 \|\| priority > 1000/)
   assert.match(edge, /invalid source priority/)
 })
+
+
+test('Apple HealthKit native ingest is JWT-owned, bounded and rejects raw location or opaque anchors', () => {
+  assert.match(edge, /action === "wearable-native-ingest"/)
+  assert.match(edge, /rate\(user\.id, "wearable-native-ingest", 120, 3600\)/)
+  assert.match(edge, /boundedJson\(req, 1_200_000\)/)
+  assert.match(edge, /provider !== "apple_health"/)
+  assert.match(edge, /observations\.length > 1000/)
+  assert.match(edge, /activities\.length > 250/)
+  assert.match(edge, /hasRawLocation\(body\)/)
+  assert.match(edge, /"anchors" in cursor/)
+  assert.match(edge, /admin\.rpc\("pt650_wearable_ingest_native_batch"/)
+  assert.match(edge, /p_user_id: user\.id/)
+})
