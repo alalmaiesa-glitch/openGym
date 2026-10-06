@@ -298,7 +298,7 @@ begin
     return query
       select v_existing.id,
              'existing'::text,
-             v_existing.terms_hash,
+             v_existing.terms_hash::text,
              v_existing.reward_snapshot;
     return;
   end if;
@@ -364,7 +364,7 @@ begin
 
   if not v_reserved then
     delete from pt650.challenge_enrollments where id = v_id;
-    return query select null::uuid, 'sold_out'::text, c.terms_hash, v_reward;
+    return query select null::uuid, 'sold_out'::text, c.terms_hash::text, v_reward;
     return;
   end if;
 
@@ -372,7 +372,7 @@ begin
   values (v_id)
   on conflict on constraint challenge_progress_pkey do nothing;
 
-  return query select v_id, 'enrolled'::text, c.terms_hash, v_reward;
+  return query select v_id, 'enrolled'::text, c.terms_hash::text, v_reward;
 end;
 $$;
 
