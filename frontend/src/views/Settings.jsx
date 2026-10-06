@@ -893,7 +893,7 @@ function PlatformAccountSection({ lang }) {
       <Row icon="person" iconTint="var(--acc)" title={email}
         subtitle={ar ? 'الحساب الرئيسي لخدمات PT650' : 'Primary identity for PT650 services'} />
       <Row icon="shield" iconTint="var(--green)" title={ar ? 'الخدمات المتصلة' : 'Connected services'}
-        subtitle={ar ? 'Move · Rewards · التالي: Nutrition · Health · Machine Scan' : 'Move · Rewards · next: Nutrition · Health · Machine Scan'} />
+        subtitle={ar ? 'Move · Rewards · Health · التالي: Nutrition · Wearables' : 'Move · Rewards · Health · next: Nutrition · Wearables'} />
       <Row icon="link" iconTint={sync?.status === 'ok' ? 'var(--green)' : 'var(--orange)'}
         title={ar ? 'مزامنة التدريب' : 'Training sync'}
         subtitle={syncing ? (ar ? 'جارٍ التحقق والمزامنة…' : 'Checking and syncing…') : syncText}
