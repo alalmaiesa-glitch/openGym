@@ -77,7 +77,7 @@ export function normalizeRecognition(raw) {
   let parsed
   try { parsed = typeof raw === 'string' ? JSON.parse(trimFence(raw)) : raw } catch { return { machineId: null, confidence: 0, evidence: [], uncertain: true } }
   const confidence = Math.max(0, Math.min(1, Number(parsed?.confidence) || 0))
-  const machineId = targetIds.has(parsed?.machineId) && confidence >= 0.65 ? parsed.machineId : null
+  const machineId = targetIds.has(parsed?.machineId) && confidence >= 0.65 && parsed?.uncertain !== true ? parsed.machineId : null
   const evidence = Array.isArray(parsed?.evidence)
     ? parsed.evidence.filter(x => typeof x === 'string').map(x => x.slice(0, 120)).slice(0, 3)
     : []
@@ -194,10 +194,6 @@ export function machineScanRoutes({ json, readBody, readSession }) {
     'POST /api/machine-scan/analyze': async (req, res) => {
       const user = readSession(req)
       if (!user) return json(res, 401, { error: 'not signed in', code: 'auth' })
-      if (!consumeMachineScanBudget(user.id)) {
-        return json(res, 429, { error: 'machine scan limit reached', code: 'rate-limit', retryAfter: 3600 })
-      }
-
       const body = await readBody(req)
       const image = validateMachineImage(body)
       if (!image.ok) return json(res, 400, { error: 'invalid machine image', code: image.code })
@@ -214,6 +210,9 @@ export function machineScanRoutes({ json, readBody, readSession }) {
 
       const resolved = cfgStore.credentialFor(user.id)
       if (!resolved.ok) return json(res, 409, { error: 'provider account is not available for this profile', code: 'vision-unavailable' })
+      if (!consumeMachineScanBudget(user.id)) {
+        return json(res, 429, { error: 'machine scan limit reached', code: 'rate-limit', retryAfter: 3600 })
+      }
       cfgStore.bindInstanceCredential(user.id)
 
       const result = await invokeVision(provider, {
