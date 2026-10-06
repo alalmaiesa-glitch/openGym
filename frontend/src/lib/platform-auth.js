@@ -18,6 +18,20 @@ const save = session => {
   return session || null
 }
 
+export function platformSessionUserId(session = platformStoredSession()) {
+  if (session?.user?.id) return session.user.id
+  const token = session?.access_token
+  if (typeof token !== 'string') return null
+  try {
+    const part = token.split('.')[1]
+    if (!part) return null
+    const normalized = part.replace(/-/g, '+').replace(/_/g, '/')
+    const padded = normalized + '='.repeat((4 - normalized.length % 4) % 4)
+    const claims = JSON.parse(atob(padded))
+    return typeof claims?.sub === 'string' && claims.sub ? claims.sub : null
+  } catch { return null }
+}
+
 export function platformStoredSession() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
