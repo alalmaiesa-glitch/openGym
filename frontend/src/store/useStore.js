@@ -20,6 +20,7 @@ import { loadRemote, chooseLocal, forgetRemote, connect, normalizeServerUrl, ren
 import { loadCoachDevice, saveCoachDevice, coachDeviceSettings } from '../lib/coach-device.js'
 import { RTL_LANGS } from '../lib/i18n-core.js'
 import { platformApi } from '../lib/platform-api.js'
+import { platformSessionUserId, platformStoredSession } from '../lib/platform-auth.js'
 import { DEFAULT_TEMPLATE_ID } from '../lib/structuralBalanceTemplates.js'
 
 import { WC_DEFAULT } from '../lib/workout-controls.js'
@@ -247,8 +248,14 @@ export const useStore = create((set, get) => {
     if (!DEMO) return null
     try { return localStorage.getItem(PLATFORM_LOCAL_OWNER_KEY) || null } catch { return null }
   }
-  const syncIdentity = () => get()?.user || (platformOwner() ? { id: platformOwner(), platform: true } : null)
-  const usingPlatformCloud = () => !!platformOwner() && !get()?.user
+  const platformSyncUid = () => {
+    const owner = platformOwner()
+    if (!owner) return null
+    const sessionUid = platformSessionUserId(platformStoredSession())
+    return sessionUid === owner ? owner : null
+  }
+  const syncIdentity = () => get()?.user || (platformSyncUid() ? { id: platformSyncUid(), platform: true } : null)
+  const usingPlatformCloud = () => !!platformSyncUid() && !get()?.user
   const pushDelay = () => usingPlatformCloud() ? 5000 : 1500
   let pushTm = null
   let saveTm = null
@@ -952,7 +959,7 @@ export const useStore = create((set, get) => {
   const user0 = (() => { try { return JSON.parse(localStorage.getItem('gym_user')) || null } catch { return null } })()
   adoptHold = !!user0 && readAdopt()?.uid === user0.id
   const sync0 = { offline: false, pending: storedOwed(), auth: false, lastError: null, lastSynced: (() => { try { return +localStorage.getItem(SYNCED_AT_KEY) || 0 } catch { return 0 } })(), server: serverBase(), held: adoptHold }
-  sync0.status = statusOf(sync0, user0 || (platformOwner() ? { id: platformOwner(), platform: true } : null))
+  sync0.status = statusOf(sync0, user0 || (platformSyncUid() ? { id: platformSyncUid(), platform: true } : null))
 
   return {
     S: S0,
