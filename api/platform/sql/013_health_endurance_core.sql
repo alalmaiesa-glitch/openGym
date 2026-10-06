@@ -62,6 +62,8 @@ create unique index if not exists health_sources_identity_uidx
 
 create index if not exists health_sources_user_idx
   on pt650.health_sources (user_id, status, provider);
+create index if not exists health_sources_provider_idx
+  on pt650.health_sources (provider);
 
 create table if not exists pt650.health_devices (
   id uuid primary key default gen_random_uuid(),
@@ -97,6 +99,8 @@ create table if not exists pt650.health_import_keys (
 
 create index if not exists health_import_keys_target_idx
   on pt650.health_import_keys (target_id);
+create index if not exists health_import_keys_source_idx
+  on pt650.health_import_keys (source_id);
 
 -- Health observations are summaries/samples, not high-frequency streams. High-frequency
 -- heart-rate/power/cadence/GPS series belong in activity_stream_chunks below.
@@ -128,6 +132,9 @@ create index if not exists health_observations_user_metric_time_idx
   on pt650.health_observations (user_id, metric, started_at desc);
 create index if not exists health_observations_source_time_idx
   on pt650.health_observations (source_id, started_at desc);
+create index if not exists health_observations_device_idx
+  on pt650.health_observations (device_id)
+  where device_id is not null;
 
 create table if not exists pt650.health_targets (
   id uuid primary key default gen_random_uuid(),
@@ -185,6 +192,9 @@ create index if not exists endurance_activities_source_time_idx
   on pt650.endurance_activities (source_id, started_at desc);
 create index if not exists endurance_activities_type_time_idx
   on pt650.endurance_activities (user_id, activity_type, started_at desc);
+create index if not exists endurance_activities_device_idx
+  on pt650.endurance_activities (device_id)
+  where device_id is not null;
 
 create table if not exists pt650.activity_laps (
   activity_id uuid not null references pt650.endurance_activities(id) on delete cascade,
