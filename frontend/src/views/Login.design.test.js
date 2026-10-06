@@ -4,6 +4,7 @@ import { resolve } from 'node:path'
 
 const loginSource = readFileSync(resolve(process.cwd(), 'src/views/Login.jsx'), 'utf8')
 const cssSource = readFileSync(resolve(process.cwd(), 'src/index.css'), 'utf8')
+const appSource = readFileSync(resolve(process.cwd(), 'src/App.jsx'), 'utf8')
 
 describe('PT650 login design', () => {
   it('uses the dedicated responsive login composition', () => {
@@ -20,6 +21,11 @@ describe('PT650 login design', () => {
     expect(loginSource).not.toMatch(/<img\b/i)
     expect(loginSource).not.toMatch(/<video\b/i)
     expect(loginSource).not.toMatch(/backgroundImage/i)
+  })
+
+  it('exposes a direct preview route even when a session is already active', () => {
+    expect(appSource).toContain('<Route path="/login-preview" element={<Login />} />')
+    expect(appSource).toContain("loc.pathname !== '/login-preview'")
   })
 
   it('preserves every existing entry path', () => {
