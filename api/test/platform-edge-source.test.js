@@ -95,3 +95,10 @@ test('workout cloud writes index bodyweight into Health without making sync depe
   assert.match(edge, /console\.error\("pt650-health-weight-bridge"/)
   assert.doesNotMatch(edge, /if \(healthBridgeError\) throw healthBridgeError/)
 })
+
+
+test('Health summary reindexes pre-existing workout weights without failing the dashboard on derived-index errors', () => {
+  assert.match(edge, /admin\.rpc\("pt650_health_reindex_workout", \{ p_user_id: user\.id \}\)/)
+  assert.match(edge, /console\.error\("pt650-health-reindex"/)
+  assert.doesNotMatch(edge, /if \(reindexError\) throw reindexError/)
+})
