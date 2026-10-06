@@ -10,6 +10,7 @@ import LineChart from '../components/LineChart.jsx'
 import Icon from '../components/Icon.jsx'
 import { Button } from '../components/ui.jsx'
 import { tappable } from '../lib/use-sheet-keyboard.js'
+import { usePlatformIdentity } from '../lib/platform-identity.js'
 import { glyphOf } from '../lib/glyphs.js'
 
 // Home = what to do now + a quick glance. Deep charts & history live in Stats.
@@ -17,6 +18,9 @@ export default function Home() {
   const nav = useNavigate()
   const S = useStore(s => s.S)
   const user = useStore(s => s.user)
+  const platformIdentity = usePlatformIdentity()
+  const platformEmail = platformIdentity.session?.user?.email || ''
+  const platformName = platformEmail ? platformEmail.split('@')[0] : ''
   const [weekOffset, setWeekOffset] = useState(0)
   const machineScanAr = String(getLang()).toLowerCase().startsWith('ar')
 
@@ -70,7 +74,7 @@ export default function Home() {
       <div>
         <h1>PT650</h1>
         <div className="sub">
-          {user ? t('Hi {0}', user.name) + ' · ' : ''}
+          {user ? t('Hi {0}', user.name) + ' · ' : platformName ? (machineScanAr ? 'مرحبًا ' : 'Hi ') + platformName + ' · ' : ''}
           {today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}
         </div>
       </div>
