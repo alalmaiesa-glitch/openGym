@@ -34,7 +34,7 @@ test('Edge GPS verifier fails closed and does not return raw route coordinates',
 })
 
 test('Edge request body is bounded before GPS JSON is parsed', () => {
-  assert.match(edge, /boundedJson\(req, max = 600_000\)/)
+  assert.match(edge, /boundedJson\\(req(?:: Request)?, max = 600_000\\)/)
   assert.match(edge, /content-length/)
   assert.match(edge, /status: 413/)
 })
