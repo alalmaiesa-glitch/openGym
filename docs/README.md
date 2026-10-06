@@ -59,4 +59,4 @@ wrong or missing, that's worth an issue too.
 | Reference | Purpose |
 |---|---|
 | [PT650 Platform 2035](PT650_PLATFORM_2035.md) | Product/economy charter for the athlete network |
-| [Endurain reference adoption](PT650_ENDURAIN_REFERENCE.md) | Approved reference for endurance activity, health, wearable and import architecture |
+| [Endurain reference adoption](references/endurain.md) | Approved reference for endurance activity, health, wearable and import architecture |
