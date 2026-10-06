@@ -48,9 +48,9 @@
       "upstream": "walk",
       "motion": "Mesh2Motion Walk",
       "motionLicense": "CC0-1.0",
-      "decision": "unmatched",
-      "exerciseId": null,
-      "reason": "PT650 has walking variants but no exact flat walk exercise"
+      "decision": "registered-native",
+      "exerciseId": "pt650-0002",
+      "reason": "added to the PT650 native catalogue for an exact 1:1 CC0 flat-walk movement match"
     },
     {
       "upstream": "seated_meditation",
