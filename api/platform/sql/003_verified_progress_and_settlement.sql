@@ -115,7 +115,7 @@ begin
     ) values (
       ev.received_at, ev.event_id, rec.id, v_delta
     )
-    on conflict (received_at, event_id, enrollment_id) do nothing;
+    on conflict on constraint challenge_progress_events_pkey do nothing;
 
     if not found then
       select p.value into v_progress
@@ -135,7 +135,7 @@ begin
     ) values (
       rec.id, v_delta, 1, ev.occurred_at, now()
     )
-    on conflict (enrollment_id) do update
+    on conflict on constraint challenge_progress_pkey do update
       set value = pt650.challenge_progress.value + excluded.value,
           event_count = pt650.challenge_progress.event_count + 1,
           last_event_at = greatest(
