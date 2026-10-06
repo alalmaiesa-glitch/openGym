@@ -370,7 +370,7 @@ begin
 
   insert into pt650.challenge_progress(enrollment_id)
   values (v_id)
-  on conflict (enrollment_id) do nothing;
+  on conflict on constraint challenge_progress_pkey do nothing;
 
   return query select v_id, 'enrolled'::text, c.terms_hash, v_reward;
 end;
