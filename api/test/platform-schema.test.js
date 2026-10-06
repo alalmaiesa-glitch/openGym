@@ -241,3 +241,30 @@ test('Wearable framework hardening covers provider foreign keys and fixed helper
   expectSql(hardening, /health_sync_jobs_provider_idx/i)
   expectSql(hardening, /set search_path = pg_catalog/i)
 })
+
+
+test('Apple HealthKit V1 activates only the implemented native adapter and keeps permission-only connections pending', () => {
+  const apple = readFileSync(resolve(process.cwd(), 'platform/sql/023_apple_healthkit_adapter_v1.sql'), 'utf8')
+  expectSql(apple, /where provider = 'apple_health'/i)
+  expectSql(apple, /set status = 'active'/i)
+  expectSql(apple, /if v_effective_status = 'active' then[\s\S]*ensure_health_source/i)
+  expectSql(apple, /else[\s\S]*v_source := v_existing_source/i)
+  expectSql(apple, /v_existing_status = 'active'[\s\S]*p_status = 'pending'/i)
+})
+
+test('Apple HealthKit native batch is bounded, idempotent, non-destructive and commits cursor last', () => {
+  const apple = readFileSync(resolve(process.cwd(), 'platform/sql/023_apple_healthkit_adapter_v1.sql'), 'utf8')
+  expectSql(apple, /pt650_wearable_ingest_native_batch/i)
+  expectSql(apple, /v_observations > 1000/i)
+  expectSql(apple, /pt650_health_ingest_observation/i)
+  expectSql(apple, /pt650_endurance_ingest_activity/i)
+  expectSql(apple, /pt650_health_claim_dedupe/i)
+  expectSql(apple, /verification = 'rejected'/i)
+  assert.doesNotMatch(apple, /delete from pt650\.health_observations/i)
+  assert.doesNotMatch(apple, /delete from pt650\.endurance_activities/i)
+  const ingestAt = apple.indexOf('pt650_health_ingest_observation')
+  const cursorAt = apple.lastIndexOf('pt650_wearable_commit_cursor')
+  assert.ok(cursorAt > ingestAt)
+  expectSql(apple, /revoke all on function public\.pt650_wearable_ingest_native_batch[\s\S]*authenticated/i)
+  expectSql(apple, /grant execute on function public\.pt650_wearable_ingest_native_batch[\s\S]*service_role/i)
+})
