@@ -123,3 +123,16 @@ sensors, live video, AR glasses, VR training rooms or smart gym equipment.
 A future smart machine may receive the athlete's approved seat/load/set prescription and return
 reps, range of motion, tempo and completion. PT650 should treat those as another verified event
 source rather than redesigning the economy around a particular hardware generation.
+
+
+## Health and endurance reference
+
+Endurain is an approved **functional and architectural reference** for activity ingestion, activity
+streams/laps, Garmin and Strava integrations, FIT/GPX/TCX import, health steps, sleep, weight,
+hydration, fasting, health targets, athlete gear and calendar concepts.
+
+PT650 does not become an Endurain fork. The PT650 provider layer remains vendor-neutral and adds
+HealthKit, Android Health Connect and Huawei adapters independently. Imported/provider observations
+also remain distinct from reward-verified evidence.
+
+See [PT650_ENDURAIN_REFERENCE.md](PT650_ENDURAIN_REFERENCE.md).
