@@ -1463,13 +1463,11 @@ export const useStore = create((set, get) => {
         finishBoot({ needsMobileOnboarding: !remote && !hasData(get().S) })
         return
       }
-      // Demo build (GitHub Pages): no backend at all — seed once, stay in guest mode.
+      // Static PT650 build (GitHub Pages): connected services now authenticate through
+      // Supabase. Training state remains local in this phase, but the app no longer bypasses
+      // the account screen by forcing guest mode. Existing local data is preserved.
       if (DEMO) {
-        if (!localStorage.getItem(DEMO_SEEDED)) {
-          localStorage.setItem(DEMO_SEEDED, '1')
-          await get().resetDemo()
-        }
-        get().setGuest(true)
+        get().setGuest(false)
         finishBoot()
         return
       }
