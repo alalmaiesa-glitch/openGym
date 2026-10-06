@@ -38,3 +38,18 @@ test('Edge request body is bounded before GPS JSON is parsed', () => {
   assert.match(edge, /content-length/)
   assert.match(edge, /status: 413/)
 })
+
+
+test('Edge API bootstraps one unified PT650 profile from the authenticated user', () => {
+  assert.match(edge, /action === "account"/)
+  assert.match(edge, /admin\.rpc\("pt650_account_bootstrap"/)
+  assert.match(edge, /p_user_id: user\.id/)
+  assert.match(edge, /emailConfirmed/)
+})
+
+test('Edge API updates profile only through the authenticated user identity', () => {
+  assert.match(edge, /action === "profile"/)
+  assert.match(edge, /admin\.rpc\("pt650_account_update_profile"/)
+  assert.match(edge, /p_user_id: user\.id/)
+  assert.match(edge, /displayName\.length > 80/)
+})
