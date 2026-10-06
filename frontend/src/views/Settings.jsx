@@ -876,7 +876,7 @@ function PlatformAccountSection({ lang }) {
         subtitle="Move · Rewards · Nutrition · Health · Machine Scan" />
       {account?.id && <AccountIdRow id={account.id} />}
       <Row icon="signOut" iconTint="var(--red)" title={ar ? 'تسجيل الخروج' : 'Sign out'} danger
-        disabled={busy} onClick={signOut} />
+        onClick={busy ? undefined : signOut} />
     </Section>
   )
 }
