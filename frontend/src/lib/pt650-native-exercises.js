@@ -33,4 +33,4 @@ export const PT650_NATIVE_EXERCISES = Object.freeze([
     native: true,
     source: 'PT650 native catalogue',
   }),
-])\n
+])
