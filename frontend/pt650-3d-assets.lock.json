@@ -11,15 +11,15 @@
       "files": {
         "glb": {
           "name": "seated_meditation.glb",
-          "sha256": "BOOTSTRAP"
+          "sha256": "8b96f813d90c910548d20fc22e80d7d2f3944c2003f32b6e3bead6885a491321"
         },
         "mp4": {
           "name": "seated_meditation.mp4",
-          "sha256": "BOOTSTRAP"
+          "sha256": "d25eb7d80f708b35b89ac37095b97a6ae8293fe2416d42d3d0d90e9515ab28be"
         },
         "png": {
           "name": "seated_meditation.png",
-          "sha256": "BOOTSTRAP"
+          "sha256": "8ec2d5612b70738496b12779b7028d4fa2046e5c4b8d2802ec6d6e49b2a3d455"
         }
       }
     },
