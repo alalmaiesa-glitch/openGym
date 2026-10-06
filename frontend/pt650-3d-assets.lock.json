@@ -6,6 +6,24 @@
   "baseUrl": "https://assiamahs.github.io/opengym3d/assets",
   "assets": [
     {
+      "exerciseId": "pt650-0003",
+      "slug": "seated_meditation",
+      "files": {
+        "glb": {
+          "name": "seated_meditation.glb",
+          "sha256": "BOOTSTRAP"
+        },
+        "mp4": {
+          "name": "seated_meditation.mp4",
+          "sha256": "BOOTSTRAP"
+        },
+        "png": {
+          "name": "seated_meditation.png",
+          "sha256": "BOOTSTRAP"
+        }
+      }
+    },
+    {
       "exerciseId": "pt650-0002",
       "slug": "walk",
       "files": {
