@@ -189,13 +189,11 @@ export default function Move() {
     if (last && p.t <= last.t) return
     arr.push(p)
 
-    let distanceM = live.distanceM
-    if (last && last.accuracy <= 100 && p.accuracy <= 100) {
-      const d = distanceBetween(last, p)
-      if (d < 500) distanceM += d
-    }
+    const increment = last && last.accuracy <= 100 && p.accuracy <= 100
+      ? distanceBetween(last, p)
+      : 0
     setLive(current => ({
-      distanceM: Number.isFinite(distanceM) ? distanceM : current.distanceM,
+      distanceM: current.distanceM + (Number.isFinite(increment) && increment < 500 ? increment : 0),
       durationSec: Math.max(0, (Date.now() - startedRef.current) / 1000),
       points: arr.length
     }))
