@@ -36,6 +36,31 @@ async function caller(req: Request) {
 
 const first = (data: any) => Array.isArray(data) ? data[0] : data
 
+const APPLE_HEALTH_METRICS = new Set([
+  "weight_kg", "body_fat_pct", "resting_hr_bpm", "hrv_sdnn_ms",
+  "spo2_pct", "respiratory_rate", "body_temp_c", "sleep_duration_min"
+])
+const APPLE_HEALTH_ACTIVITIES = new Set([
+  "run", "walk", "cycling", "swimming", "hiking", "rowing", "elliptical",
+  "strength_training", "functional_strength", "hiit", "yoga", "pilates", "other"
+])
+const UUID_RE = /^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i
+
+function nativeObject(value: unknown) {
+  return value != null && typeof value === "object" && !Array.isArray(value)
+}
+
+function hasRawLocation(value: unknown): boolean {
+  if (Array.isArray(value)) return value.some(hasRawLocation)
+  if (!nativeObject(value)) return false
+  for (const [key, child] of Object.entries(value as Record<string, unknown>)) {
+    const k = key.toLowerCase()
+    if (["lat","lng","latitude","longitude","gps","locations","coordinates","routepoints","workoutroute"].includes(k)) return true
+    if (hasRawLocation(child)) return true
+  }
+  return false
+}
+
 async function rate(userId: string, route: string, limit: number, seconds: number) {
   const { data, error } = await admin.rpc("pt650_rate_limit", {
     p_user_id: userId,
@@ -227,6 +252,72 @@ Deno.serve(async (req: Request) => {
       })
       if (error) throw error
       return json({ ok: true, provider, scopeKey, priority: Number(first(data) ?? data ?? priority), enabled })
+    }
+
+
+    if (req.method === "POST" && action === "wearable-native-ingest") {
+      const gate = await rate(user.id, "wearable-native-ingest", 120, 3600)
+      if (!gate.allowed) return json({ error: "rate limit", code: "rate-limit" }, 429, { "Retry-After": String(gate.retry_after) })
+
+      const body = await boundedJson(req, 1_200_000)
+      const provider = typeof body.provider === "string" ? body.provider.trim() : ""
+      const permissionState = nativeObject(body.permissionState) ? body.permissionState : {}
+      const cursor = nativeObject(body.cursor) ? body.cursor : null
+      const cursorKey = typeof body.cursorKey === "string" ? body.cursorKey.trim() : ""
+      const observations = Array.isArray(body.observations) ? body.observations : null
+      const activities = Array.isArray(body.activities) ? body.activities : null
+      const deletions = Array.isArray(body.deletions) ? body.deletions : null
+      const highWatermark = body.highWatermark == null ? null : String(body.highWatermark)
+
+      if (provider !== "apple_health"
+          || !cursor || !/^[a-z][a-z0-9_.:-]{0,79}$/.test(cursorKey)
+          || observations == null || activities == null || deletions == null
+          || observations.length > 1000 || activities.length > 250 || deletions.length > 1000
+          || observations.length + activities.length + deletions.length > 1500) {
+        return json({ error: "invalid native health batch", code: "invalid-native-batch" }, 400)
+      }
+      if ("anchor" in cursor || "anchors" in cursor || hasRawLocation(body)) {
+        return json({ error: "native cursor/location payload rejected", code: "unsafe-native-payload" }, 400)
+      }
+      if (highWatermark && Number.isNaN(Date.parse(highWatermark))) {
+        return json({ error: "invalid high watermark", code: "invalid-native-batch" }, 400)
+      }
+
+      for (const item of observations) {
+        if (!nativeObject(item)
+            || !UUID_RE.test(String(item.externalKey || ""))
+            || !APPLE_HEALTH_METRICS.has(String(item.metric || ""))) {
+          return json({ error: "invalid Apple Health observation", code: "invalid-native-observation" }, 400)
+        }
+      }
+      for (const item of activities) {
+        if (!nativeObject(item)
+            || !UUID_RE.test(String(item.externalKey || ""))
+            || !APPLE_HEALTH_ACTIVITIES.has(String(item.activityType || ""))) {
+          return json({ error: "invalid Apple Health activity", code: "invalid-native-activity" }, 400)
+        }
+      }
+      for (const item of deletions) {
+        if (!nativeObject(item)
+            || !UUID_RE.test(String(item.externalKey || ""))
+            || !["observation","activity"].includes(String(item.objectKind || ""))) {
+          return json({ error: "invalid Apple Health deletion", code: "invalid-native-deletion" }, 400)
+        }
+      }
+
+      const { data, error } = await admin.rpc("pt650_wearable_ingest_native_batch", {
+        p_user_id: user.id,
+        p_provider: provider,
+        p_permission_state: permissionState,
+        p_cursor_key: cursorKey,
+        p_cursor: cursor,
+        p_high_watermark: highWatermark,
+        p_observations: observations,
+        p_activities: activities,
+        p_deletions: deletions
+      })
+      if (error) throw error
+      return json(first(data) ?? data ?? { status: "pending", cursorCommitted: false })
     }
 
     if (req.method === "GET" && action === "health-summary") {
