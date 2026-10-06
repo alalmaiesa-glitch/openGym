@@ -8,12 +8,14 @@ import { createRoot } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Library from './Library.jsx'
 import { EXDB } from '../lib/exercises.js'
+import arabicExerciseNames from '../exercise-names/ar.js'
+import { exerciseDetailSheet } from '../sheets.jsx'
 import { CASED_NAME_LANGS, EXERCISE_NAME_LANGS, _setLangState } from '../lib/i18n-core.js'
 
 globalThis.IS_REACT_ACT_ENVIRONMENT = true
 
 const mocks = vi.hoisted(() => {
-  const state = { S: null }
+  const state = { S: null, search: '' }
   state.snapshot = () => ({ S: state.S, user: null, update: mut => { const next = structuredClone(state.S); mut(next); state.S = next } })
   return state
 })
@@ -22,7 +24,10 @@ vi.mock('../store/useStore.js', () => {
   useStore.getState = mocks.snapshot
   return { useStore }
 })
-vi.mock('react-router-dom', () => ({ useNavigate: () => () => {} }))
+vi.mock('react-router-dom', () => ({
+  useNavigate: () => () => {},
+  useLocation: () => ({ search: mocks.search }),
+}))
 vi.mock('../sheets.jsx', () => ({ exerciseDetailSheet: vi.fn(), addToRoutineSheet: vi.fn(), customExSheet: vi.fn() }))
 
 const mounted = []
@@ -39,6 +44,8 @@ const cssSource = readFileSync(resolve(process.cwd(), 'src/index.css'), 'utf8')
 
 beforeEach(() => {
   mocks.S = { unit: 'kg', lang: 'en', routines: [], workouts: [], customEx: [], exWeights: {}, equipProfiles: [], activeEquipId: null, equipFilterOn: false }
+  mocks.search = ''
+  vi.mocked(exerciseDetailSheet).mockClear()
   document.body.innerHTML = ''
 })
 afterEach(() => { act(() => { mounted.splice(0).forEach(root => root.unmount()) }) })
@@ -51,10 +58,30 @@ describe('PT650 Library density', () => {
     expect(host.querySelector('.library-filter-panel')).toBeNull()
     expect(host.querySelector('.library-create')).not.toBeNull()
     expect(host.querySelector('.library-hero')).not.toBeNull()
-    expect(host.querySelectorAll('.library-card-mark').length).toBeGreaterThan(0)
+    const marks = host.querySelectorAll('.library-card-mark')
+    const rows = host.querySelectorAll('.library-item')
+    expect(marks.length).toBeGreaterThan(0)
+    expect(marks.length).toBeLessThan(rows.length)
+    expect([...marks].every(mark => mark.querySelector('.icn'))).toBe(true)
     expect(host.querySelectorAll('.library-item .thumb')).toHaveLength(0)
     expect(host.querySelectorAll('.library-item .library-add').length).toBeGreaterThan(0)
     expect(host.querySelectorAll('.library-item .library-meta').length).toBeGreaterThan(0)
+  })
+
+
+  it('opens a completed exercise directly from a shared library URL', () => {
+    mocks.search = '?exercise=pt650-0001'
+    render()
+    expect(exerciseDetailSheet).toHaveBeenCalledTimes(1)
+    expect(exerciseDetailSheet).toHaveBeenCalledWith(expect.objectContaining({ id: 'pt650-0001', n: 'jumping jack' }))
+  })
+
+  it('does not render placeholder demo marks on exercises with no animation', () => {
+    const host = render()
+    const source = readFileSync(resolve(process.cwd(), 'src/views/Library.jsx'), 'utf8')
+    expect(source).toContain('{hasDemo && <div className="library-card-mark"')
+    expect(source).not.toContain("hasDemo ? 'play' : 'dumbbell'")
+    expect(host.querySelectorAll('.library-card-mark').length).toBeLessThan(host.querySelectorAll('.library-item').length)
   })
 
   it('caps the initial result set at 24 to keep the page visually light', () => {
@@ -132,4 +159,12 @@ describe('Library exercise-name casing per language', () => {
       for (const el of translated) expect(el.classList.contains('capitalize'), `${lang}: ${el.textContent}`).toBe(!CASED_NAME_LANGS.includes(lang))
     })
   }
+})
+
+
+describe('Arabic PT650 visible-name cleanup', () => {
+  it('uses a natural Arabic title for the all-fours stretch shown near the top of the library', () => {
+    expect(arabicExerciseNames['1512']).toBe('إطالة وضعية الأطراف الأربعة')
+    expect(arabicExerciseNames['1512']).not.toMatch(/[A-Za-z]/)
+  })
 })
