@@ -873,7 +873,7 @@ function PlatformAccountSection({ lang }) {
       <Row icon="person" iconTint="var(--acc)" title={email}
         subtitle={ar ? 'الحساب الرئيسي لخدمات PT650' : 'Primary identity for PT650 services'} />
       <Row icon="shield" iconTint="var(--green)" title={ar ? 'الخدمات المتصلة' : 'Connected services'}
-        subtitle="Move · Rewards · Nutrition · Health · Machine Scan" />
+        subtitle={ar ? 'Move · Rewards · التالي: Nutrition · Health · Machine Scan' : 'Move · Rewards · next: Nutrition · Health · Machine Scan'} />
       {account?.id && <AccountIdRow id={account.id} />}
       <Row icon="signOut" iconTint="var(--red)" title={ar ? 'تسجيل الخروج' : 'Sign out'} danger
         onClick={busy ? undefined : signOut} />
