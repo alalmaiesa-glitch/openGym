@@ -135,4 +135,4 @@ PT650 does not become an Endurain fork. The PT650 provider layer remains vendor-
 HealthKit, Android Health Connect and Huawei adapters independently. Imported/provider observations
 also remain distinct from reward-verified evidence.
 
-See [PT650_ENDURAIN_REFERENCE.md](PT650_ENDURAIN_REFERENCE.md).
+See [references/endurain.md](references/endurain.md).
