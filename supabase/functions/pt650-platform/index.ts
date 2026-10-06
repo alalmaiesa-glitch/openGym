@@ -192,6 +192,43 @@ Deno.serve(async (req: Request) => {
     }
 
 
+
+    if (req.method === "GET" && action === "wearable-framework") {
+      const gate = await rate(user.id, "wearable-framework", 60, 60)
+      if (!gate.allowed) return json({ error: "rate limit", code: "rate-limit" }, 429, { "Retry-After": String(gate.retry_after) })
+
+      const { data, error } = await admin.rpc("pt650_wearable_framework", { p_user_id: user.id })
+      if (error) throw error
+      return json(first(data) ?? data ?? { adapters: [], connections: [], sync: { queued: 0, leased: 0, dead: 0 } })
+    }
+
+    if (req.method === "POST" && action === "wearable-priority") {
+      const gate = await rate(user.id, "wearable-priority", 30, 3600)
+      if (!gate.allowed) return json({ error: "rate limit", code: "rate-limit" }, 429, { "Retry-After": String(gate.retry_after) })
+
+      const body = await boundedJson(req, 12_000)
+      const provider = typeof body.provider === "string" ? body.provider.trim() : ""
+      const scopeKey = typeof body.scopeKey === "string" && body.scopeKey.trim() ? body.scopeKey.trim() : "*"
+      const priority = Number(body.priority)
+      const enabled = body.enabled !== false
+
+      if (!/^[a-z0-9][a-z0-9_-]{1,63}$/.test(provider)
+          || !/^[a-z*][a-z0-9_*.:+-]{0,79}$/.test(scopeKey)
+          || !Number.isSafeInteger(priority) || priority < 0 || priority > 1000) {
+        return json({ error: "invalid source priority", code: "invalid-priority" }, 400)
+      }
+
+      const { data, error } = await admin.rpc("pt650_wearable_set_priority", {
+        p_user_id: user.id,
+        p_provider: provider,
+        p_scope_key: scopeKey,
+        p_priority: priority,
+        p_enabled: enabled
+      })
+      if (error) throw error
+      return json({ ok: true, provider, scopeKey, priority: Number(first(data) ?? data ?? priority), enabled })
+    }
+
     if (req.method === "GET" && action === "health-summary") {
       const gate = await rate(user.id, "health-summary", 120, 60)
       if (!gate.allowed) return json({ error: "rate limit", code: "rate-limit" }, 429, { "Retry-After": String(gate.retry_after) })
