@@ -16,11 +16,20 @@ describe('PT650 unified account V1', () => {
     expect(demoBlock).not.toContain('resetDemo()')
   })
 
-  it('keeps a single platform session observable across the app and browser tabs', () => {
-    expect(identity).toContain('platformStoredSession()')
+  it('validates one shared platform session before unlocking the app and observes browser-tab changes', () => {
+    expect(identity).toContain('useSyncExternalStore')
+    expect(identity).toContain('platformUser(candidate)')
     expect(identity).toContain('onPlatformAuthChange')
     expect(auth).toContain("window.addEventListener('storage', storage)")
-    expect(auth).toContain('platformStoredSession()')
+    expect(auth).toContain('platformSessionUserId')
+  })
+
+  it('isolates device-local training state by PT650 account id', () => {
+    expect(store).toContain("PLATFORM_LOCAL_STATE_PREFIX = 'pt650_state_v1:'")
+    expect(store).toContain('switchPlatformLocalAccount(uid)')
+    expect(store).toContain('PLATFORM_LOCAL_STATE_PREFIX + previous')
+    expect(store).toContain('PLATFORM_LOCAL_STATE_PREFIX + nextUid')
+    expect(store).toContain('First unified PT650 account on this browser inherits the pre-account local copy')
   })
 
   it('exposes the PT650 account and sign-out in settings', () => {
