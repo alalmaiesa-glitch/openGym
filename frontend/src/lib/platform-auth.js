@@ -117,8 +117,15 @@ export async function platformSignOut() {
 
 export function onPlatformAuthChange(fn) {
   const handler = e => fn(e.detail || null)
+  const storage = e => {
+    if (e.key === STORAGE_KEY) fn(platformStoredSession())
+  }
   window.addEventListener(AUTH_EVENT, handler)
-  return () => window.removeEventListener(AUTH_EVENT, handler)
+  window.addEventListener('storage', storage)
+  return () => {
+    window.removeEventListener(AUTH_EVENT, handler)
+    window.removeEventListener('storage', storage)
+  }
 }
 
 export const platformConfig = Object.freeze({
