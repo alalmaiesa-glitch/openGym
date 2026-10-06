@@ -168,6 +168,7 @@ export default function Login() {
   const canGuest = guestAllowed(config)
   const pwOn = passwordOn(config)
   const passkeys = webauthnOK()
+  const publicAr = String(getLang()).toLowerCase().startsWith('ar')
 
   const register = () => useUI.getState().openSheet(close => <RegisterSheet close={close} />)
   const signIn = async () => {
@@ -191,9 +192,11 @@ export default function Login() {
       </div>
 
       <div className="login-hero-copy">
-        <span className="login-eyebrow">{DEMO ? 'PT650 · Athlete OS' : t('Exercises')}</span>
-        <h1>{DEMO ? 'Train. Move. Recover.' : 'PT650'}</h1>
-        <p>{DEMO ? 'PT650 brings training, verified activity and your next intelligent services under one account.' : t('Your workouts. Your weights. Your profile.')}</p>
+        <span className="login-eyebrow">{DEMO ? (publicAr ? 'PT650 · نظام الرياضي الذكي' : 'PT650 · Athlete OS') : t('Exercises')}</span>
+        <h1>{DEMO ? (publicAr ? 'تدرّب. تحرّك. تعافَ.' : 'Train. Move. Recover.') : 'PT650'}</h1>
+        <p>{DEMO
+          ? (publicAr ? 'التدريب، النشاط الموثق والخدمات الذكية القادمة تحت حساب PT650 واحد.' : 'Training, verified activity and upcoming intelligent services under one PT650 account.')
+          : t('Your workouts. Your weights. Your profile.')}</p>
       </div>
 
       <div className="login-hero-foot" aria-hidden="true">
