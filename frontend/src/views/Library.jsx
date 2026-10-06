@@ -1,7 +1,7 @@
-import { useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
-import { CATALOGUE, BODYPARTS, allExercises, equipmentOf, searchExercises } from '../lib/exercises.js'
+import { CATALOGUE, BODYPARTS, EXIDX, allExercises, equipmentOf, searchExercises } from '../lib/exercises.js'
 import { MUSCLE_NAME } from '../lib/muscles.js'
 import { activeProfile, exAvailable } from '../lib/equipment.js'
 import { bestWeightFor } from '../lib/history.js'
@@ -17,7 +17,9 @@ import { isFav, sortFavouritesFirst } from '../lib/favourites.js'
 
 export default function Library() {
   const nav = useNavigate()
+  const loc = useLocation()
   const S = useStore(s => s.S)
+  const deepLinkOpened = useRef('')
   const [q, setQ] = useState('')
   const [bp, setBp] = useState('')
   const [eq, setEq] = useState('')
@@ -41,6 +43,17 @@ export default function Library() {
   const narrowed = !!(q.trim() || filterCount)
   const clearBodyPart = () => { setBp(''); setEq(''); setShown(24) }
   const clearEquipment = () => { setEq(''); setShown(24) }
+
+  // A shared PT650 exercise URL may target a built-in exercise directly. The Library remains
+  // the route so browser/back behavior stays unchanged; the normal detail sheet opens once.
+  useEffect(() => {
+    const id = new URLSearchParams(loc.search).get('exercise') || ''
+    if (!id || deepLinkOpened.current === id) return
+    const exercise = EXIDX[id]
+    if (!exercise) return
+    deepLinkOpened.current = id
+    exerciseDetailSheet(exercise)
+  }, [loc.search])
 
   return <div className="library-page">
     <section className="library-hero">
@@ -120,7 +133,7 @@ export default function Library() {
         const best = bestWeightFor(S, e.id)
         const hasDemo = !!(threeDModelFor(e.id) || animatedModelFor(e.id))
         return <div key={e.id} className={'item library-item' + (hasDemo ? ' has-demo' : '')} {...tappable(() => exerciseDetailSheet(e))}>
-          <div className="library-card-mark" aria-hidden="true"><Icon name={hasDemo ? 'play' : 'dumbbell'} /></div>
+          {hasDemo && <div className="library-card-mark" aria-hidden="true"><Icon name="play" /></div>}
           <div className="grow">
             <div className={`tt library-name ${exerciseNameClass(e)}`}>{isFav(S, e.id) && <Icon name="starFill" className="fav-star" />}{exerciseNameFor(e)}</div>
             <div className="ss library-meta capitalize">{t(MUSCLE_NAME[e.tg] || e.tg || e.bp)}<span>·</span>{t(e.eq)}</div>
