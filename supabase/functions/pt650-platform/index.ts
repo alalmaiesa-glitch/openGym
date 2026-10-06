@@ -113,6 +113,72 @@ Deno.serve(async (req: Request) => {
       })
     }
 
+
+    if (req.method === "GET" && action === "training-rev") {
+      const gate = await rate(user.id, "training-rev", 180, 60)
+      if (!gate.allowed) return json({ error: "rate limit", code: "rate-limit" }, 429, { "Retry-After": String(gate.retry_after) })
+      const { data, error } = await admin.rpc("pt650_training_revision", { p_user_id: user.id })
+      if (error) throw error
+      const row = first(data)
+      return json({
+        rev: Number(row?.rev || 0),
+        stateTs: Number(row?.state_ts || 0),
+        updatedAt: row?.updated_at || null
+      })
+    }
+
+    if (req.method === "GET" && action === "training-state") {
+      const gate = await rate(user.id, "training-read", 120, 3600)
+      if (!gate.allowed) return json({ error: "rate limit", code: "rate-limit" }, 429, { "Retry-After": String(gate.retry_after) })
+      const { data, error } = await admin.rpc("pt650_training_get", { p_user_id: user.id })
+      if (error) throw error
+      const row = first(data)
+      return json(row ? {
+        rev: Number(row.rev || 0),
+        state: row.state || null,
+        stateTs: Number(row.state_ts || 0),
+        updatedAt: row.updated_at || null
+      } : { rev: 0, state: null, stateTs: 0, updatedAt: null })
+    }
+
+    if (req.method === "POST" && action === "training-state") {
+      const gate = await rate(user.id, "training-write", 180, 3600)
+      if (!gate.allowed) return json({ error: "rate limit", code: "rate-limit" }, 429, { "Retry-After": String(gate.retry_after) })
+      const body = await boundedJson(req, 2_700_000)
+      const state = body?.state
+      const baseRev = body?.baseRev == null ? null : Number(body.baseRev)
+      const stateTs = Number(state?._ts || body?.stateTs || 0)
+      if (!state || typeof state !== "object" || Array.isArray(state)) {
+        return json({ error: "invalid training state", code: "invalid-state" }, 400)
+      }
+      if (baseRev != null && (!Number.isSafeInteger(baseRev) || baseRev < 0)) {
+        return json({ error: "invalid base revision", code: "invalid-revision" }, 400)
+      }
+      if (!Number.isSafeInteger(stateTs) || stateTs < 0) {
+        return json({ error: "invalid state timestamp", code: "invalid-state-ts" }, 400)
+      }
+
+      const { data, error } = await admin.rpc("pt650_training_put", {
+        p_user_id: user.id,
+        p_base_revision: baseRev,
+        p_state: state,
+        p_state_ts: stateTs
+      })
+      if (error) {
+        if (error.code === "22001") return json({ error: "training state too large", code: "state-too-large" }, 413)
+        throw error
+      }
+      const row = first(data)
+      if (!row) throw new Error("bad training sync response")
+      const payload = {
+        rev: Number(row.rev || 0),
+        stateTs: Number(row.state_ts || 0),
+        updatedAt: row.updated_at || null,
+        ...(row.state ? { state: row.state } : {})
+      }
+      return json(payload, row.outcome === "conflict" ? 409 : 200)
+    }
+
     if (req.method === "GET" && action === "status") {
       return json({ ok: true, mode: "edge", userId: user.id })
     }
