@@ -105,7 +105,10 @@ jobs:
 
 
   pt650-factory-render:
+    # The expensive Blender render is manual once output has been visually reviewed and SHA256-locked.
+    # Pull requests still validate the pinned factory inputs and the mirrored deploy assets.
     needs: pt650-factory-inputs
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     env:
       BLENDER_VERSION: 4.5.11
