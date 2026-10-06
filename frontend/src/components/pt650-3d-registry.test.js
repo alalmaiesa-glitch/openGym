@@ -15,6 +15,16 @@ describe('PT650 mirrored 3D registry', () => {
       motionLicense: 'CC0-1.0',
       version: 1,
     })
+    expect(threeDModelFor('pt650-0002')).toMatchObject({
+      id: 'walk-3d-v1',
+      exercise: 'walk',
+      camera: 'front',
+      motion: 'Mesh2Motion Walk',
+      semanticBinding: 'PT650 native walk follows the pinned OpenGym3D walk spec 1:1',
+      humanLicense: 'CC0-1.0',
+      motionLicense: 'CC0-1.0',
+      version: 1,
+    })
     expect(threeDModelFor('0662')).toMatchObject({
       id: 'push-up-3d-v3',
       exercise: 'push-up',
@@ -84,7 +94,7 @@ describe('PT650 mirrored 3D registry', () => {
   it('locks every mirrored binary with SHA256 before deployment', () => {
     const lock = JSON.parse(readFileSync(new URL('../../pt650-3d-assets.lock.json', import.meta.url), 'utf8'))
     expect(lock.format).toBe('pt650-3d-asset-lock/1')
-    expect(lock.assets.map(a => a.exerciseId).sort()).toEqual(['0662', '0685', '3360', 'pt650-0001'])
+    expect(lock.assets.map(a => a.exerciseId).sort()).toEqual(['0662', '0685', '3360', 'pt650-0001', 'pt650-0002'])
     const deployRegistryIds = Object.keys(PT650_3D_MODELS).sort()
     expect(lock.assets.map(a => a.exerciseId).sort()).toEqual(deployRegistryIds)
     for (const asset of lock.assets) {
@@ -140,11 +150,16 @@ describe('PT650 mirrored 3D registry', () => {
       .filter(x => x.decision === 'registered' || x.decision === 'registered-native')
       .map(x => x.exerciseId)
       .sort()
-    expect(registered).toEqual(['0662', '0685', '3360', 'pt650-0001'])
+    expect(registered).toEqual(['0662', '0685', '3360', 'pt650-0001', 'pt650-0002'])
     expect(Object.keys(PT650_3D_MODELS).sort()).toEqual(registered)
     expect(audit.candidates.find(x => x.upstream === 'jumping_jack')).toMatchObject({
       decision: 'registered-native',
       exerciseId: 'pt650-0001',
+      motionLicense: 'CC0-1.0',
+    })
+    expect(audit.candidates.find(x => x.upstream === 'walk')).toMatchObject({
+      decision: 'registered-native',
+      exerciseId: 'pt650-0002',
       motionLicense: 'CC0-1.0',
     })
     expect(audit.candidates.find(x => x.upstream === 'run')?.decision).toBe('rejected-for-0685')
