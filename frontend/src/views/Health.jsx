@@ -162,7 +162,7 @@ export default function Health() {
 
       <section className="health-card">
         <div className="health-section-head">
-          <span className="health-icon"><Icon name="activity" /></span>
+          <span className="health-icon"><Icon name="heart" /></span>
           <div><h2>{C.latest}</h2></div>
         </div>
         {metricEntries.length ? (
