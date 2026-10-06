@@ -2556,7 +2556,7 @@ body.chips-dragging *{cursor:inherit}
   font-size:12.5px;line-height:1.45
 }
 .move-notice .icn{color:var(--orange);margin-top:1px}
-.move-reward-card,.move-section,.move-live-card{
+.move-reward-card,.move-section,.move-live-card,.move-auth-card{
   background:var(--surface);border:var(--hair) solid var(--sep-op);border-radius:18px;padding:16px;margin-bottom:12px
 }
 .move-section-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
@@ -2621,7 +2621,7 @@ body.chips-dragging *{cursor:inherit}
 }
 .move-privacy .icn{margin-top:1px;color:var(--label-2)}
 @media (max-width:560px){
-  .move-head h1{font-size:28px}
+  .move-head{flex-wrap:wrap}\n  .move-head h1{font-size:28px}\n  .move-account-chip{margin-inline-start:42px;max-width:calc(100% - 42px)}
   .move-reward-grid,.move-contract-grid{grid-template-columns:1fr}
   .move-live-grid{grid-template-columns:1fr 1fr 1fr}
   .move-live-grid strong{font-size:16px}
