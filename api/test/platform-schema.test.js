@@ -146,3 +146,13 @@ test('Workout weigh-ins bridge into canonical kg observations idempotently', () 
   expectSql(bridge, /bodyweight:[^']*/i)
   expectSql(bridge, /on conflict \(user_id, source_id, object_kind, external_key\) do nothing/i)
 })
+
+
+test('Health reindex backfills old workout cloud weights without rewriting training state', () => {
+  const reindex = readFileSync(resolve(process.cwd(), 'platform/sql/017_health_workout_reindex.sql'), 'utf8')
+  expectSql(reindex, /from pt650\.training_states/i)
+  expectSql(reindex, /v_state->'bodyweight'/i)
+  expectSql(reindex, /pt650_health_ingest_bodyweight_batch/i)
+  expectSql(reindex, /revoke all on function public\.pt650_health_reindex_workout\(uuid\)/i)
+  expectSql(reindex, /grant execute on function public\.pt650_health_reindex_workout\(uuid\)[\s\S]*to service_role/i)
+})
