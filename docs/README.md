@@ -52,3 +52,11 @@ Design notes for specific features, kept next to the code they describe:
 Ask on the [Discord](https://discord.gg/e62jY6fwVb) or in
 [Discussions](https://github.com/DuarteSantos8/openGym/discussions). If something in these docs was
 wrong or missing, that's worth an issue too.
+
+
+## PT650 platform references
+
+| Reference | Purpose |
+|---|---|
+| [PT650 Platform 2035](PT650_PLATFORM_2035.md) | Product/economy charter for the athlete network |
+| [Endurain reference adoption](PT650_ENDURAIN_REFERENCE.md) | Approved reference for endurance activity, health, wearable and import architecture |
