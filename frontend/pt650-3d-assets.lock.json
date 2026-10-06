@@ -6,6 +6,24 @@
   "baseUrl": "https://assiamahs.github.io/opengym3d/assets",
   "assets": [
     {
+      "exerciseId": "pt650-0002",
+      "slug": "walk",
+      "files": {
+        "glb": {
+          "name": "walk.glb",
+          "sha256": "BOOTSTRAP"
+        },
+        "mp4": {
+          "name": "walk.mp4",
+          "sha256": "BOOTSTRAP"
+        },
+        "png": {
+          "name": "walk.png",
+          "sha256": "BOOTSTRAP"
+        }
+      }
+    },
+    {
       "exerciseId": "pt650-0001",
       "slug": "jumping_jack",
       "files": {
