@@ -195,6 +195,12 @@ Deno.serve(async (req: Request) => {
     if (req.method === "GET" && action === "health-summary") {
       const gate = await rate(user.id, "health-summary", 120, 60)
       if (!gate.allowed) return json({ error: "rate limit", code: "rate-limit" }, 429, { "Retry-After": String(gate.retry_after) })
+
+      // Backfill pre-Health-Core workout weigh-ins once/idempotently. A derived index problem must
+      // not make the athlete's Health dashboard unavailable.
+      const { error: reindexError } = await admin.rpc("pt650_health_reindex_workout", { p_user_id: user.id })
+      if (reindexError) console.error("pt650-health-reindex", reindexError.message)
+
       const { data, error } = await admin.rpc("pt650_health_summary", { p_user_id: user.id })
       if (error) throw error
       return json(first(data) ?? data ?? { latest: {}, activity30d: { count: 0, distanceM: 0, durationSec: 0 }, sources: [] })
