@@ -156,3 +156,14 @@ test('Health reindex backfills old workout cloud weights without rewriting train
   expectSql(reindex, /revoke all on function public\.pt650_health_reindex_workout\(uuid\)/i)
   expectSql(reindex, /grant execute on function public\.pt650_health_reindex_workout\(uuid\)[\s\S]*to service_role/i)
 })
+
+
+test('Health Core hardening covers foreign-key access paths and activates implemented workout bridge', () => {
+  const hardening = readFileSync(resolve(process.cwd(), 'platform/sql/018_health_core_hardening.sql'), 'utf8')
+  expectSql(hardening, /where provider = 'pt650_workout'/i)
+  expectSql(hardening, /set status = 'active'/i)
+  expectSql(hardening, /health_sources_provider_idx/i)
+  expectSql(hardening, /health_import_keys_source_idx/i)
+  expectSql(hardening, /health_observations_device_idx/i)
+  expectSql(hardening, /endurance_activities_device_idx/i)
+})
