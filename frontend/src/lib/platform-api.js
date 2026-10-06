@@ -23,7 +23,10 @@ export async function platformApi(action, { method = 'GET', body, timeout = 3000
     })
     let data = null
     try { data = await response.json() } catch {}
-    if (!response.ok) {\n      if (response.status === 401) await platformSignOut()\n      throw fail(data?.error || ('HTTP ' + response.status), response.status, data?.code || 'platform-error', data)\n    }
+    if (!response.ok) {
+      if (response.status === 401) await platformSignOut()
+      throw fail(data?.error || ('HTTP ' + response.status), response.status, data?.code || 'platform-error', data)
+    }
     if (!data || typeof data !== 'object') throw fail('Invalid PT650 platform response', response.status, 'bad-response')
     return data
   } catch (e) {
