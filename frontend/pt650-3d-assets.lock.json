@@ -11,15 +11,15 @@
       "files": {
         "glb": {
           "name": "walk.glb",
-          "sha256": "BOOTSTRAP"
+          "sha256": "789867cd7f3ab8362f29632d1b424eb0f31193fca3a05318ac830a03b2115eb1"
         },
         "mp4": {
           "name": "walk.mp4",
-          "sha256": "BOOTSTRAP"
+          "sha256": "caf8eb69335d6acd9bc6217401e219a05147919c1d87e1d9a0be3783fdd7980e"
         },
         "png": {
           "name": "walk.png",
-          "sha256": "BOOTSTRAP"
+          "sha256": "159e13f7fdd3db4353d70db690e058015aaf5438ec8760de21fcd3e5f300d35e"
         }
       }
     },
