@@ -142,7 +142,7 @@ Deno.serve(async (req: Request) => {
     }
 
     if (req.method === "POST" && action === "training-state") {
-      const gate = await rate(user.id, "training-write", 180, 3600)
+      const gate = await rate(user.id, "training-write", 900, 3600)
       if (!gate.allowed) return json({ error: "rate limit", code: "rate-limit" }, 429, { "Retry-After": String(gate.retry_after) })
       const body = await boundedJson(req, 2_700_000)
       const state = body?.state
