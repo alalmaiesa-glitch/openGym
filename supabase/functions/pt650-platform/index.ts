@@ -71,6 +71,48 @@ Deno.serve(async (req: Request) => {
   const action = actionOf(req)
 
   try {
+
+    if (req.method === "GET" && action === "account") {
+      const gate = await rate(user.id, "account", 60, 60)
+      if (!gate.allowed) return json({ error: "rate limit", code: "rate-limit" }, 429, { "Retry-After": String(gate.retry_after) })
+
+      const acceptLanguage = (req.headers.get("accept-language") || "ar").split(",")[0].trim()
+      const locale = /^[A-Za-z]{2,3}([_-][A-Za-z0-9]{2,8})?$/.test(acceptLanguage) ? acceptLanguage : "ar"
+      const { data, error } = await admin.rpc("pt650_account_bootstrap", {
+        p_user_id: user.id,
+        p_locale: locale
+      })
+      if (error) throw error
+      return json({
+        id: user.id,
+        email: user.email || null,
+        emailConfirmed: !!user.email_confirmed_at,
+        profile: first(data) || null
+      })
+    }
+
+    if (req.method === "POST" && action === "profile") {
+      const gate = await rate(user.id, "profile", 30, 3600)
+      if (!gate.allowed) return json({ error: "rate limit", code: "rate-limit" }, 429, { "Retry-After": String(gate.retry_after) })
+      const body = await boundedJson(req, 16_000)
+      const displayName = typeof body.displayName === "string" ? body.displayName.trim() : ""
+      const locale = typeof body.locale === "string" ? body.locale.trim() : "ar"
+      if (displayName.length > 80 || !/^[A-Za-z]{2,3}([_-][A-Za-z0-9]{2,8})?$/.test(locale)) {
+        return json({ error: "invalid profile", code: "invalid-profile" }, 400)
+      }
+      const { data, error } = await admin.rpc("pt650_account_update_profile", {
+        p_user_id: user.id,
+        p_display_name: displayName || null,
+        p_locale: locale
+      })
+      if (error) throw error
+      return json({
+        id: user.id,
+        email: user.email || null,
+        profile: first(data) || null
+      })
+    }
+
     if (req.method === "GET" && action === "status") {
       return json({ ok: true, mode: "edge", userId: user.id })
     }
