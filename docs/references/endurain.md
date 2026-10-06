@@ -5,12 +5,13 @@ Status: **Adopted as a functional and architectural reference**
 Upstream reference:
 - Repository: `endurain-project/endurain`
 - Default branch observed: `master`
+- Pinned commit: `2d8a1aa7e1048e428e17840a41245537f8cda9aa`
 - License: **AGPL-3.0**
 - Product posture: self-hosted fitness tracking with privacy/control as a core design goal
 
 ## License boundary
 
-PT650 may study Endurain's public behavior, architecture, data domains, API shapes, and product flows.
+PT650 may study Endurain's public behavior, architecture, data domains, API shapes, and product flows. Architecture decisions should be evaluated against the pinned commit above; newer upstream changes require a deliberate re-review before adoption.
 
 PT650 **must not copy Endurain source code, UI assets, text, trademarks, or implementation fragments** into PT650 unless a separate legal/licensing decision is made. The current adoption is therefore **clean-room functional reimplementation** only.
 
