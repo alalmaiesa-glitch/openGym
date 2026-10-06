@@ -3,7 +3,7 @@ import { useUI } from '../store/useUI.js'
 import { webauthnOK, passkeyLogin, passkeyRegister, bio } from '../lib/api.js'
 import { hasData } from '../store/useStore.js'
 import { t } from '../lib/i18n.js'
-import { DEMO, REPO } from '../lib/demo.js'
+import { DEMO } from '../lib/demo.js'
 import { guestAllowed } from '../lib/guest.js'
 import { useState, useRef, useEffect } from 'react'
 import Icon from '../components/Icon.jsx'
@@ -123,15 +123,6 @@ export default function Login() {
           <div className="login-actions">
             <Button variant="primary" icon="sparkles" onClick={() => setGuest(true)}>{t('Start the demo')}</Button>
           </div>
-
-          <div className="login-note">
-            <Icon name="lock" />
-            <span>{t('This demo runs entirely in your browser on example data — nothing is sent anywhere. Passkey sign-in and sync across your devices come with the openGym server, which you get by self-hosting it.')}</span>
-          </div>
-
-          <a className="login-repo-link" href={REPO} target="_blank" rel="noopener">
-            {t('Self-host it in a minute →')}
-          </a>
         </div>
       </section>
     </main>
