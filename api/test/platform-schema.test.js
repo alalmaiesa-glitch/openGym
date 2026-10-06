@@ -5,6 +5,7 @@ import { resolve } from 'node:path'
 
 const sql = readFileSync(resolve(process.cwd(), 'platform/sql/001_platform_core.sql'), 'utf8')
 const readme = readFileSync(resolve(process.cwd(), 'platform/README.md'), 'utf8')
+const expectSql = (source, pattern) => assert.match(source, pattern)
 
 test('platform schema keeps high-volume activity separate and partition-ready', () => {
   assert.match(sql, /create table if not exists pt650\.activity_events[\s\S]*partition by range \(received_at\)/i)
@@ -41,4 +42,23 @@ test('manufacturer analytics are separated into rollups rather than reading hot 
   assert.match(readme, /10 million activity events\/day/i)
   assert.match(readme, /5,000 ingest requests\/second/i)
   assert.match(readme, /not yet capacity-certified/i)
+})
+
+
+test('V2 RPCs avoid PLpgSQL output-column conflicts and keep the terms hash contract stable', () => {
+  const atomic = readFileSync(resolve(process.cwd(), 'platform/sql/002_atomic_ingest_and_jobs.sql'), 'utf8')
+  const progress = readFileSync(resolve(process.cwd(), 'platform/sql/003_verified_progress_and_settlement.sql'), 'utf8')
+  expectSql(atomic, /on conflict on constraint challenge_progress_pkey do nothing/i)
+  expectSql(atomic, /terms_hash::text/i)
+  expectSql(progress, /on conflict on constraint challenge_progress_events_pkey do nothing/i)
+  expectSql(progress, /on conflict on constraint challenge_progress_pkey do update/i)
+})
+
+test('V2 hardening covers rollup row identity and foreign-key access paths', () => {
+  const hardening = readFileSync(resolve(process.cwd(), 'platform/sql/006_linter_hardening.sql'), 'utf8')
+  expectSql(hardening, /primary key using index equipment_usage_rollups_scope_uidx/i)
+  expectSql(hardening, /challenge_enrollments_challenge_idx/i)
+  expectSql(hardening, /challenges_sponsor_idx/i)
+  expectSql(hardening, /equipment_feedback_instance_idx/i)
+  expectSql(hardening, /venues_operator_idx/i)
 })

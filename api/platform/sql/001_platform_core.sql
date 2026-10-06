@@ -226,7 +226,7 @@ create or replace function pt650.reserve_challenge_reward(
 )
 returns boolean
 language plpgsql
-as $
+as $pt650$
 declare
   b pt650.challenge_budgets%rowtype;
 begin
@@ -259,7 +259,7 @@ begin
 
   return true;
 end;
-$;
+$pt650$;
 
 -- Sharded-by-user counters are updated asynchronously from verified events.
 create table if not exists pt650.challenge_progress (
