@@ -224,7 +224,7 @@ public class AppleHealthPlugin: CAPPlugin {
                 unit = "kg"
             case "body_fat":
                 metric = "body_fat_pct"
-                value = q.quantity.doubleValue(for: HKUnit.percent())
+                value = q.quantity.doubleValue(for: HKUnit.percent()) * 100.0
                 unit = "%"
             case "resting_hr":
                 metric = "resting_hr_bpm"
@@ -236,7 +236,7 @@ public class AppleHealthPlugin: CAPPlugin {
                 unit = "ms"
             case "spo2":
                 metric = "spo2_pct"
-                value = q.quantity.doubleValue(for: HKUnit.percent())
+                value = q.quantity.doubleValue(for: HKUnit.percent()) * 100.0
                 unit = "%"
             case "respiratory_rate":
                 metric = "respiratory_rate"
