@@ -28,6 +28,12 @@ describe('PT650 login design', () => {
     expect(appSource).toContain("loc.pathname !== '/login-preview'")
   })
 
+  it('does not expose repository or self-hosting links on the PT650 login', () => {
+    expect(loginSource).not.toContain('Self-host it in a minute')
+    expect(loginSource).not.toContain('REPO')
+    expect(loginSource).not.toContain('self-hosting')
+  })
+
   it('preserves every existing entry path', () => {
     expect(loginSource).toContain('passkeyLogin()')
     expect(loginSource).toContain('openPasswordSignIn()')
