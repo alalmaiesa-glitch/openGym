@@ -34,7 +34,8 @@ describe('PT650 unified account V1', () => {
 
   it('exposes the PT650 account and sign-out in settings', () => {
     expect(settings).toContain('function PlatformAccountSection')
-    expect(settings).toContain('Move · Rewards · Nutrition · Health · Machine Scan')
+    expect(settings).toContain('Move · Rewards')
+    expect(settings).toContain('Nutrition · Health · Machine Scan')
     expect(settings).toContain('platformSignOut()')
     expect(settings).toContain('لن نحذف سجل التدريب المحلي')
   })
