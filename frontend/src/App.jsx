@@ -176,7 +176,7 @@ function Shell() {
   useEffect(() => {
     if (!ready || !platformAuthed) return
     platformApi('account').catch(() => {})
-  }, [ready, platformAuthed])
+  }, [ready, platformAuthed, platformUid])
   if ((!ready || !platformIdentity.ready) && !authed) return (
     <div id="app">
       <div style={{ paddingTop: '44vh', display: 'flex', justifyContent: 'center', fontSize: 34, color: 'var(--label-3)' }}>
