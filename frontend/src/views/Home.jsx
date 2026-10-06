@@ -121,6 +121,20 @@ export default function Home() {
       </div>}
     </div>
 
+    <div className="card tappable pt650-move-home" style={{ cursor: 'pointer' }} {...tappable(() => nav('/move'))}>
+      <div className="row between">
+        <div className="row" style={{ gap: 11 }}>
+          <span className="pt650-move-home-icon"><Icon name="trophy" /></span>
+          <div>
+            <div className="lbl2">PT650 Move</div>
+            <div className="ttl">{machineScanAr ? 'تحرّك واكسب وصولك' : 'Move and earn access'}</div>
+            <div className="ss">{machineScanAr ? 'أهداف موثقة · مكافآت واضحة · GPS' : 'Verified goals · clear rewards · GPS'}</div>
+          </div>
+        </div>
+        <Icon name="chevronRight" className="chev" />
+      </div>
+    </div>
+
     <div className="card tappable machine-scan-home" style={{ cursor: 'pointer' }} {...tappable(() => nav('/machine-scan'))}>
       <div className="row between">
         <div className="row" style={{ gap: 11 }}>
