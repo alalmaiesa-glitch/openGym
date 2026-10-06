@@ -98,11 +98,10 @@ pipeline and source provenance separately rather than treating one licence label
 The current OpenGym3D CC0 exercise lane was audited against the PT650 catalogue and recorded in
 `frontend/pt650-3d-candidates.json`.
 
-Four movements now pass the exact-binding gate: push-up, bear crawl, the PT650
-`run` entry bound to OpenGym3D's jog-in-place motion, and Jumping Jack as the first
-PT650-native catalogue exercise. Flat walk and seated meditation remain unmatched because PT650
-still has no exact catalogue row for those movements. The OpenGym3D sprint motion is explicitly
-rejected for PT650 `0685` because the PT650 source instructions describe jogging in place.
+Six movements now pass the exact-binding gate: push-up, bear crawl, the PT650
+`run` entry bound to OpenGym3D's jog-in-place motion, plus PT650-native Jumping Jack,
+Walk and Seated Meditation. The OpenGym3D sprint motion remains explicitly rejected for
+PT650 `0685` because the PT650 source instructions describe jogging in place.
 
 ## Runtime rules
 
@@ -129,6 +128,34 @@ MP4 as the non-WebGL fallback and PNG as the poster. Generated files are verifie
 `frontend/pt650-3d-factory.lock.json` before they are eligible for deployment.
 
 Jumping Jack is the first factory exercise.
+
+## PT650 Owned Motion Lane V1
+
+The documented redistributable Mesh2Motion exercise set is now exhausted for exact PT650
+bindings. Expansion therefore moves to PT650-owned source capture rather than approximate motion.
+
+The control manifest is `frontend/pt650-owned-motion.json`, and
+`frontend/scripts/verify-pt650-owned-motion.mjs` enforces the release gate before the test suite.
+
+The first capture target is PT650 exercise `3470`, `forward lunge (male)`, because its
+bodyweight forward-lunge instructions match the target movement directly. It remains deliberately
+unregistered in the public 3D registry while its state is `awaiting-owned-capture`.
+
+Owned-capture rules:
+
+1. the source must be recorded specifically for PT650;
+2. the source video is private and never shipped in the product;
+3. the public product remains animated-only;
+4. the capture must show the full body with a fixed camera at 30 fps or better;
+5. the source video receives SHA256 before pose extraction;
+6. the extracted motion receives its own SHA256;
+7. anatomy QA and visual review must both pass;
+8. runtime registration is blocked until every release gate is true.
+
+For forward lunge, the capture sequence must contain neutral standing, a right forward lunge
+to approximately 90 degrees, return to standing, the corresponding left repetition, and return
+to standing. This mirrors PT650's alternating-side instructions rather than accepting a generic
+lunge-looking clip.
 
 ## Current storage stage
 
