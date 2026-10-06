@@ -14,6 +14,12 @@ describe('PT650 Workout Cloud Sync V1', () => {
     expect(store).toContain('syncIdentity()')
   })
 
+  it('never syncs a local account through a different Supabase session', () => {
+    expect(store).toContain('platformSessionUserId(platformStoredSession())')
+    expect(store).toContain('return sessionUid === owner ? owner : null')
+    expect(store).toContain('const usingPlatformCloud = () => !!platformSyncUid()')
+  })
+
   it('never blind-overwrites PT650 cloud state and merges a revision conflict', () => {
     expect(store).toContain('PT650 cloud never performs a blind overwrite')
     expect(store).toContain('if (base) body.baseRev = base.rev')
