@@ -157,6 +157,20 @@ to approximately 90 degrees, return to standing, the corresponding left repetiti
 to standing. This mirrors PT650's alternating-side instructions rather than accepting a generic
 lunge-looking clip.
 
+### Owned Capture Ingest V1
+
+Raw capture footage is never copied into PT650. The local ingest command reads the capture in
+place, validates that it is a supported video file, computes SHA256 and can update only the
+manifest provenance:
+
+`npm run pt650:capture:ingest -- 3470 <video-path> --write`
+
+If a capture is kept temporarily inside the working tree, the only permitted location is
+`frontend/.pt650-captures/`, which is ignored by Git. Any other raw video path inside the
+repository is rejected. The command stores no personal filename or filesystem path in the
+manifest; the source file remains private input and only the derived animated output may ship.
+
+
 ## Current storage stage
 
 PT650 is now in Phase 2: approved OpenGym3D outputs are mirrored during CI/deployment into

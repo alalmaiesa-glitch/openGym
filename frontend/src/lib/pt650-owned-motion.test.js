@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { readFileSync } from 'node:fs'
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { spawnSync } from 'node:child_process'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { EXIDX } from './exercises.js'
 import { threeDModelFor } from '../components/pt650-3d-registry.js'
 
@@ -45,5 +48,31 @@ describe('PT650 owned motion lane', () => {
       sourceVideoPublished: false,
       requireExactExerciseBinding: true,
     })
+  })
+
+  it('hashes a local capture without copying or publishing it', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'pt650-capture-'))
+    try {
+      const video = join(dir, 'forward-lunge.mp4')
+      writeFileSync(video, Buffer.from('pt650-owned-capture-test'))
+      const script = new URL('../../scripts/ingest-pt650-owned-capture.mjs', import.meta.url)
+      const run = spawnSync(process.execPath, [script.pathname, '3470', video], {
+        encoding: 'utf8',
+      })
+      expect(run.status).toBe(0)
+      const result = JSON.parse(run.stdout)
+      expect(result).toMatchObject({
+        exerciseId: '3470',
+        status: 'captured',
+        format: 'mp4',
+        sourceVideoPublished: false,
+        rawCaptureCommitted: false,
+        manifestUpdated: false,
+      })
+      expect(result.videoSha256).toMatch(/^[0-9a-f]{64}$/)
+      expect(manifest.captures.find(x => x.exerciseId === '3470')?.status).toBe('awaiting-owned-capture')
+    } finally {
+      rmSync(dir, { recursive: true, force: true })
+    }
   })
 })

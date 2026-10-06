@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "test": "node scripts/verify-pt650-owned-motion.mjs && vitest run",
     "test:watch": "vitest",
+    "pt650:capture:ingest": "node scripts/ingest-pt650-owned-capture.mjs",
     "test:fatigue-probe": "node scripts/fatigue-monotonic-probe.mjs"
   },
   "license": "AGPL-3.0-or-later",

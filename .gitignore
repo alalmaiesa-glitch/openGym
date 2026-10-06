@@ -21,3 +21,6 @@ node_modules
 junit.xml
 coverage/
 frontend/bundle-size.json
+
+# PT650 owned raw captures — private local input only, never commit source footage
+frontend/.pt650-captures/
