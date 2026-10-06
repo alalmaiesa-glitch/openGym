@@ -19,7 +19,7 @@ create table if not exists pt650.health_adapter_registry (
 insert into pt650.health_adapter_registry(provider, display_name, transport, status, capabilities)
 values
   ('pt650_move','PT650 Move','first_party','active',array['activity','gps_summary','verified_activity']),
-  ('pt650_workout','PT650 Workout','first_party','active',array['strength_training']),
+  ('pt650_workout','PT650 Workout','first_party','planned',array['strength_training']),
   ('apple_health','Apple Health','native_bridge','planned',array['health','activity','sleep','body','heart']),
   ('health_connect','Android Health Connect','native_bridge','planned',array['health','activity','sleep','body','heart']),
   ('huawei_health','Huawei Health','native_bridge','planned',array['health','activity','sleep','body','heart']),
@@ -28,7 +28,7 @@ values
   ('fit','FIT file','file_import','planned',array['activity','streams','laps']),
   ('gpx','GPX file','file_import','planned',array['activity','route']),
   ('tcx','TCX file','file_import','planned',array['activity','streams','laps']),
-  ('manual','Manual entry','manual','active',array['body','hydration'])
+  ('manual','Manual entry','manual','planned',array['body','hydration'])
 on conflict (provider) do update
 set display_name = excluded.display_name,
     transport = excluded.transport,
