@@ -11,6 +11,103 @@ import { Button, Segmented } from '../components/ui.jsx'
 import { askAddDeviceData } from '../sheets.jsx'
 import { passwordOn, PasswordRegisterForm, openPasswordSignIn } from '../components/PasswordAuth.jsx'
 import { openDeviceLinkRedeem } from '../components/Passkeys.jsx'
+import { platformSignIn, platformSignUp } from '../lib/platform-auth.js'
+import { platformApi } from '../lib/platform-api.js'
+import { getLang } from '../lib/i18n-core.js'
+
+
+function PlatformEntry() {
+  const ar = String(getLang()).toLowerCase().startsWith('ar')
+  const [mode, setMode] = useState('signin')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [message, setMessage] = useState('')
+
+  const C = ar ? {
+    title: 'ادخل إلى PT650',
+    subtitle: 'حساب واحد للتدريب، Move، المكافآت والخدمات الذكية.',
+    signin: 'تسجيل الدخول',
+    create: 'إنشاء حساب',
+    email: 'البريد الإلكتروني',
+    password: 'كلمة المرور',
+    weak: 'استخدم كلمة مرور من 8 أحرف على الأقل.',
+    failed: 'تعذر الدخول. تحقق من البريد وكلمة المرور.',
+    confirm: 'تم إنشاء الحساب. افتح رسالة التأكيد في بريدك، ثم عد وسجّل الدخول.',
+    privacy: 'سجل التدريب يبقى على هذا الجهاز في هذه المرحلة، بينما الخدمات المتصلة والمكافآت ترتبط بحساب PT650.'
+  } : {
+    title: 'Continue to PT650',
+    subtitle: 'One account for training, Move, rewards and connected services.',
+    signin: 'Sign in',
+    create: 'Create account',
+    email: 'Email',
+    password: 'Password',
+    weak: 'Use a password with at least 8 characters.',
+    failed: 'Sign-in failed. Check your email and password.',
+    confirm: 'Account created. Confirm it from your email, then return and sign in.',
+    privacy: 'Training history stays on this device in this phase, while connected services and rewards are tied to your PT650 account.'
+  }
+
+  const submit = async e => {
+    e.preventDefault()
+    const mail = email.trim()
+    if (!mail || !password) return
+    if (password.length < 8) { setMessage(C.weak); return }
+    setBusy(true)
+    setMessage('')
+    try {
+      if (mode === 'create') {
+        const result = await platformSignUp(mail, password)
+        if (!result.session) {
+          setMessage(C.confirm)
+          setMode('signin')
+          setPassword('')
+          return
+        }
+      } else {
+        await platformSignIn(mail, password)
+      }
+      await platformApi('account').catch(() => {})
+    } catch {
+      setMessage(C.failed)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="login-panel">
+      <div className="login-panel-icon" aria-hidden="true"><Icon name="person" /></div>
+      <div className="login-panel-copy">
+        <h2>{C.title}</h2>
+        <p>{C.subtitle}</p>
+      </div>
+
+      <div className="login-mode-switch" role="tablist" aria-label={C.title}>
+        <button type="button" className={mode === 'signin' ? 'on' : ''} onClick={() => { setMode('signin'); setMessage('') }}>{C.signin}</button>
+        <button type="button" className={mode === 'create' ? 'on' : ''} onClick={() => { setMode('create'); setMessage('') }}>{C.create}</button>
+      </div>
+
+      <form className="login-platform-form" onSubmit={submit}>
+        <label>
+          <span>{C.email}</span>
+          <input type="email" autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} required />
+        </label>
+        <label>
+          <span>{C.password}</span>
+          <input type="password" minLength={8} autoComplete={mode === 'create' ? 'new-password' : 'current-password'}
+            value={password} onChange={e => setPassword(e.target.value)} required />
+        </label>
+        <Button variant="primary" icon={mode === 'create' ? 'sparkles' : 'person'} disabled={busy}>
+          {busy ? '…' : mode === 'create' ? C.create : C.signin}
+        </Button>
+      </form>
+
+      {!!message && <div className="login-inline-note">{message}</div>}
+      <div className="login-security"><Icon name="lock" /><span>{C.privacy}</span></div>
+    </div>
+  )
+}
 
 function RegisterSheet({ close }) {
   const { setUser, pushState, pullState, loadConfig } = useStore()
@@ -94,9 +191,9 @@ export default function Login() {
       </div>
 
       <div className="login-hero-copy">
-        <span className="login-eyebrow">{t('Exercises')}</span>
-        <h1>PT650</h1>
-        <p>{t('Your workouts. Your weights. Your profile.')}</p>
+        <span className="login-eyebrow">{DEMO ? 'PT650 · Athlete OS' : t('Exercises')}</span>
+        <h1>{DEMO ? 'Train. Move. Recover.' : 'PT650'}</h1>
+        <p>{DEMO ? 'PT650 brings training, verified activity and your next intelligent services under one account.' : t('Your workouts. Your weights. Your profile.')}</p>
       </div>
 
       <div className="login-hero-foot" aria-hidden="true">
@@ -113,17 +210,7 @@ export default function Login() {
     <main className="login-page">
       {hero}
       <section className="login-entry">
-        <div className="login-panel">
-          <div className="login-panel-icon" aria-hidden="true"><Icon name="dumbbell" /></div>
-          <div className="login-panel-copy">
-            <h2>{t('Start the demo')}</h2>
-            <p>{t('Live demo — everything stays in this browser.')}</p>
-          </div>
-
-          <div className="login-actions">
-            <Button variant="primary" icon="sparkles" onClick={() => setGuest(true)}>{t('Start the demo')}</Button>
-          </div>
-        </div>
+        <PlatformEntry />
       </section>
     </main>
   )
