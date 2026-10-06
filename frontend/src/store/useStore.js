@@ -24,6 +24,8 @@ import { DEFAULT_TEMPLATE_ID } from '../lib/structuralBalanceTemplates.js'
 import { WC_DEFAULT } from '../lib/workout-controls.js'
 
 const KEY = 'gym_state_v1'
+const PLATFORM_LOCAL_OWNER_KEY = 'pt650_local_owner_v1'
+const PLATFORM_LOCAL_STATE_PREFIX = 'pt650_state_v1:'
 // Where the saved copy stands with the server: the revision it descends from, and its own `_ts`
 // at that moment. `rev` goes back to the server as `baseRev` on every push, so a write over a
 // document this device never saw is refused (409) instead of dropping another device's work;
@@ -206,9 +208,9 @@ export function freshState() {
   return s
 }
 
-function loadState() {
+function loadStateFromKey(key) {
   try {
-    const raw = localStorage.getItem(KEY)
+    const raw = localStorage.getItem(key)
     if (raw) {
       const saved = JSON.parse(raw)
       const s = Object.assign(clone(DEF), saved)
@@ -216,7 +218,11 @@ function loadState() {
       return s
     }
   } catch (e) { /* ignore */ }
-  return freshState()
+  return null
+}
+
+function loadState() {
+  return loadStateFromKey(KEY) || freshState()
 }
 
 // Whether a copy holds anything of its own worth keeping over another: workouts, routines,
@@ -1067,6 +1073,51 @@ export const useStore = create((set, get) => {
       if (MOBILE && S.autoBackup) writeAutoBackup(S)
     },
 
+    // Public PT650 uses one Supabase identity but keeps workout state local in this phase.
+    // The active browser copy is therefore namespaced per PT650 account. On the first account
+    // after the old demo, the existing local copy is adopted instead of deleted; later accounts
+    // get their own isolated copy. Sign-out parks the current copy and clears the active one.
+    switchPlatformLocalAccount(uid) {
+      if (!DEMO) return
+      const nextUid = typeof uid === 'string' && uid ? uid : null
+      let previous = null
+      try { previous = localStorage.getItem(PLATFORM_LOCAL_OWNER_KEY) || null } catch {}
+
+      if (previous === nextUid) return
+
+      const current = get().S
+      try {
+        if (previous) {
+          localStorage.setItem(PLATFORM_LOCAL_STATE_PREFIX + previous, JSON.stringify(current))
+        }
+
+        let next
+        if (nextUid) {
+          next = loadStateFromKey(PLATFORM_LOCAL_STATE_PREFIX + nextUid)
+          // First unified PT650 account on this browser inherits the pre-account local copy.
+          if (!next && !previous) next = clone(current)
+          if (!next) next = freshState()
+
+          localStorage.setItem(PLATFORM_LOCAL_STATE_PREFIX + nextUid, JSON.stringify(next))
+          localStorage.setItem(KEY, JSON.stringify(next))
+          localStorage.setItem(PLATFORM_LOCAL_OWNER_KEY, nextUid)
+        } else {
+          next = freshState()
+          localStorage.removeItem(KEY)
+          localStorage.removeItem(PLATFORM_LOCAL_OWNER_KEY)
+        }
+
+        for (const k of [SYNC_KEY, DIRTY_KEY, SYNCED_AT_KEY, SYNCED_FP_KEY]) localStorage.removeItem(k)
+        meta.set(next, { base: null, owed: false })
+        fpOf = null
+        registerCustom(next.customEx)
+        set({ S: next })
+        setSync({ auth: false, offline: false, pending: false, lastError: null, lastSynced: 0 })
+      } catch {
+        // Storage can be blocked/full. Keep the in-memory copy rather than risk destroying it.
+      }
+    },
+
     isGuest: () => localStorage.getItem('gym_guest') === '1',
     // Choosing to go on without a server ends whatever was said about the last one.
     setGuest(v) {
@@ -1463,13 +1514,11 @@ export const useStore = create((set, get) => {
         finishBoot({ needsMobileOnboarding: !remote && !hasData(get().S) })
         return
       }
-      // Demo build (GitHub Pages): no backend at all — seed once, stay in guest mode.
+      // Static PT650 build (GitHub Pages): connected services now authenticate through
+      // Supabase. Training state remains local in this phase, but the app no longer bypasses
+      // the account screen by forcing guest mode. Existing local data is preserved.
       if (DEMO) {
-        if (!localStorage.getItem(DEMO_SEEDED)) {
-          localStorage.setItem(DEMO_SEEDED, '1')
-          await get().resetDemo()
-        }
-        get().setGuest(true)
+        get().setGuest(false)
         finishBoot()
         return
       }

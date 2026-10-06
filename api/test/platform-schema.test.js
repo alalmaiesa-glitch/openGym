@@ -62,3 +62,14 @@ test('V2 hardening covers rollup row identity and foreign-key access paths', () 
   expectSql(hardening, /equipment_feedback_instance_idx/i)
   expectSql(hardening, /venues_operator_idx/i)
 })
+
+
+test('unified PT650 profiles are auth-linked and server-only', () => {
+  const account = readFileSync(resolve(process.cwd(), 'platform/sql/011_unified_account.sql'), 'utf8')
+  expectSql(account, /user_id uuid primary key references auth\.users\(id\) on delete cascade/i)
+  expectSql(account, /alter table pt650\.profiles enable row level security/i)
+  expectSql(account, /revoke all on table pt650\.profiles from public, anon, authenticated/i)
+  expectSql(account, /pt650_account_bootstrap/)
+  expectSql(account, /pt650_account_update_profile/)
+  expectSql(account, /grant execute[\s\S]*to service_role/i)
+})

@@ -1,4 +1,7 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
+import { usePlatformIdentity } from './lib/platform-identity.js'
+import { platformApi } from './lib/platform-api.js'
+import { platformSessionUserId } from './lib/platform-auth.js'
 import { HashRouter, Routes, Route, Navigate, useNavigate, useLocation, useNavigationType } from 'react-router-dom'
 import { useStore } from './store/useStore.js'
 import { useUI } from './store/useUI.js'
@@ -67,6 +70,10 @@ function Shell() {
   const loc = useLocation()
   const navType = useNavigationType()
   const { S, user, ready } = useStore()
+  const platformIdentity = usePlatformIdentity()
+  const platformAuthed = !!platformIdentity.session?.access_token
+  const platformUid = platformSessionUserId(platformIdentity.session)
+  const switchPlatformLocalAccount = useStore(s => s.switchPlatformLocalAccount)
   // iOS: whether timer sounds get past the ring/silent switch (Settings → Sounds). Page-level,
   // so it is applied here on load and on change rather than at each beep.
   useEffect(() => { setPlayOnSilent(!!S.soundOnSilent) }, [S.soundOnSilent])
@@ -160,8 +167,17 @@ function Shell() {
   // bound to the workout, not to the route — checking Stats mid-session keeps the screen on
   useWakeLock(!!S.active && !S.active.editingWorkoutId && S.keepAwake !== false)
 
-  const authed = user || isGuest
-  if (!ready && !authed) return (
+  const authed = user || isGuest || platformAuthed
+  useEffect(() => {
+    if (!platformIdentity.ready) return
+    switchPlatformLocalAccount(platformUid)
+  }, [platformIdentity.ready, platformUid, switchPlatformLocalAccount])
+
+  useEffect(() => {
+    if (!ready || !platformAuthed) return
+    platformApi('account').catch(() => {})
+  }, [ready, platformAuthed, platformUid])
+  if ((!ready || !platformIdentity.ready) && !authed) return (
     <div id="app">
       <div style={{ paddingTop: '44vh', display: 'flex', justifyContent: 'center', fontSize: 34, color: 'var(--label-3)' }}>
         <Icon name="dumbbell" />
@@ -211,7 +227,7 @@ function Shell() {
           including on the sign-in screen, when the server has just ended the session. */}
       <SyncBanner />
       {/* The chat owns the bottom of the screen: its composer sits where the tabs would be. */}
-      {loc.pathname !== '/coach' && loc.pathname !== '/login-preview' && <TabBar onStart={startFlow} />}
+      {authed && loc.pathname !== '/coach' && loc.pathname !== '/login-preview' && <TabBar onStart={startFlow} />}
       <RestTimer />
       <Modals />
       <Toast />

@@ -34,12 +34,25 @@ describe('PT650 login design', () => {
     expect(loginSource).not.toContain('self-hosting')
   })
 
-  it('preserves every existing entry path', () => {
+  it('uses the real PT650 platform account on the public static build', () => {
+    expect(loginSource).toContain('platformSignIn')
+    expect(loginSource).toContain('platformSignUp')
+    expect(loginSource).toContain("platformApi('account')")
+    expect(loginSource).not.toContain('Start the demo')
+    expect(loginSource).not.toContain('Live demo — everything stays in this browser.')
+  })
+
+  it('preserves legacy self-host entry paths outside the public PT650 build', () => {
     expect(loginSource).toContain('passkeyLogin()')
     expect(loginSource).toContain('openPasswordSignIn()')
     expect(loginSource).toContain('Create new profile')
     expect(loginSource).toContain('openDeviceLinkRedeem')
     expect(loginSource).toContain('setGuest(true)')
-    expect(loginSource).toContain('Start the demo')
+  })
+
+  it('lets a Supabase platform session unlock the main app without pretending it is a guest', () => {
+    expect(appSource).toContain('usePlatformIdentity')
+    expect(appSource).toContain('user || isGuest || platformAuthed')
+    expect(appSource).toContain("platformApi('account')")
   })
 })
