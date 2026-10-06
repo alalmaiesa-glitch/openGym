@@ -33,4 +33,21 @@ export const PT650_NATIVE_EXERCISES = Object.freeze([
     native: true,
     source: 'PT650 native catalogue',
   }),
+  Object.freeze({
+    id: 'pt650-0003',
+    n: 'seated meditation',
+    bp: 'waist',
+    eq: 'body weight',
+    tg: 'abs',
+    mg: 'core',
+    sm: ['lower back'],
+    st: [
+      'Sit cross-legged with your sit bones grounded and your spine long.',
+      'Rest your hands on your knees and keep your shoulders relaxed.',
+      'Breathe slowly through your nose for four counts in and six counts out.',
+      'Keep your chin level and your gaze soft while holding the seated posture.',
+    ],
+    native: true,
+    source: 'PT650 native catalogue',
+  }),
 ])
