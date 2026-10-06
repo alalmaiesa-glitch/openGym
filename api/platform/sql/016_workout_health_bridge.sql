@@ -21,15 +21,19 @@ declare
   v_day date;
   v_started timestamptz;
   v_inserted integer := 0;
+  v_max_weight numeric;
 begin
   if p_user_id is null then raise exception 'user required'; end if;
   if p_unit not in ('kg','lb') then raise exception 'invalid weight unit'; end if;
+  v_max_weight := case when p_unit = 'kg' then 500 else 1100 end;
   if p_entries is null or jsonb_typeof(p_entries) <> 'array' then raise exception 'bodyweight must be an array'; end if;
   if jsonb_array_length(p_entries) > 5000 then raise exception 'too many weigh-ins'; end if;
 
   v_source := pt650.ensure_health_source(p_user_id, 'pt650_workout', 'first_party', 'PT650 Workout', null);
 
-  for v_entry in select value from jsonb_array_elements(p_entries)
+  for v_entry in
+    select e.value
+    from jsonb_array_elements(p_entries) as e(value)
   loop
     begin
       v_weight := (v_entry->>'w')::numeric;
@@ -39,7 +43,7 @@ begin
       continue;
     end;
 
-    if v_weight <= 0 or v_weight > case when p_unit='kg' then 500 else 1100 end then
+    if v_weight <= 0 or v_weight > v_max_weight then
       continue;
     end if;
 
