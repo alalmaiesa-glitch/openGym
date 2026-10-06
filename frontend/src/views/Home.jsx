@@ -4,6 +4,7 @@ import { useStore } from '../store/useStore.js'
 import { effectiveRoutines, effectiveRoutineIds, nextTrainingDay, streakWeeks, lastBW, setsDoneActive } from '../lib/history.js'
 import { fmtNum, fmtDate, fmtDateRange, todayISO, isoOf, weekKey, weekStartOf, weekDayOffset, DAYS, DAYN } from '../lib/format.js'
 import { t, dateLocale } from '../lib/i18n.js'
+import { getLang } from '../lib/i18n-core.js'
 import { bwSheet, goalSheet, dayOverrideSheet, calendarSheet, startFlow, starterPlanSheet, bwDeltaColor, weighInsSheet } from '../sheets.jsx'
 import LineChart from '../components/LineChart.jsx'
 import Icon from '../components/Icon.jsx'
@@ -17,6 +18,7 @@ export default function Home() {
   const S = useStore(s => s.S)
   const user = useStore(s => s.user)
   const [weekOffset, setWeekOffset] = useState(0)
+  const machineScanAr = String(getLang()).toLowerCase().startsWith('ar')
 
   const today = new Date()
   // A weekday can hold several routines. `todayRoutines` is the whole day; `routine` is the
@@ -117,6 +119,20 @@ export default function Home() {
           {t('Choose a different workout')}
         </Button>
       </div>}
+    </div>
+
+    <div className="card tappable machine-scan-home" style={{ cursor: 'pointer' }} {...tappable(() => nav('/machine-scan'))}>
+      <div className="row between">
+        <div className="row" style={{ gap: 11 }}>
+          <span className="machine-scan-home-icon"><Icon name="camera" /></span>
+          <div>
+            <div className="lbl2">PT650 Machine Scan</div>
+            <div className="ttl">{machineScanAr ? 'صوّر الجهاز' : 'Scan a machine'}</div>
+            <div className="ss">{machineScanAr ? 'التكنيك · الضبط · الحمل · العدات' : 'Technique · setup · load · reps'}</div>
+          </div>
+        </div>
+        <Icon name="chevronRight" className="chev" />
+      </div>
     </div>
 
     {/* Jump to the gym check-in cards (QR membership codes). Shown here as a quick tap on
