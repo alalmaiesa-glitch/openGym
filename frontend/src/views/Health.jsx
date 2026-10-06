@@ -114,14 +114,22 @@ export default function Health() {
     setLoading(true)
     setError('')
     try {
-      const [s, a, x] = await Promise.all([
+      const [s, a, framework] = await Promise.all([
         platformApi('health-summary'),
         platformApi('health-activities'),
-        platformApi('health-adapters')
+        platformApi('wearable-framework')
       ])
       setSummary(s || {})
       setActivities(a.activities || [])
-      setAdapters(x.adapters || [])
+      setAdapters((framework.adapters || []).map(x => ({
+        provider: x.provider,
+        display_name: x.displayName,
+        status: x.status,
+        capabilities: x.capabilities || [],
+        priority: x.priority,
+        requires_native: x.requiresNative,
+        uses_token_vault: x.usesTokenVault
+      })))
     } catch (e) {
       setError(e?.message || C.unavailable)
     } finally {

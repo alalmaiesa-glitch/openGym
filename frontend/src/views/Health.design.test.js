@@ -18,11 +18,12 @@ describe('PT650 Health & Endurance Core V1 UI', () => {
   it('uses the authenticated Edge Health APIs rather than direct database access', () => {
     expect(health).toContain("platformApi('health-summary')")
     expect(health).toContain("platformApi('health-activities')")
-    expect(health).toContain("platformApi('health-adapters')")
+    expect(health).toContain("platformApi('wearable-framework')")
     expect(health).not.toContain('SUPABASE_SERVICE_ROLE_KEY')
   })
 
-  it('distinguishes adapter availability from account-level connection state', () => {
+  it('uses the Wearable Framework while distinguishing adapter availability from account-level connection state', () => {
+    expect(health).toContain("platformApi('wearable-framework')")
     expect(health).toContain("x.status === 'active'")
     expect(health).toContain("x.status === 'planned'")
     expect(health).toContain('connectedProviders.has(x.provider)')
