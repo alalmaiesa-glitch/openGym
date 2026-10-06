@@ -1,4 +1,5 @@
 import { EXDB } from '../lib/exercises-data.js'
+import { PT650_NATIVE_EXERCISES } from '../lib/pt650-native-exercises.js'
 import { arabicExerciseName } from './ar-generator.js'
 
 // Reviewed exceptions for the most-used movements. Everything else is generated from the
@@ -35,9 +36,10 @@ const MANUAL = {
   "1368": "تدوير الكاحل",
   "1370": "رفع السمانة بالبار من الأرض",
   "3293": "عقلة الرامي",
-  "3294": "ضغط الرامي"
+  "3294": "ضغط الرامي",
+  "pt650-0001": "قفز فتح وضم"
 }
 
 export default Object.fromEntries(
-  EXDB.map(ex => [ex.id, MANUAL[ex.id] || arabicExerciseName(ex.n)])
+  [...EXDB, ...PT650_NATIVE_EXERCISES].map(ex => [ex.id, MANUAL[ex.id] || arabicExerciseName(ex.n)])
 )

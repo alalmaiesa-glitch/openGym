@@ -6,6 +6,24 @@
   "baseUrl": "https://assiamahs.github.io/opengym3d/assets",
   "assets": [
     {
+      "exerciseId": "pt650-0001",
+      "slug": "jumping_jack",
+      "files": {
+        "glb": {
+          "name": "jumping_jack.glb",
+          "sha256": "94aa534eded3272a61f775d3a7067a9093df97c99f5505d64e39251c46697a0e"
+        },
+        "mp4": {
+          "name": "jumping_jack.mp4",
+          "sha256": "85b982efef856b731f68f946c72ed2c05b52385b895847cd00e6cb91d1c32a48"
+        },
+        "png": {
+          "name": "jumping_jack.png",
+          "sha256": "d40f5cbeb2b92e67fc008512ea4ff1f87620a16262e5928b378b8641b1ced95e"
+        }
+      }
+    },
+    {
       "exerciseId": "0662",
       "slug": "push_up",
       "files": {

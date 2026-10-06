@@ -2,7 +2,7 @@
   "format": "pt650-3d-candidate-audit/1",
   "sourceRepo": "AssiamahS/opengym3d",
   "sourceCommit": "ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae",
-  "policy": "CC0 motion + non-draft exercise spec + exact movement match",
+  "policy": "CC0 motion + non-draft exercise spec + exact movement match; PT650 native catalogue allowed when upstream catalogue has no exact row",
   "candidates": [
     {
       "upstream": "push_up",
@@ -40,9 +40,9 @@
       "upstream": "jumping_jack",
       "motion": "Mesh2Motion Jumping Jacks",
       "motionLicense": "CC0-1.0",
-      "decision": "unmatched",
-      "exerciseId": null,
-      "reason": "no exact PT650 catalogue exercise"
+      "decision": "registered-native",
+      "exerciseId": "pt650-0001",
+      "reason": "added to the PT650 native catalogue for an exact 1:1 CC0 movement match"
     },
     {
       "upstream": "walk",

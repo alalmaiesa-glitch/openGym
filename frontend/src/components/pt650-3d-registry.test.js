@@ -5,6 +5,16 @@ import { PT650_3D_MODELS, threeDModelFor } from './pt650-3d-registry.js'
 
 describe('PT650 mirrored 3D registry', () => {
   it('binds approved 3D assets to exact PT650 exercises', () => {
+    expect(threeDModelFor('pt650-0001')).toMatchObject({
+      id: 'jumping-jack-3d-v1',
+      exercise: 'jumping jack',
+      camera: 'front',
+      motion: 'Mesh2Motion Jumping Jacks',
+      generatedBy: 'PT650 3D Factory',
+      humanLicense: 'CC0-1.0',
+      motionLicense: 'CC0-1.0',
+      version: 1,
+    })
     expect(threeDModelFor('0662')).toMatchObject({
       id: 'push-up-3d-v3',
       exercise: 'push-up',
@@ -74,7 +84,9 @@ describe('PT650 mirrored 3D registry', () => {
   it('locks every mirrored binary with SHA256 before deployment', () => {
     const lock = JSON.parse(readFileSync(new URL('../../pt650-3d-assets.lock.json', import.meta.url), 'utf8'))
     expect(lock.format).toBe('pt650-3d-asset-lock/1')
-    expect(lock.assets.map(a => a.exerciseId).sort()).toEqual(['0662', '0685', '3360'])
+    expect(lock.assets.map(a => a.exerciseId).sort()).toEqual(['0662', '0685', '3360', 'pt650-0001'])
+    const deployRegistryIds = Object.keys(PT650_3D_MODELS).sort()
+    expect(lock.assets.map(a => a.exerciseId).sort()).toEqual(deployRegistryIds)
     for (const asset of lock.assets) {
       for (const file of Object.values(asset.files)) {
         expect(file.sha256).toMatch(/^(BOOTSTRAP|[0-9a-f]{64})$/)
@@ -125,14 +137,35 @@ describe('PT650 mirrored 3D registry', () => {
     const audit = JSON.parse(readFileSync(new URL('../../pt650-3d-candidates.json', import.meta.url), 'utf8'))
     expect(audit.format).toBe('pt650-3d-candidate-audit/1')
     const registered = audit.candidates
-      .filter(x => x.decision === 'registered')
+      .filter(x => x.decision === 'registered' || x.decision === 'registered-native')
       .map(x => x.exerciseId)
       .sort()
-    expect(registered).toEqual(['0662', '0685', '3360'])
+    expect(registered).toEqual(['0662', '0685', '3360', 'pt650-0001'])
     expect(Object.keys(PT650_3D_MODELS).sort()).toEqual(registered)
+    expect(audit.candidates.find(x => x.upstream === 'jumping_jack')).toMatchObject({
+      decision: 'registered-native',
+      exerciseId: 'pt650-0001',
+      motionLicense: 'CC0-1.0',
+    })
     expect(audit.candidates.find(x => x.upstream === 'run')?.decision).toBe('rejected-for-0685')
     expect(audit.candidates.find(x => x.upstream === 'jog')?.exerciseId).toBe('0685')
     for (const item of audit.candidates) expect(item.motionLicense).toBe('CC0-1.0')
+  })
+
+  it('pins every PT650 3D Factory input before rendering', () => {
+    const factory = JSON.parse(readFileSync(new URL('../../pt650-3d-factory.json', import.meta.url), 'utf8'))
+    expect(factory.format).toBe('pt650-3d-factory/1')
+    expect(factory.upstream).toEqual({
+      repository: 'AssiamahS/opengym3d',
+      commit: 'ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae',
+    })
+    expect(factory.toolchain).toMatchObject({ blender: '4.5.11', mpfb: '2.0.16' })
+    expect(factory.exercises).toContainEqual(expect.objectContaining({
+      exerciseId: 'pt650-0001',
+      slug: 'jumping_jack',
+      motion: expect.stringContaining('#Jumping Jacks'),
+      motionLicense: 'CC0-1.0',
+    }))
   })
 
   it('does not invent 3D media for unregistered exercises', () => {

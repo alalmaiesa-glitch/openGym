@@ -75,6 +75,109 @@ jobs:
         working-directory: frontend
 
 
+  pt650-factory-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: AssiamahS/opengym3d
+          ref: ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae
+          path: _factory/opengym3d
+      - name: Validate PT650 3D Factory inputs
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root = Path('.')
+          factory = json.loads((root / 'frontend/pt650-3d-factory.json').read_text())
+          assert factory['format'] == 'pt650-3d-factory/1'
+          assert factory['upstream']['commit'] == 'ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae'
+          for item in factory['exercises']:
+              spec = json.loads((root / '_factory/opengym3d' / item['spec']).read_text())
+              assert spec['id'] == item['slug'], (spec['id'], item['slug'])
+              assert spec['mocap'] == item['motion'], (spec['mocap'], item['motion'])
+              assert item['motionLicense'] == 'CC0-1.0'
+              assert spec.get('camera') == item['camera']
+              assert spec.get('movement', {}).get('pattern') == 'jumping_jack'
+          print('PT650 3D Factory inputs are pinned and exact')
+          PY
+
+
+  pt650-factory-render:
+    # The expensive Blender render is manual once output has been visually reviewed and SHA256-locked.
+    # Pull requests still validate the pinned factory inputs and the mirrored deploy assets.
+    needs: pt650-factory-inputs
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      BLENDER_VERSION: 4.5.11
+      FITX_ECORCHE: '0'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7
+        with:
+          repository: AssiamahS/opengym3d
+          ref: ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae
+          path: _factory/opengym3d
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - name: Cache Blender
+        id: blender-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/blender
+          key: blender-4.5.11-linux-x64
+      - name: Install Blender
+        if: steps.blender-cache.outputs.cache-hit != 'true'
+        run: |
+          curl -sL "https://download.blender.org/release/Blender4.5/blender-${BLENDER_VERSION}-linux-x64.tar.xz" | tar xJ -C "$HOME"
+          mv "$HOME/blender-${BLENDER_VERSION}-linux-x64" "$HOME/blender"
+      - name: Install render runtime
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq libxi6 libxxf86vm1 libxfixes3 libxrender1 libgl1 libxkbcommon0 libsm6 ffmpeg
+      - name: Cache MPFB extension
+        uses: actions/cache@v4
+        with:
+          path: ~/.config/blender/4.5/extensions
+          key: mpfb-2.0.16
+      - name: Prime pinned MPFB package
+        run: |
+          if [ ! -d "$HOME/.config/blender/4.5/extensions/user_default/mpfb" ]; then
+            curl -sL -o /tmp/mpfb.zip "https://extensions.blender.org/download/sha256:b5cdc8b08147e0c6463e4faa01147491b13a0b062f73415363f029debd11c934/add-on-mpfb-v2.0.16.zip?repository=%2Fapi%2Fv1%2Fextensions%2F&blender_version_min=4.2.0"
+          fi
+      - name: Render PT650 native Jumping Jack
+        working-directory: _factory/opengym3d
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/_factory/output"
+          "$HOME/blender/blender" -b -noaudio --python-exit-code 1 \
+            -P pipeline/build_exercise.py -- \
+            exercises/jumping_jack.json "$GITHUB_WORKSPACE/_factory/output"
+          test -s "$GITHUB_WORKSPACE/_factory/output/jumping_jack.glb"
+          test -s "$GITHUB_WORKSPACE/_factory/output/jumping_jack.png"
+      - name: Encode PT650 Jumping Jack fallback MP4
+        run: |
+          frames="$GITHUB_WORKSPACE/_factory/output/frames_jumping_jack"
+          test -d "$frames"
+          ffmpeg -v error -framerate 15 -pattern_type glob -i "$frames/*.png" \
+            -c:v libx264 -pix_fmt yuv420p -movflags +faststart \
+            "$GITHUB_WORKSPACE/_factory/output/jumping_jack.mp4"
+          test -s "$GITHUB_WORKSPACE/_factory/output/jumping_jack.mp4"
+      - name: Verify PT650 Factory output lock
+        run: node frontend/scripts/verify-pt650-3d-factory-output.mjs _factory/output
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pt650-jumping-jack-factory
+          path: |
+            _factory/output/jumping_jack.glb
+            _factory/output/jumping_jack.mp4
+            _factory/output/jumping_jack.png
+          if-no-files-found: ignore
+
+
   mcp:
     runs-on: ubuntu-latest
     steps:

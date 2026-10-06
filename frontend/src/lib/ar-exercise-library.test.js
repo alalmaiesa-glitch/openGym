@@ -9,7 +9,7 @@ afterEach(() => _setLangState('en', {}, null, null))
 
 describe('Arabic exercise library', () => {
   it('covers every built-in exercise with an Arabic title and Arabic instructions', () => {
-    expect(CATALOGUE).toHaveLength(1324)
+    expect(CATALOGUE).toHaveLength(1325)
     for (const ex of CATALOGUE) {
       expect(arNames[ex.id], ex.id + ' ' + ex.n).toEqual(expect.any(String))
       expect(arNames[ex.id], ex.id + ' ' + ex.n).toMatch(/[\u0600-\u06FF]/)

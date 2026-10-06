@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
-import { EXDB, BODYPARTS, allExercises, equipmentOf, searchExercises } from '../lib/exercises.js'
+import { CATALOGUE, BODYPARTS, allExercises, equipmentOf, searchExercises } from '../lib/exercises.js'
 import { MUSCLE_NAME } from '../lib/muscles.js'
 import { activeProfile, exAvailable } from '../lib/equipment.js'
 import { bestWeightFor } from '../lib/history.js'
@@ -49,7 +49,7 @@ export default function Library() {
           <span className="library-title-mark"><Icon name="dumbbell" /></span>
           <div>
             <h1>{t('Exercises')}</h1>
-            <div className="library-total">{exCount(EXDB.length)}</div>
+            <div className="library-total">{exCount(CATALOGUE.length)}</div>
           </div>
         </div>
 

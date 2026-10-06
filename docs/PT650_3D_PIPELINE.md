@@ -30,6 +30,23 @@ The 3D path has priority over the legacy SVG path. SVG is transitional only.
 
 ## Integrated CC0 exercises
 
+### Jumping Jack — PT650 native
+
+- PT650 exercise ID: `pt650-0001`
+- Canonical name: `jumping jack`
+- Arabic name: `قفز فتح وضم`
+- PT650 model id: `jumping-jack-3d-v1`
+- OpenGym3D spec: `exercises/jumping_jack.json`
+- camera: front
+- human: MakeHuman / MPFB2 anatomical avatar — CC0-1.0
+- motion: Mesh2Motion `Jumping Jacks` — CC0-1.0
+- generator: PT650 3D Factory
+- generated outputs: GLB + MP4 + PNG
+- output hash lock: `frontend/pt650-3d-factory.lock.json`
+
+This is the first exercise PT650 adds to its own catalogue specifically because the upstream
+CC0 movement is a precise fit but the inherited exercise catalogue had no exact row.
+
 ### Push-up
 
 - PT650 exercise ID: `0662`
@@ -81,11 +98,11 @@ pipeline and source provenance separately rather than treating one licence label
 The current OpenGym3D CC0 exercise lane was audited against the PT650 catalogue and recorded in
 `frontend/pt650-3d-candidates.json`.
 
-Only three movements currently pass the exact-binding gate: push-up, bear crawl, and the PT650
-`run` entry bound to OpenGym3D's jog-in-place motion. Jumping jack, flat walk and seated
-meditation remain unmatched because PT650 has no exact catalogue row for those movements.
-The OpenGym3D sprint motion is explicitly rejected for PT650 `0685` because the PT650 source
-instructions describe jogging in place.
+Four movements now pass the exact-binding gate: push-up, bear crawl, the PT650
+`run` entry bound to OpenGym3D's jog-in-place motion, and Jumping Jack as the first
+PT650-native catalogue exercise. Flat walk and seated meditation remain unmatched because PT650
+still has no exact catalogue row for those movements. The OpenGym3D sprint motion is explicitly
+rejected for PT650 `0685` because the PT650 source instructions describe jogging in place.
 
 ## Runtime rules
 
@@ -97,6 +114,21 @@ instructions describe jogging in place.
 6. Real-person footage is prohibited.
 7. Public PT650 3D assets may use only redistributable sources recorded in the registry.
 8. Mixamo/app-only and demo-only source motion must not enter the public PT650 registry.
+
+## PT650 3D Factory
+
+When a redistributable motion exists but no finished upstream GLB is published, PT650 can now
+generate the exercise itself from pinned source inputs.
+
+The factory manifest is `frontend/pt650-3d-factory.json`. It pins the OpenGym3D commit, Blender
+version, MPFB version, exercise spec, camera, exact motion clip and licence. CI validates that
+those values still match the pinned upstream repository before any render starts.
+
+Factory output uses the same delivery contract as mirrored assets: GLB for interactive playback,
+MP4 as the non-WebGL fallback and PNG as the poster. Generated files are verified against
+`frontend/pt650-3d-factory.lock.json` before they are eligible for deployment.
+
+Jumping Jack is the first factory exercise.
 
 ## Current storage stage
 

@@ -1,0 +1,27 @@
+{
+  "format": "pt650-3d-factory/1",
+  "upstream": {
+    "repository": "AssiamahS/opengym3d",
+    "commit": "ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae"
+  },
+  "toolchain": {
+    "blender": "4.5.11",
+    "mpfb": "2.0.16",
+    "ffmpeg": "ubuntu-latest"
+  },
+  "exercises": [
+    {
+      "exerciseId": "pt650-0001",
+      "slug": "jumping_jack",
+      "spec": "exercises/jumping_jack.json",
+      "motion": "cc0/mesh2motion/human-addon-animations.glb#Jumping Jacks",
+      "motionLicense": "CC0-1.0",
+      "camera": "front",
+      "outputs": [
+        "jumping_jack.glb",
+        "jumping_jack.mp4",
+        "jumping_jack.png"
+      ]
+    }
+  ]
+}
