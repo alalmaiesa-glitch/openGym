@@ -2,6 +2,7 @@
 
 Status: **Approved reference**  
 Upstream: `endurain-project/endurain` (default branch: `master`)  
+Pinned upstream commit: `2d8a1aa7e1048e428e17840a41245537f8cda9aa`  
 Reference reviewed: 2026-10-06
 
 ## Decision
@@ -125,6 +126,8 @@ This prevents a convenient import path from becoming an easy reward-fraud path.
 Endurain is distributed under **AGPL-3.0** and its name/logo are covered by a trademark policy.
 
 PT650 may study architecture and behaviour and may implement compatible ideas independently.
+
+**Clean-room rule:** do not paste or mechanically port Endurain implementation code into PT650. New PT650 code must be written against PT650's own schemas, APIs and tests. The pinned commit above is a review reference, not a dependency.
 Do not import Endurain branding, screenshots, copy or visual assets into PT650. Any future proposal
 to copy source code directly must receive an explicit license/compliance review first, even though
 the inherited PT650 repository is itself AGPL-based today.
