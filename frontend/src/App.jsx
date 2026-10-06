@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { usePlatformIdentity } from './lib/platform-identity.js'
 import { platformApi } from './lib/platform-api.js'
+import { platformSessionUserId } from './lib/platform-auth.js'
 import { HashRouter, Routes, Route, Navigate, useNavigate, useLocation, useNavigationType } from 'react-router-dom'
 import { useStore } from './store/useStore.js'
 import { useUI } from './store/useUI.js'
@@ -71,6 +72,8 @@ function Shell() {
   const { S, user, ready } = useStore()
   const platformIdentity = usePlatformIdentity()
   const platformAuthed = !!platformIdentity.session?.access_token
+  const platformUid = platformSessionUserId(platformIdentity.session)
+  const switchPlatformLocalAccount = useStore(s => s.switchPlatformLocalAccount)
   // iOS: whether timer sounds get past the ring/silent switch (Settings → Sounds). Page-level,
   // so it is applied here on load and on change rather than at each beep.
   useEffect(() => { setPlayOnSilent(!!S.soundOnSilent) }, [S.soundOnSilent])
@@ -165,6 +168,11 @@ function Shell() {
   useWakeLock(!!S.active && !S.active.editingWorkoutId && S.keepAwake !== false)
 
   const authed = user || isGuest || platformAuthed
+  useEffect(() => {
+    if (!platformIdentity.ready) return
+    switchPlatformLocalAccount(platformUid)
+  }, [platformIdentity.ready, platformUid, switchPlatformLocalAccount])
+
   useEffect(() => {
     if (!ready || !platformAuthed) return
     platformApi('account').catch(() => {})
