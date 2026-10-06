@@ -71,3 +71,34 @@ test('Edge training sync separates cheap revision polling from bounded state wri
   assert.match(edge, /rate\(user\.id, "training-read", 120, 3600\)/)
   assert.match(edge, /rate\(user\.id, "training-write", 900, 3600\)/)
 })
+
+
+test('Edge Health API exposes authenticated summary, activities and honest adapter status', () => {
+  assert.match(edge, /action === "health-summary"/)
+  assert.match(edge, /admin\.rpc\("pt650_health_summary", \{ p_user_id: user\.id \}\)/)
+  assert.match(edge, /action === "health-activities"/)
+  assert.match(edge, /admin\.rpc\("pt650_health_recent_activities"/)
+  assert.match(edge, /action === "health-adapters"/)
+  assert.match(edge, /admin\.rpc\("pt650_health_adapter_status"\)/)
+})
+
+test('verified PT650 Move sessions also become canonical endurance activities', () => {
+  assert.match(edge, /admin\.rpc\("pt650_record_move_activity"/)
+  assert.match(edge, /p_external_key: "move:" \+ sessionId/)
+  assert.match(edge, /p_verification: checked\.verified \? "pt650_verified" : "review"/)
+  assert.match(edge, /healthActivityId/)
+})
+
+test('workout cloud writes index bodyweight into Health without making sync depend on the derived bridge', () => {
+  assert.match(edge, /row\.outcome === "written" && Array\.isArray\(state\.bodyweight\)/)
+  assert.match(edge, /admin\.rpc\("pt650_health_ingest_bodyweight_batch"/)
+  assert.match(edge, /console\.error\("pt650-health-weight-bridge"/)
+  assert.doesNotMatch(edge, /if \(healthBridgeError\) throw healthBridgeError/)
+})
+
+
+test('Health summary reindexes pre-existing workout weights without failing the dashboard on derived-index errors', () => {
+  assert.match(edge, /admin\.rpc\("pt650_health_reindex_workout", \{ p_user_id: user\.id \}\)/)
+  assert.match(edge, /console\.error\("pt650-health-reindex"/)
+  assert.doesNotMatch(edge, /if \(reindexError\) throw reindexError/)
+})

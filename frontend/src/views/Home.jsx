@@ -139,6 +139,20 @@ export default function Home() {
       </div>
     </div>
 
+    <div className="card tappable pt650-health-home" style={{ cursor: 'pointer' }} {...tappable(() => nav('/health'))}>
+      <div className="row between">
+        <div className="row" style={{ gap: 11 }}>
+          <span className="pt650-health-home-icon"><Icon name="heart" /></span>
+          <div>
+            <div className="lbl2">PT650 Health</div>
+            <div className="ttl">{machineScanAr ? 'صحتك ونشاطك في سجل واحد' : 'Health and endurance in one record'}</div>
+            <div className="ss">{machineScanAr ? 'Move · الوزن · الأجهزة القابلة للارتداء قريبًا' : 'Move · body weight · wearables next'}</div>
+          </div>
+        </div>
+        <Icon name="chevronRight" className="chev" />
+      </div>
+    </div>
+
     <div className="card tappable machine-scan-home" style={{ cursor: 'pointer' }} {...tappable(() => nav('/machine-scan'))}>
       <div className="row between">
         <div className="row" style={{ gap: 11 }}>

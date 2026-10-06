@@ -90,3 +90,81 @@ test('PT650 workout cloud state is revisioned, auth-linked and server-only', () 
   expectSql(training, /2500000/)
   expectSql(training, /grant execute[\s\S]*to service_role/i)
 })
+
+
+test('Health & Endurance Core separates canonical observations, activities, laps and chunked streams', () => {
+  const health = readFileSync(resolve(process.cwd(), 'platform/sql/013_health_endurance_core.sql'), 'utf8')
+  expectSql(health, /create table if not exists pt650\.health_observations/i)
+  expectSql(health, /create table if not exists pt650\.endurance_activities/i)
+  expectSql(health, /create table if not exists pt650\.activity_laps/i)
+  expectSql(health, /create table if not exists pt650\.activity_stream_chunks/i)
+  expectSql(health, /sample_count integer not null check \(sample_count >= 0 and sample_count <= 4096\)/i)
+})
+
+test('Health imports are idempotent and preserve source/device provenance', () => {
+  const health = readFileSync(resolve(process.cwd(), 'platform/sql/013_health_endurance_core.sql'), 'utf8')
+  expectSql(health, /create table if not exists pt650\.health_sources/i)
+  expectSql(health, /create table if not exists pt650\.health_devices/i)
+  expectSql(health, /create table if not exists pt650\.health_import_keys/i)
+  expectSql(health, /primary key \(user_id, source_id, object_kind, external_key\)/i)
+  expectSql(health, /on conflict \(user_id, source_id, object_kind, external_key\) do nothing/i)
+})
+
+test('Health location streams cannot store coordinates inline', () => {
+  const health = readFileSync(resolve(process.cwd(), 'platform/sql/013_health_endurance_core.sql'), 'utf8')
+  expectSql(health, /stream_type not in \('latlng','location','gps'\)[\s\S]*or encoding = 'artifact'/i)
+  expectSql(health, /encoding in \('json_array','delta_json','artifact'\)/i)
+})
+
+test('Health adapter matrix marks only implemented bridges active on a fresh install', () => {
+  const health = readFileSync(resolve(process.cwd(), 'platform/sql/013_health_endurance_core.sql'), 'utf8')
+  expectSql(health, /'pt650_move','PT650 Move','first_party','active'/i)
+  expectSql(health, /'pt650_workout','PT650 Workout','first_party','active',array\['strength_training','body_weight'\]/i)
+  expectSql(health, /'apple_health','Apple Health','native_bridge','planned'/i)
+  expectSql(health, /'health_connect','Android Health Connect','native_bridge','planned'/i)
+  expectSql(health, /'huawei_health','Huawei Health','native_bridge','planned'/i)
+  expectSql(health, /'garmin','Garmin Connect','oauth','planned'/i)
+  expectSql(health, /'strava','Strava','oauth','planned'/i)
+})
+
+test('Generic endurance adapter contract supports summary, laps and bounded stream chunks', () => {
+  const adapter = readFileSync(resolve(process.cwd(), 'platform/sql/014_endurance_adapter_contract.sql'), 'utf8')
+  expectSql(adapter, /pt650_endurance_ingest_activity/i)
+  expectSql(adapter, /pt650_endurance_replace_laps/i)
+  expectSql(adapter, /v_count := jsonb_array_length\(p_laps\)/i)
+  expectSql(adapter, /if v_count > 1000/i)
+  expectSql(adapter, /pt650_endurance_put_stream_chunk/i)
+  expectSql(adapter, /p_sample_count > 4096/i)
+  expectSql(adapter, /location stream must use protected artifact/i)
+})
+
+test('Workout weigh-ins bridge into canonical kg observations idempotently', () => {
+  const bridge = readFileSync(resolve(process.cwd(), 'platform/sql/016_workout_health_bridge.sql'), 'utf8')
+  expectSql(bridge, /pt650_health_ingest_bodyweight_batch/i)
+  expectSql(bridge, /v_weight \* 0\.45359237/i)
+  expectSql(bridge, /'weight_kg'/i)
+  expectSql(bridge, /'self_reported'/i)
+  expectSql(bridge, /bodyweight:[^']*/i)
+  expectSql(bridge, /on conflict \(user_id, source_id, object_kind, external_key\) do nothing/i)
+})
+
+
+test('Health reindex backfills old workout cloud weights without rewriting training state', () => {
+  const reindex = readFileSync(resolve(process.cwd(), 'platform/sql/017_health_workout_reindex.sql'), 'utf8')
+  expectSql(reindex, /from pt650\.training_states/i)
+  expectSql(reindex, /v_state->'bodyweight'/i)
+  expectSql(reindex, /pt650_health_ingest_bodyweight_batch/i)
+  expectSql(reindex, /revoke all on function public\.pt650_health_reindex_workout\(uuid\)/i)
+  expectSql(reindex, /grant execute on function public\.pt650_health_reindex_workout\(uuid\)[\s\S]*to service_role/i)
+})
+
+
+test('Health Core hardening covers foreign-key access paths and activates implemented workout bridge', () => {
+  const hardening = readFileSync(resolve(process.cwd(), 'platform/sql/018_health_core_hardening.sql'), 'utf8')
+  expectSql(hardening, /where provider = 'pt650_workout'/i)
+  expectSql(hardening, /set status = 'active'/i)
+  expectSql(hardening, /health_sources_provider_idx/i)
+  expectSql(hardening, /health_import_keys_source_idx/i)
+  expectSql(hardening, /health_observations_device_idx/i)
+  expectSql(hardening, /endurance_activities_device_idx/i)
+})

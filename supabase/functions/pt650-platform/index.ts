@@ -170,6 +170,18 @@ Deno.serve(async (req: Request) => {
       }
       const row = first(data)
       if (!row) throw new Error("bad training sync response")
+
+      // Health indexing is a derived side-effect of a successful workout-cloud write. A Health
+      // bridge failure must never roll back or misreport the already-saved training document.
+      if (row.outcome === "written" && Array.isArray(state.bodyweight) && state.bodyweight.length) {
+        const { error: healthBridgeError } = await admin.rpc("pt650_health_ingest_bodyweight_batch", {
+          p_user_id: user.id,
+          p_unit: state.unit === "lb" ? "lb" : "kg",
+          p_entries: state.bodyweight
+        })
+        if (healthBridgeError) console.error("pt650-health-weight-bridge", healthBridgeError.message)
+      }
+
       const payload = {
         rev: Number(row.rev || 0),
         stateTs: Number(row.state_ts || 0),
@@ -177,6 +189,42 @@ Deno.serve(async (req: Request) => {
         ...(row.state ? { state: row.state } : {})
       }
       return json(payload, row.outcome === "conflict" ? 409 : 200)
+    }
+
+
+    if (req.method === "GET" && action === "health-summary") {
+      const gate = await rate(user.id, "health-summary", 120, 60)
+      if (!gate.allowed) return json({ error: "rate limit", code: "rate-limit" }, 429, { "Retry-After": String(gate.retry_after) })
+
+      // Backfill pre-Health-Core workout weigh-ins once/idempotently. A derived index problem must
+      // not make the athlete's Health dashboard unavailable.
+      const { error: reindexError } = await admin.rpc("pt650_health_reindex_workout", { p_user_id: user.id })
+      if (reindexError) console.error("pt650-health-reindex", reindexError.message)
+
+      const { data, error } = await admin.rpc("pt650_health_summary", { p_user_id: user.id })
+      if (error) throw error
+      return json(first(data) ?? data ?? { latest: {}, activity30d: { count: 0, distanceM: 0, durationSec: 0 }, sources: [] })
+    }
+
+    if (req.method === "GET" && action === "health-activities") {
+      const gate = await rate(user.id, "health-activities", 120, 60)
+      if (!gate.allowed) return json({ error: "rate limit", code: "rate-limit" }, 429, { "Retry-After": String(gate.retry_after) })
+      const rawLimit = Number(new URL(req.url).searchParams.get("limit") || 20)
+      const limit = Number.isSafeInteger(rawLimit) ? Math.max(1, Math.min(rawLimit, 100)) : 20
+      const { data, error } = await admin.rpc("pt650_health_recent_activities", {
+        p_user_id: user.id,
+        p_limit: limit
+      })
+      if (error) throw error
+      return json({ activities: data || [] })
+    }
+
+    if (req.method === "GET" && action === "health-adapters") {
+      const gate = await rate(user.id, "health-adapters", 60, 60)
+      if (!gate.allowed) return json({ error: "rate limit", code: "rate-limit" }, 429, { "Retry-After": String(gate.retry_after) })
+      const { data, error } = await admin.rpc("pt650_health_adapter_status")
+      if (error) throw error
+      return json({ adapters: data || [] })
     }
 
     if (req.method === "GET" && action === "status") {
@@ -231,7 +279,9 @@ Deno.serve(async (req: Request) => {
       const checked: any = await verifyGpsWalk(body.points)
       if (!checked.ok) return json({ error: "walking session could not be verified", code: checked.code }, 422)
 
+      const firstPoint = Array.isArray(body.points) ? body.points[0] : null
       const lastPoint = Array.isArray(body.points) ? body.points.at(-1) : null
+      const startedAt = new Date(Number(firstPoint?.t)).toISOString()
       const occurredAt = new Date(Number(lastPoint?.t)).toISOString()
       const eventId = crypto.randomUUID()
 
@@ -265,13 +315,27 @@ Deno.serve(async (req: Request) => {
       if (finalError) throw finalError
       const finalization = first(finalData) ?? finalData ?? {}
 
+      const { data: healthData, error: healthError } = await admin.rpc("pt650_record_move_activity", {
+        p_user_id: user.id,
+        p_external_key: "move:" + sessionId,
+        p_started_at: startedAt,
+        p_ended_at: occurredAt,
+        p_duration_sec: checked.summary.durationSec,
+        p_distance_m: checked.summary.distanceM,
+        p_route_fingerprint: checked.evidenceSha256 || null,
+        p_verification: checked.verified ? "pt650_verified" : "review"
+      })
+      if (healthError) throw healthError
+      const healthActivity = first(healthData)
+
       return json({
         ok: true,
         duplicate: !!ingest.duplicate,
         verification: checked.verified ? "verified" : "review",
         summary: checked.summary,
         rewards: finalization.applications || [],
-        eventId: ingest.event_id
+        eventId: ingest.event_id,
+        healthActivityId: healthActivity?.activity_id || null
       })
     }
 
