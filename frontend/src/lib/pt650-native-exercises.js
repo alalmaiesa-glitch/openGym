@@ -16,4 +16,21 @@ export const PT650_NATIVE_EXERCISES = Object.freeze([
     native: true,
     source: 'PT650 native catalogue',
   }),
-])
+  Object.freeze({
+    id: 'pt650-0002',
+    n: 'walk',
+    bp: 'cardio',
+    eq: 'body weight',
+    tg: 'cardiovascular system',
+    mg: 'calves',
+    sm: ['calves', 'glutes', 'quads', 'hamstrings'],
+    st: [
+      'Stand tall with your eyes forward and your shoulders relaxed.',
+      'Step forward heel first, then roll smoothly through the foot to the toes.',
+      'Swing your arms naturally opposite the legs while keeping the hips level.',
+      'Continue with a comfortable, even stride and steady posture.',
+    ],
+    native: true,
+    source: 'PT650 native catalogue',
+  }),
+])\n
