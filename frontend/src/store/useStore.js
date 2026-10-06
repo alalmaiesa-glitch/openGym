@@ -1095,10 +1095,10 @@ export const useStore = create((set, get) => {
       if (MOBILE && S.autoBackup) writeAutoBackup(S)
     },
 
-    // Public PT650 uses one Supabase identity but keeps workout state local in this phase.
-    // The active browser copy is therefore namespaced per PT650 account. On the first account
-    // after the old demo, the existing local copy is adopted instead of deleted; later accounts
-    // get their own isolated copy. Sign-out parks the current copy and clears the active one.
+    // Public PT650 is local-first: every account has its own durable browser copy, and the same
+    // state is revision-synced to Supabase after identity validation. On the first account after
+    // the old demo, the existing local copy is adopted instead of deleted; later accounts get
+    // their own isolated copy. Sign-out parks the current copy and clears the active one.
     switchPlatformLocalAccount(uid) {
       if (!DEMO) return
       const nextUid = typeof uid === 'string' && uid ? uid : null
@@ -1556,9 +1556,10 @@ export const useStore = create((set, get) => {
         finishBoot({ needsMobileOnboarding: !remote && !hasData(get().S) })
         return
       }
-      // Static PT650 build (GitHub Pages): connected services now authenticate through
-      // Supabase. Training state remains local in this phase, but the app no longer bypasses
-      // the account screen by forcing guest mode. Existing local data is preserved.
+      // Static PT650 build (GitHub Pages): boot the local copy immediately. App.jsx validates
+      // the Supabase identity, switches to that account's isolated local state, then calls the
+      // same push/pull engine below through the pt650-platform Edge Function. Offline use never
+      // waits for the cloud and existing local data is preserved.
       if (DEMO) {
         get().setGuest(false)
         finishBoot()
