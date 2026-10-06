@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { platformApi } from '../lib/platform-api.js'
 import { appleHealthCapability, syncAppleHealth } from '../lib/apple-health.js'
+import { healthConnectCapability, syncHealthConnect } from '../lib/health-connect.js'
 import { getLang } from '../lib/i18n-core.js'
 import Icon from '../components/Icon.jsx'
 import { Button } from '../components/ui.jsx'
@@ -65,7 +66,12 @@ const COPY = ar => ar ? {
   syncApple: 'مزامنة',
   syncingApple: 'جارٍ المزامنة…',
   iphoneRequired: 'يتطلب تطبيق PT650 على iPhone',
-  applePending: 'تم طلب صلاحية القراءة، ولم تُرجع HealthKit بيانات قابلة للقراءة بعد.'
+  applePending: 'تم طلب صلاحية القراءة، ولم تُرجع HealthKit بيانات قابلة للقراءة بعد.',
+  connectHealthConnect: 'ربط ومزامنة',
+  syncHealthConnect: 'مزامنة',
+  syncingHealthConnect: 'جارٍ المزامنة…',
+  androidRequired: 'يتطلب تطبيق PT650 على Android مع Health Connect',
+  healthConnectPending: 'تمت معالجة صلاحيات Health Connect، ولا توجد بيانات قابلة للقراءة بعد.'
 } : {
   title: 'PT650 Health',
   subtitle: 'One health and endurance record for training, movement, sleep, recovery and wearables.',
@@ -96,7 +102,12 @@ const COPY = ar => ar ? {
   syncApple: 'Sync',
   syncingApple: 'Syncing…',
   iphoneRequired: 'Requires the PT650 iPhone app',
-  applePending: 'Read permission was requested, but HealthKit has not returned readable data yet.'
+  applePending: 'Read permission was requested, but HealthKit has not returned readable data yet.',
+  connectHealthConnect: 'Connect & sync',
+  syncHealthConnect: 'Sync',
+  syncingHealthConnect: 'Syncing…',
+  androidRequired: 'Requires the PT650 Android app with Health Connect',
+  healthConnectPending: 'Health Connect permissions were processed, but there is no readable data yet.'
 }
 
 function MetricCard({ metric, payload, ar }) {
@@ -124,6 +135,9 @@ export default function Health() {
   const [appleNative, setAppleNative] = useState(false)
   const [syncingApple, setSyncingApple] = useState(false)
   const [appleNote, setAppleNote] = useState('')
+  const [healthConnectNative, setHealthConnectNative] = useState(false)
+  const [syncingHealthConnect, setSyncingHealthConnect] = useState(false)
+  const [healthConnectNote, setHealthConnectNote] = useState('')
 
   const refresh = async () => {
     setLoading(true)
@@ -155,6 +169,7 @@ export default function Health() {
   useEffect(() => { refresh() }, [])
   useEffect(() => {
     appleHealthCapability().then(x => setAppleNative(x.available === true)).catch(() => setAppleNative(false))
+    healthConnectCapability().then(x => setHealthConnectNative(x.available === true)).catch(() => setHealthConnectNative(false))
   }, [])
 
   const runAppleSync = async () => {
@@ -169,6 +184,21 @@ export default function Health() {
       setError(e?.message || C.unavailable)
     } finally {
       setSyncingApple(false)
+    }
+  }
+
+  const runHealthConnectSync = async () => {
+    setSyncingHealthConnect(true)
+    setHealthConnectNote('')
+    setError('')
+    try {
+      const result = await syncHealthConnect()
+      if (result?.status !== 'active') setHealthConnectNote(C.healthConnectPending)
+      await refresh()
+    } catch (e) {
+      setError(e?.message || C.unavailable)
+    } finally {
+      setSyncingHealthConnect(false)
     }
   }
 
@@ -192,6 +222,7 @@ export default function Health() {
       {loading && <div className="health-notice"><Icon name="timer" /><span>{C.loading}</span></div>}
       {!!error && <div className="health-notice error"><Icon name="warning" /><span>{error}</span></div>}
       {!!appleNote && <div className="health-notice"><Icon name="info" /><span>{appleNote}</span></div>}
+      {!!healthConnectNote && <div className="health-notice"><Icon name="info" /><span>{healthConnectNote}</span></div>}
 
       <section className="health-summary-card">
         <div className="health-section-head">
@@ -256,6 +287,7 @@ export default function Health() {
           {activeSources.map(x => {
             const connected = connectedProviders.has(x.provider)
             const isApple = x.provider === 'apple_health'
+            const isHealthConnect = x.provider === 'health_connect'
             return (
               <div className="health-source-row" key={x.provider}>
                 <div><strong>{x.display_name}</strong><span>{(x.capabilities || []).join(' · ')}</span></div>
@@ -267,6 +299,12 @@ export default function Health() {
                     </Button>
                   )}
                   {isApple && !appleNative && <small>{C.iphoneRequired}</small>}
+                  {isHealthConnect && healthConnectNative && (
+                    <Button size="sm" variant="tinted" disabled={syncingHealthConnect} onClick={runHealthConnectSync}>
+                      {syncingHealthConnect ? C.syncingHealthConnect : connected ? C.syncHealthConnect : C.connectHealthConnect}
+                    </Button>
+                  )}
+                  {isHealthConnect && !healthConnectNative && <small>{C.androidRequired}</small>}
                 </div>
               </div>
             )

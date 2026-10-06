@@ -121,11 +121,13 @@ test('Wearable source priority input is bounded and rate limited', () => {
 })
 
 
-test('Apple HealthKit native ingest is JWT-owned, bounded and rejects raw location or opaque anchors', () => {
+test('native wearable ingest supports Apple Health and Health Connect without weakening payload safety', () => {
   assert.match(edge, /action === "wearable-native-ingest"/)
   assert.match(edge, /rate\(user\.id, "wearable-native-ingest", 120, 3600\)/)
   assert.match(edge, /boundedJson\(req, 1_200_000\)/)
-  assert.match(edge, /provider !== "apple_health"/)
+  assert.match(edge, /\["apple_health","health_connect"\]\.includes\(provider\)/)
+  assert.match(edge, /HEALTH_CONNECT_METRICS/)
+  assert.match(edge, /validNativeExternalKey/)
   assert.match(edge, /observations\.length > 1000/)
   assert.match(edge, /activities\.length > 250/)
   assert.match(edge, /hasRawLocation\(body\)/)

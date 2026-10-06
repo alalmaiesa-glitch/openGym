@@ -40,11 +40,21 @@ const APPLE_HEALTH_METRICS = new Set([
   "weight_kg", "body_fat_pct", "resting_hr_bpm", "hrv_sdnn_ms",
   "spo2_pct", "respiratory_rate", "body_temp_c", "sleep_duration_min"
 ])
-const APPLE_HEALTH_ACTIVITIES = new Set([
+const HEALTH_CONNECT_METRICS = new Set([
+  "weight_kg", "body_fat_pct", "resting_hr_bpm", "hrv_rmssd_ms",
+  "spo2_pct", "respiratory_rate", "body_temp_c", "sleep_duration_min"
+])
+const NATIVE_HEALTH_ACTIVITIES = new Set([
   "run", "walk", "cycling", "swimming", "hiking", "rowing", "elliptical",
   "strength_training", "functional_strength", "hiit", "yoga", "pilates", "other"
 ])
 const UUID_RE = /^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i
+const HEALTH_CONNECT_ID_RE = /^[A-Za-z0-9._:-]{1,256}$/
+
+function validNativeExternalKey(provider: string, value: unknown) {
+  const key = String(value || "")
+  return provider === "apple_health" ? UUID_RE.test(key) : HEALTH_CONNECT_ID_RE.test(key)
+}
 
 function nativeObject(value: unknown) {
   return value != null && typeof value === "object" && !Array.isArray(value)
@@ -269,7 +279,7 @@ Deno.serve(async (req: Request) => {
       const deletions = Array.isArray(body.deletions) ? body.deletions : null
       const highWatermark = body.highWatermark == null ? null : String(body.highWatermark)
 
-      if (provider !== "apple_health"
+      if (!["apple_health","health_connect"].includes(provider)
           || !cursor || !/^[a-z][a-z0-9_.:-]{0,79}$/.test(cursorKey)
           || observations == null || activities == null || deletions == null
           || observations.length > 1000 || activities.length > 250 || deletions.length > 1000
@@ -283,25 +293,26 @@ Deno.serve(async (req: Request) => {
         return json({ error: "invalid high watermark", code: "invalid-native-batch" }, 400)
       }
 
+      const allowedMetrics = provider === "apple_health" ? APPLE_HEALTH_METRICS : HEALTH_CONNECT_METRICS
       for (const item of observations) {
         if (!nativeObject(item)
-            || !UUID_RE.test(String(item.externalKey || ""))
-            || !APPLE_HEALTH_METRICS.has(String(item.metric || ""))) {
-          return json({ error: "invalid Apple Health observation", code: "invalid-native-observation" }, 400)
+            || !validNativeExternalKey(provider, item.externalKey)
+            || !allowedMetrics.has(String(item.metric || ""))) {
+          return json({ error: "invalid native health observation", code: "invalid-native-observation" }, 400)
         }
       }
       for (const item of activities) {
         if (!nativeObject(item)
-            || !UUID_RE.test(String(item.externalKey || ""))
-            || !APPLE_HEALTH_ACTIVITIES.has(String(item.activityType || ""))) {
-          return json({ error: "invalid Apple Health activity", code: "invalid-native-activity" }, 400)
+            || !validNativeExternalKey(provider, item.externalKey)
+            || !NATIVE_HEALTH_ACTIVITIES.has(String(item.activityType || ""))) {
+          return json({ error: "invalid native health activity", code: "invalid-native-activity" }, 400)
         }
       }
       for (const item of deletions) {
         if (!nativeObject(item)
-            || !UUID_RE.test(String(item.externalKey || ""))
+            || !validNativeExternalKey(provider, item.externalKey)
             || !["observation","activity"].includes(String(item.objectKind || ""))) {
-          return json({ error: "invalid Apple Health deletion", code: "invalid-native-deletion" }, 400)
+          return json({ error: "invalid native health deletion", code: "invalid-native-deletion" }, 400)
         }
       }
 

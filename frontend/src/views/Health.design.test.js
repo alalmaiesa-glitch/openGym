@@ -7,6 +7,9 @@ const home = readFileSync(resolve(process.cwd(), 'src/views/Home.jsx'), 'utf8')
 const health = readFileSync(resolve(process.cwd(), 'src/views/Health.jsx'), 'utf8')
 const apple = readFileSync(resolve(process.cwd(), 'src/lib/apple-health.js'), 'utf8')
 const appleSwift = readFileSync(resolve(process.cwd(), 'ios/App/App/AppleHealthPlugin.swift'), 'utf8')
+const healthConnect = readFileSync(resolve(process.cwd(), 'src/lib/health-connect.js'), 'utf8')
+const healthConnectNative = readFileSync(resolve(process.cwd(), 'android/app/src/main/java/ch/duartesantos/opengym/HealthConnectPlugin.kt'), 'utf8')
+const androidManifest = readFileSync(resolve(process.cwd(), 'android/app/src/main/AndroidManifest.xml'), 'utf8')
 const settings = readFileSync(resolve(process.cwd(), 'src/views/Settings.jsx'), 'utf8')
 
 describe('PT650 Health & Endurance Core V1 UI', () => {
@@ -79,5 +82,50 @@ describe('PT650 Apple HealthKit Adapter V1', () => {
     expect(appleSwift).toContain('heartRateVariabilitySDNN')
     expect(appleSwift).toContain('hrv_sdnn_ms')
     expect(health).toContain('HRV · SDNN')
+  })
+})
+
+
+describe('PT650 Android Health Connect Adapter V1', () => {
+  it('uses the real native Health Connect SDK with granular read permissions and no route permission', () => {
+    expect(healthConnectNative).toContain('HealthConnectClient.getOrCreate')
+    expect(healthConnectNative).toContain('PermissionController.createRequestPermissionResultContract')
+    expect(healthConnectNative).toContain('ChangesTokenRequest')
+    expect(healthConnectNative).toContain('DeletionChange')
+    expect(androidManifest).toContain('android.permission.health.READ_EXERCISE')
+    expect(androidManifest).toContain('android.permission.health.READ_SLEEP')
+    expect(androidManifest).not.toContain('READ_EXERCISE_ROUTES')
+    expect(androidManifest).not.toContain('READ_HEALTH_DATA_IN_BACKGROUND')
+    expect(androidManifest).not.toContain('READ_HEALTH_DATA_HISTORY')
+  })
+
+  it('keeps one changes cursor per record type so deletion provenance remains unambiguous', () => {
+    expect(healthConnectNative).toContain('Spec("exercise"')
+    expect(healthConnectNative).toContain('tokenPrefix + spec.key')
+    expect(healthConnectNative).toContain('put("objectKind", spec.objectKind)')
+    expect(healthConnect).toContain("cursorKey: 'health_connect:' + key")
+  })
+
+  it('commits Health Connect progress only after authenticated server ingest succeeds', () => {
+    const ingest = healthConnect.indexOf("platformApi('wearable-native-ingest'")
+    const commit = healthConnect.indexOf('HealthConnect.commitToken')
+    expect(ingest).toBeGreaterThan(-1)
+    expect(commit).toBeGreaterThan(ingest)
+    expect(healthConnect).toContain("provider: 'health_connect'")
+    expect(healthConnect).not.toContain('SUPABASE_SERVICE_ROLE_KEY')
+  })
+
+  it('never exports raw exercise routes or GPS fields from the native bridge', () => {
+    expect(healthConnectNative).not.toContain('ExerciseRoute')
+    expect(healthConnectNative).not.toContain('latitude')
+    expect(healthConnectNative).not.toContain('longitude')
+    expect(healthConnectNative).not.toContain('locations')
+  })
+
+  it('shows Health Connect controls only when the real Android native capability is available', () => {
+    expect(health).toContain('healthConnectCapability')
+    expect(health).toContain('healthConnectNative')
+    expect(health).toContain("x.provider === 'health_connect'")
+    expect(health).toContain('runHealthConnectSync')
   })
 })
