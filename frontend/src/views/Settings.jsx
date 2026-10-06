@@ -29,6 +29,9 @@ import Icon from '../components/Icon.jsx'
 import { ServerSyncSection, KeptChangesRows, leaveServer, connectServer, passkeySignIn } from '../components/ServerSync.jsx'
 import { passwordOn, PasswordRow, openPasswordSignIn, openPasswordRegister } from '../components/PasswordAuth.jsx'
 import { usePasskeys, PasskeysRow, DeviceLinkRow } from '../components/Passkeys.jsx'
+import { platformSignOut } from '../lib/platform-auth.js'
+import { platformApi } from '../lib/platform-api.js'
+import { usePlatformIdentity } from '../lib/platform-identity.js'
 import { Section, Row, SelectRow, Switch, Segmented, Button, TextField } from '../components/ui.jsx'
 
 export default function Settings() {
@@ -286,19 +289,14 @@ export default function Settings() {
       </>}
     </ServerSyncSection>}
 
-    {/* ---------- account (demo and mobile builds have nothing to sign in to) ---------- */}
-    {!(MOBILE && user) && <Section title={MOBILE ? t('Your data') : DEMO ? t('Demo') : t('Account')}>
+    {/* ---------- PT650 account / legacy self-host account ---------- */}
+    {DEMO && <PlatformAccountSection lang={lang} />}
+    {!DEMO && !(MOBILE && user) && <Section title={MOBILE ? t('Your data') : t('Account')}>
       {MOBILE ? <>
         <Row icon="lock" iconTint="var(--acc)" title={t('All data stays on this phone')} subtitle={t('No account, no cloud — back it up anytime with Export below.')} />
         <Row icon="link" iconTint="var(--indigo)" title={t('Connect to my server')} subtitle={t('Sync this device to your own self-hosted openGym instead.')} accessory="chevron"
           onClick={connectServer} />
         <KeptChangesRows />
-      </> : DEMO ? <>
-        <Row icon="sparkles" iconTint="var(--acc)" title={t('You’re in the demo')} subtitle={t('Example data, stored only in this browser — change anything you like.')} />
-        <Row icon="reset" iconTint="var(--blue)" title={t('Reset demo data')} accessory="chevron"
-          onClick={() => confirmSheet({ title: t('Reset demo data?'), message: t('Puts the example plan, workouts and weigh-ins back the way they started.'), confirmText: t('Reset'), onConfirm: () => { resetDemo(); nav('/home'); toast(t('Demo data reset')) } })} />
-        <Row icon="rocket" iconTint="var(--indigo)" title={t('Self-host openGym')} subtitle={t('Passkey sign-in, sync across your devices, your own data.')} accessory="chevron"
-          onClick={() => window.open(REPO, '_blank', 'noopener')} />
       </> : user ? <>
         {user.admin && <Row icon="wrench" iconTint="var(--indigo)" title={t('Admin dashboard')} accessory="chevron" onClick={() => nav('/admin')} />}
         <PasskeysRow state={passkeys.st} changed={credsChanged} />
@@ -315,7 +313,6 @@ export default function Settings() {
         {pwOn && <Row icon="key" iconTint="var(--orange)" title={t('Sign in with password')} accessory="chevron" onClick={() => openPasswordSignIn()} />}
         <KeptChangesRows />
       </> : pwOn ? <>
-        {/* No passkeys in this browser (plain http on a LAN address, say): a password is the way in. */}
         <Row icon="sparkles" iconTint="var(--acc)" title={t('Create new profile')} subtitle={t('Keeps your data safe and separate per person.')} accessory="chevron" onClick={openPasswordRegister} />
         <Row icon="key" iconTint="var(--orange)" title={t('Sign in with password')} accessory="chevron" onClick={() => openPasswordSignIn()} />
         <KeptChangesRows />
@@ -571,7 +568,7 @@ export default function Settings() {
     {!MOBILE && <Section title={t('Tip')}>
       <Row icon="lightbulb" iconTint="var(--yellow)"
         title={IS_ANDROID ? t('In Chrome: ⋮ menu → Add to Home screen') : t('In Safari: Share → Add to Home Screen')}
-        subtitle={t('to install openGym as a full-screen app.') + ' ' + (user ? t('Your data syncs with your profile — sign in anywhere to see it.') : t('Guest data stays on this device — export a backup now and then!'))} />
+        subtitle={t('to install openGym as a full-screen app.') + ' ' + (DEMO ? (baseLang(lang) === 'ar' ? 'حساب PT650 متصل، وسجل التدريب محفوظ على هذا الجهاز في هذه المرحلة.' : 'Your PT650 account is connected; workout history stays on this device in this phase.') : user ? t('Your data syncs with your profile — sign in anywhere to see it.') : t('Guest data stays on this device — export a backup now and then!'))} />
     </Section>}
 
     {/* ---------- updates: the last thing on the page, so keeping openGym current is one tap ----------
@@ -831,6 +828,57 @@ function EquipmentCard({ S, update }) {
     ))}
     <Row icon="plus" iconTint="var(--acc)" title={t('Add equipment profile')} accessory="chevron" onClick={() => equipmentProfileSheet(null)} />
   </Section>
+}
+
+
+function PlatformAccountSection({ lang }) {
+  const identity = usePlatformIdentity()
+  const [account, setAccount] = useState(null)
+  const [busy, setBusy] = useState(false)
+  const ar = baseLang(lang) === 'ar'
+
+  useEffect(() => {
+    let alive = true
+    if (!identity.session?.access_token) { setAccount(null); return () => { alive = false } }
+    platformApi('account')
+      .then(data => { if (alive) setAccount(data) })
+      .catch(() => {})
+    return () => { alive = false }
+  }, [identity.session?.access_token])
+
+  if (!identity.session?.access_token) return null
+
+  const email = account?.email || identity.session?.user?.email || (ar ? 'حساب PT650' : 'PT650 account')
+  const signOut = () => confirmSheet({
+    title: ar ? 'تسجيل الخروج من PT650؟' : 'Sign out of PT650?',
+    message: ar
+      ? 'سينتهي حساب الخدمات المتصلة والمكافآت على هذا الجهاز. لن نحذف سجل التدريب المحلي.'
+      : 'This ends the connected-services and rewards session on this device. Local training history is not deleted.',
+    confirmText: ar ? 'تسجيل الخروج' : 'Sign out',
+    danger: true,
+    onConfirm: async () => {
+      setBusy(true)
+      await platformSignOut()
+      setBusy(false)
+    },
+  })
+
+  return (
+    <Section
+      title={ar ? 'حساب PT650' : 'PT650 account'}
+      footer={ar
+        ? 'Move والمكافآت والخدمات المتصلة تستخدم هذا الحساب. مزامنة سجل التدريب بين الأجهزة تأتي في المرحلة التالية.'
+        : 'Move, rewards and connected services use this account. Cross-device workout sync comes in the next phase.'}
+    >
+      <Row icon="person" iconTint="var(--acc)" title={email}
+        subtitle={ar ? 'الحساب الرئيسي لخدمات PT650' : 'Primary identity for PT650 services'} />
+      <Row icon="shield" iconTint="var(--green)" title={ar ? 'الخدمات المتصلة' : 'Connected services'}
+        subtitle="Move · Rewards · Nutrition · Health · Machine Scan" />
+      {account?.id && <AccountIdRow id={account.id} />}
+      <Row icon="signOut" iconTint="var(--red)" title={ar ? 'تسجيل الخروج' : 'Sign out'} danger
+        disabled={busy} onClick={signOut} />
+    </Section>
+  )
 }
 
 // The account's id, small and one tap to copy (#219). It is what an admin puts in ADMIN_UIDS,
