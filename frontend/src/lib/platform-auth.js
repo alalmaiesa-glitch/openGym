@@ -95,10 +95,11 @@ export async function platformSession({ refresh = true } = {}) {
   catch { return null }
 }
 
-export async function platformUser(session = await platformSession()) {
-  if (!session?.access_token) return null
+export async function platformUser(session) {
+  const current = session || await platformSession()
+  if (!current?.access_token) return null
   try {
-    const data = await authRequest('user', { method: 'GET', token: session.access_token })
+    const data = await authRequest('user', { method: 'GET', token: current.access_token })
     return data || null
   } catch (e) {
     if (e?.status === 401) save(null)
