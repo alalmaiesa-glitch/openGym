@@ -385,6 +385,9 @@ test('PUT /api/data still answers 200 when the media bookkeeping fails', async t
   const r = await h.pushState(refState());
   assert.equal(r.status, 200);
   assert.equal((await r.json()).ok, true);
+  // The response and console.error happen synchronously in the child, but pipe delivery back to
+  // this test process is asynchronous. Wait briefly for stderr instead of racing its 'data' event.
+  for (let i = 0; i < 50 && !/media noteState/.test(h.log); i++) await sleep(10);
   assert.match(h.log, /media noteState/);
   const saved = JSON.parse(fs.readFileSync(path.join(h.dataDir, `state-${U1}.json`), 'utf8'));
   assert.equal(saved._rev, 1, 'the state itself was saved');
