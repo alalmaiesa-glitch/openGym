@@ -1233,3 +1233,243 @@ export const WORKOUT_GUIDE_V34_BLOCKED_ALIASES = Object.freeze([
     "reason": "PT650's prone incline setup is not equivalent to the source's seated/reclined incline curl posture."
   }
 ])
+
+
+export const WORKOUT_GUIDE_V35_ACCEPTED = Object.freeze([
+  {
+    "pt650Id": "0027",
+    "pt650Name": "barbell bent over row",
+    "sourceSlug": "barbell-row",
+    "sourceEquipment": "Barbell",
+    "sourcePrimaryMuscle": "Back",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "barbell-v3.5",
+    "reason": "PT650 describes a standard bilateral overhand bent-over barbell row with a hip hinge and pull toward the lower chest; source frames preserve the same unsupported stance, grip and row path."
+  },
+  {
+    "pt650Id": "0032",
+    "pt650Name": "barbell deadlift",
+    "sourceSlug": "deadlift",
+    "sourceEquipment": "Barbell",
+    "sourcePrimaryMuscle": "Posterior Chain",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "barbell-v3.5",
+    "reason": "Same conventional barbell deadlift from the floor with shoulder-width stance, hip-and-knee extension and controlled return to the floor."
+  },
+  {
+    "pt650Id": "0039",
+    "pt650Name": "barbell front chest squat",
+    "sourceSlug": "front-squat",
+    "sourceEquipment": "Barbell",
+    "sourcePrimaryMuscle": "Quads",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "barbell-v3.5",
+    "reason": "PT650 holds the bar in front of the chest with elbows forward and performs a standard front squat; this matches the already-reviewed front-squat source geometry."
+  },
+  {
+    "pt650Id": "0043",
+    "pt650Name": "barbell full squat",
+    "sourceSlug": "squat",
+    "sourceEquipment": "Barbell",
+    "sourcePrimaryMuscle": "Quads",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "barbell-v3.5",
+    "reason": "Same standard bilateral barbell back squat with the bar across the upper back, shoulder-width stance and conventional squat path."
+  },
+  {
+    "pt650Id": "0060",
+    "pt650Name": "barbell lying triceps extension skull crusher",
+    "sourceSlug": "skull-crusher",
+    "sourceEquipment": "Barbell",
+    "sourcePrimaryMuscle": "Triceps",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "barbell-v3.5",
+    "reason": "Same flat-bench barbell skull crusher: upper arms remain fixed while the elbows flex to lower the bar toward the forehead and extend back up."
+  },
+  {
+    "pt650Id": "0080",
+    "pt650Name": "barbell reverse curl",
+    "sourceSlug": "reverse-curl",
+    "sourceEquipment": "Barbell",
+    "sourcePrimaryMuscle": "Forearms",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "barbell-v3.5",
+    "reason": "Same standing barbell reverse curl with a pronated overhand grip. PT650 emphasizes biceps while the source emphasizes forearms, but the movement identity and grip are unchanged."
+  },
+  {
+    "pt650Id": "0117",
+    "pt650Name": "barbell sumo deadlift",
+    "sourceSlug": "sumo-deadlift",
+    "sourceEquipment": "Barbell",
+    "sourcePrimaryMuscle": "Posterior Chain",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "barbell-v3.5",
+    "reason": "Same sumo barbell deadlift with wide externally rotated stance, bar centered between the feet and a floor pull through hip-and-knee extension."
+  },
+  {
+    "pt650Id": "0119",
+    "pt650Name": "barbell upright row v. 2",
+    "sourceSlug": "upright-row",
+    "sourceEquipment": "Barbell",
+    "sourcePrimaryMuscle": "Shoulders",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "barbell-v3.5",
+    "reason": "PT650 instructions are materially identical to the standard standing bilateral upright row already reviewed for this batch; no grip-width or support variant is introduced."
+  },
+  {
+    "pt650Id": "0120",
+    "pt650Name": "barbell upright row",
+    "sourceSlug": "upright-row",
+    "sourceEquipment": "Barbell",
+    "sourcePrimaryMuscle": "Shoulders",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "barbell-v3.5",
+    "reason": "Same standing bilateral overhand barbell upright row, lifting toward the chin while leading with the elbows."
+  },
+  {
+    "pt650Id": "0121",
+    "pt650Name": "barbell upright row v. 3",
+    "sourceSlug": "upright-row",
+    "sourceEquipment": "Barbell",
+    "sourcePrimaryMuscle": "Shoulders",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "barbell-v3.5",
+    "reason": "PT650 instructions preserve the same standard standing bilateral upright-row mechanics as the reviewed source; this is a safe duplicate-variant alias."
+  },
+  {
+    "pt650Id": "3562",
+    "pt650Name": "barbell glute bridge two legs on bench (male)",
+    "sourceSlug": "hip-thrust",
+    "sourceEquipment": "Barbell",
+    "sourcePrimaryMuscle": "Glutes",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "barbell-v3.5",
+    "reason": "Despite the PT650 title, its instructions explicitly support the upper back on a bench with a bar across the hips and extend the hips from that setup; this is a barbell hip thrust."
+  }
+])
+
+export const WORKOUT_GUIDE_V35_BLOCKED_ALIASES = Object.freeze([
+  {
+    "pt650Id": "1719",
+    "pt650Name": "barbell incline close grip bench press",
+    "sourceSlug": "close-grip-bench-press",
+    "decision": "rejected",
+    "reason": "PT650 requires an incline bench while the source close-grip bench press is flat; bench angle is a material setup difference."
+  },
+  {
+    "pt650Id": "2187",
+    "pt650Name": "barbell reverse close-grip bench press",
+    "sourceSlug": "close-grip-bench-press",
+    "decision": "rejected",
+    "reason": "PT650 explicitly uses a reverse grip; the generic close-grip source does not preserve that grip orientation."
+  },
+  {
+    "pt650Id": "0045",
+    "pt650Name": "barbell guillotine bench press",
+    "sourceSlug": "bench-press",
+    "decision": "rejected",
+    "reason": "The guillotine press lowers toward the neck with flared elbows; that bar path is materially different from a standard bench press."
+  },
+  {
+    "pt650Id": "0052",
+    "pt650Name": "barbell jm bench press",
+    "sourceSlug": "bench-press",
+    "decision": "rejected",
+    "reason": "A JM press is a triceps-biased bench/skull-crusher hybrid with different elbow and bar path semantics; do not collapse it to a standard bench press."
+  },
+  {
+    "pt650Id": "0090",
+    "pt650Name": "barbell seated good morning",
+    "sourceSlug": "good-morning",
+    "decision": "rejected",
+    "reason": "PT650 performs the hip hinge seated while the source good morning is standing; lower-body support and stabilization differ."
+  },
+  {
+    "pt650Id": "0091",
+    "pt650Name": "barbell seated overhead press",
+    "sourceSlug": "overhead-press",
+    "decision": "rejected",
+    "reason": "PT650 is seated with bench support while the source overhead press is standing; posture and stabilization differ."
+  },
+  {
+    "pt650Id": "0122",
+    "pt650Name": "barbell wide bench press",
+    "sourceSlug": "bench-press",
+    "decision": "rejected",
+    "reason": "PT650 explicitly specifies a wide grip; grip width is part of the exercise identity and is not proven by the generic bench-press asset."
+  },
+  {
+    "pt650Id": "0123",
+    "pt650Name": "barbell wide-grip upright row",
+    "sourceSlug": "upright-row",
+    "decision": "rejected",
+    "reason": "PT650 explicitly requires a wide grip; the standard upright-row source cannot stand in for a grip-specific variant."
+  },
+  {
+    "pt650Id": "1256",
+    "pt650Name": "barbell reverse grip decline bench press",
+    "sourceSlug": "decline-bench-press",
+    "decision": "rejected",
+    "reason": "Reverse grip is a material variation absent from the standard decline-bench-press source."
+  },
+  {
+    "pt650Id": "1257",
+    "pt650Name": "barbell reverse grip incline bench press",
+    "sourceSlug": "incline-bench-press",
+    "decision": "rejected",
+    "reason": "Reverse grip is a material variation absent from the standard incline-bench-press source."
+  },
+  {
+    "pt650Id": "0081",
+    "pt650Name": "barbell reverse preacher curl",
+    "sourceSlug": "reverse-curl",
+    "decision": "rejected",
+    "reason": "PT650 uses preacher-pad upper-arm support; source reverse curl is standing and unsupported."
+  },
+  {
+    "pt650Id": "0082",
+    "pt650Name": "barbell reverse wrist curl",
+    "sourceSlug": "reverse-curl",
+    "decision": "rejected",
+    "reason": "A wrist curl is wrist flexion/extension; a reverse curl is elbow flexion. Similar wording does not make the joint action equivalent."
+  },
+  {
+    "pt650Id": "0024",
+    "pt650Name": "barbell bench front squat",
+    "sourceSlug": "front-squat",
+    "decision": "held",
+    "reason": "The title introduces a bench while the instructions describe an unsupported front squat. Keep unavailable until the PT650 record is normalized."
+  },
+  {
+    "pt650Id": "0029",
+    "pt650Name": "barbell clean-grip front squat",
+    "sourceSlug": "front-squat",
+    "decision": "held",
+    "reason": "PT650 names a clean-grip-specific front squat; the generic source does not prove the required grip geometry strongly enough for strict acceptance."
+  },
+  {
+    "pt650Id": "1435",
+    "pt650Name": "barbell low bar squat",
+    "sourceSlug": "squat",
+    "decision": "rejected",
+    "reason": "Low-bar placement materially changes bar position and torso mechanics; the generic squat asset is not a safe substitute."
+  },
+  {
+    "pt650Id": "1436",
+    "pt650Name": "barbell high bar squat",
+    "sourceSlug": "squat",
+    "decision": "held",
+    "reason": "The source is a generic squat and does not explicitly establish the high-bar placement named by PT650."
+  }
+])
