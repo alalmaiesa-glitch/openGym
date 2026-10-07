@@ -46,7 +46,7 @@ function StartChooser() {
   const todayOvr = S.dayPlan[todayISO()] !== undefined
   const idSet = new Set(todayIds)
   const others = S.routines.filter(r => !idSet.has(r.id))
-  return <div className="narrow pt650-workout-v3" data-workout-view={listMode ? (dense ? 'compact' : 'list') : 'cards'}>
+  return <div className="narrow pt650-start-workout-v3">
     <div className="hdr"><div><h1>{t('Start workout')}</h1><div className="sub">{t(DAYN[new Date().getDay()])} — {todayRoutines.length ? t('today is {0}', todayName) : t('rest day, but no one’s stopping you')}</div></div></div>
     {todayRoutines.length > 0 && <div className="card" style={{ borderColor: 'var(--acc)' }}>
       <h2 className="accent">{t("Today's plan")}{todayOvr ? ' · ' + t('rescheduled') : ''}</h2>
@@ -1245,7 +1245,7 @@ function ActiveWorkout() {
     }
   }, [])
 
-  return <div className="narrow">
+  return <div className="narrow pt650-workout-v3" data-workout-view={listMode ? (dense ? 'compact' : 'list') : 'cards'}>
     {/* In list mode the whole session scrolls under the header, so the header (name, clock,
         set counter, discard/finish, progress) stays pinned — the one thing you want in view
         while you are somewhere in the middle of a long stack. Cards mode never scrolls far. */}
