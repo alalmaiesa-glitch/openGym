@@ -40,6 +40,7 @@ export default function Library() {
   const profileFiltered = !!(profile && !showAll)
   const filterCount = (bp ? 1 : 0) + (eqOn ? 1 : 0) + (profileFiltered ? 1 : 0)
   const narrowed = !!(q.trim() || filterCount)
+  const readyCount = f.reduce((count, exercise) => count + (hasAnimationFor(exercise.id) ? 1 : 0), 0)
   const clearBodyPart = () => { setBp(''); setEq(''); setShown(24) }
   const clearEquipment = () => { setEq(''); setShown(24) }
 
@@ -54,7 +55,7 @@ export default function Library() {
     exerciseDetailSheet(exercise)
   }, [loc.search])
 
-  return <div className="library-page">
+  return <div className="library-page pt650-library-v2">
     <section className="library-hero">
       <div className="library-headline">
         <div className="library-title-group">
@@ -127,11 +128,18 @@ export default function Library() {
       </div>
     </section>
 
+    <div className="library-resultbar" aria-live="polite">
+      <span className="library-result-count">{fmtNum(f.length)}</span>
+      <span className="library-result-label">{t('Exercises')}</span>
+      <span className="library-result-spacer" />
+      <span className="library-result-motion"><Icon name="play" />{fmtNum(readyCount)}</span>
+    </div>
+
     <div className="list library-list">
       {f.slice(0, shown).map(e => {
         const best = bestWeightFor(S, e.id)
         const hasDemo = hasAnimationFor(e.id)
-        return <div key={e.id} className={'item library-item' + (hasDemo ? ' has-demo' : '')} {...tappable(() => exerciseDetailSheet(e))}>
+        return <div key={e.id} className={'item library-item' + (hasDemo ? ' has-demo' : '')} data-pt650-motion={hasDemo ? 'ready' : 'pending'} {...tappable(() => exerciseDetailSheet(e))}>
           {hasDemo && <div className="library-card-mark" aria-hidden="true"><Icon name="play" /></div>}
           <div className="grow">
             <div className={`tt library-name ${exerciseNameClass(e)}`}>{isFav(S, e.id) && <Icon name="starFill" className="fav-star" />}{exerciseNameFor(e)}</div>
