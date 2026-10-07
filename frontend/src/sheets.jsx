@@ -808,39 +808,65 @@ function ExerciseDetail({ ex, close }) {
     update(s => { on = toggleFav(s, ex.id) })
     toast(on ? t('Added to favourites') : t('Removed from favourites'))
   }
-  return <>
-    <div className="row between" style={{ gap: 8, alignItems: 'flex-start' }}>
-      <h3 className={exerciseNameClass(ex)}>{exerciseNameFor(ex)}</h3>
-      <button className={'iconbtn fav-btn' + (fav ? ' on' : '')} aria-pressed={fav}
+  return <div className="pt650-exercise-detail-v2">
+    <header className="exercise-detail-head">
+      <div className="exercise-detail-title">
+        <span className="exercise-detail-kicker">PT650</span>
+        <h3 className={exerciseNameClass(ex)}>{exerciseNameFor(ex)}</h3>
+      </div>
+      <button className={'iconbtn fav-btn exercise-detail-fav' + (fav ? ' on' : '')} aria-pressed={fav}
         aria-label={fav ? t('Remove from favourites') : t('Add to favourites')} onClick={flipFav}>
         <Icon name={fav ? 'starFill' : 'star'} />
       </button>
+    </header>
+
+    <div className="exercise-detail-media">
+      <Media ex={ex} />
     </div>
-    <Media ex={ex} />
-    <div className="row" style={{ gap: 6, flexWrap: 'wrap', margin: '10px 0' }}>
+
+    <div className="exercise-detail-tags">
       <span className="tag acc">{t(ex.bp)}</span>
       {ex.bp === 'cardio' ? <span className="tag"><Icon name="target" />{t(MUSCLE_NAME['cardiovascular system'])}</span> : (ex.primaries?.length ? ex.primaries : (ex.tg ? [ex.tg] : [])).map((s, i) => <span key={i} className="tag"><Icon name="target" />{t(MUSCLE_NAME[s]  || s)}</span>)}
       <span className="tag"><Icon name="dumbbell" />{t(ex.eq)}</span>
       {(ex.secondaries?.length ? ex.secondaries : smOf(ex)).slice(0, 3).map((s, i) => <span key={i} className="tag">{t(MUSCLE_NAME[s] || s)}</span>)}
     </div>
-    {ex.desc && <div className="exnote">{ex.desc}</div>}
-    {best > 0 && <div className="small row" style={{ marginBottom: 6, gap: 5 }}><Icon name="trophy" style={{ fontSize: 14, color: 'var(--yellow)' }} />{t('Best:')} <b className="accent" style={{ whiteSpace: 'nowrap' }}>{fmtNum(best)} {st.unit}</b>{last ? ` · ${t('last')} ${fmtDate(last.d)}: ${last.sets.map(s => setLabel(ex.id, s, last.target, speedUnitOf(st))).join(', ')}` : ''}</div>}
-    <Button variant="primary" icon="plus" style={{ margin: '10px 0 4px' }} onClick={() => addToRoutineSheet(ex)}>{t('Add to my plan')}</Button>
-    {last && <Button icon="history" style={{ marginTop: 4 }} onClick={() => exerciseHistorySheet(ex.id)}>{t('History')}</Button>}
-    {ex.custom && <div className="row" style={{ gap: 8, marginTop: 8 }}>
-      <Button icon="pencil" style={{ flex: 1 }} onClick={() => { close(); customExSheet(ex) }}>{t('Edit')}</Button>
-      <Button variant="danger" icon="trash" style={{ flex: 1 }} onClick={() => deleteCustomEx(ex, close)}>{t('Delete')}</Button>
+
+    {ex.desc && <div className="exnote exercise-detail-note">{ex.desc}</div>}
+
+    {best > 0 && <div className="exercise-detail-performance">
+      <span className="exercise-detail-performance-icon"><Icon name="trophy" /></span>
+      <div>
+        <span>{t('Best:')}</span>
+        <strong>{fmtNum(best)} {st.unit}</strong>
+        {last && <small>{t('last')} {fmtDate(last.d)} · {last.sets.map(s => setLabel(ex.id, s, last.target, speedUnitOf(st))).join(', ')}</small>}
+      </div>
     </div>}
-    {modeOf({ id: ex.id }) === 'reps' && <>
+
+    <div className="exercise-detail-actions">
+      <Button variant="primary" icon="plus" onClick={() => addToRoutineSheet(ex)}>{t('Add to my plan')}</Button>
+      {last && <Button icon="history" onClick={() => exerciseHistorySheet(ex.id)}>{t('History')}</Button>}
+    </div>
+
+    {ex.custom && <div className="exercise-detail-custom-actions">
+      <Button icon="pencil" onClick={() => { close(); customExSheet(ex) }}>{t('Edit')}</Button>
+      <Button variant="danger" icon="trash" onClick={() => deleteCustomEx(ex, close)}>{t('Delete')}</Button>
+    </div>}
+
+    {modeOf({ id: ex.id }) === 'reps' && <section className="exercise-detail-panel exercise-detail-load">
       <h4 className="sec">{t('Plate loading')}</h4>
       <BarWeightEditor ex={ex} extra={t('You still log the total weight — this only feeds the plate line under each set.')} />
-    </>}
+    </section>}
+
     {/* No one-rep max on an assistance machine: the load is the help you were given, so the
         calculator would answer "your 1RM is 23 kg" about a number that gets smaller as you get
         stronger (issue #232). Cardio has none for the same kind of reason. */}
-    {!isCardio(ex) && !isAssisted(ex) && <OneRM ex={ex} />}
-    {instrFor(ex).length > 0 &&<><h4 className="sec">{t('How to')}{!INSTR_LANGS.includes(getLang()) && <span className="dim" style={{ textTransform: 'none', letterSpacing: 0 }}> · {t('instructions in English')}</span>}</h4><ol className="steps-list">{instrFor(ex).map((s, i) => <li key={i}>{s}</li>)}</ol></>}
-  </>
+    {!isCardio(ex) && !isAssisted(ex) && <section className="exercise-detail-panel exercise-detail-1rm"><OneRM ex={ex} /></section>}
+
+    {instrFor(ex).length > 0 && <section className="exercise-detail-panel exercise-detail-howto">
+      <h4 className="sec">{t('How to')}{!INSTR_LANGS.includes(getLang()) && <span className="dim" style={{ textTransform: 'none', letterSpacing: 0 }}> · {t('instructions in English')}</span>}</h4>
+      <ol className="steps-list">{instrFor(ex).map((s, i) => <li key={i}>{s}</li>)}</ol>
+    </section>}
+  </div>
 }
 export const exerciseDetailSheet = ex => ui().openSheet(close => <ExerciseDetail ex={ex} close={close} />)
 
