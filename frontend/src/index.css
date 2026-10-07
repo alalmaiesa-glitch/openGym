@@ -978,9 +978,25 @@ body.chips-dragging *{cursor:inherit}
 .exmedia .giftoggle{inset-inline-start:9px}
 .exmedia .gifhint .icn,.exmedia .giftoggle .icn{font-size:13px}
 
-/* PT650 built-in exercise media: only exercise-specific PT650-authored animation models render.
-   The inherited catalogue image/GIF filenames remain data-only compatibility fields and are
-   never requested by components/Media.jsx. Unmodelled exercises render no demo at all. */
+/* PT650 built-in exercise media: public UI renders only modern approved providers.
+   Legacy authored stick-figure SVGs are retired. Catalogue image/GIF filenames remain
+   compatibility data only and are never requested by components/Media.jsx. */
+.pt650-media-pending{
+  min-height:190px;padding:28px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:7px;text-align:center;cursor:default;
+  background:
+    radial-gradient(circle at 50% 22%,color-mix(in srgb,var(--acc) 8%,transparent),transparent 48%),
+    #090b0d;
+  border:1px solid rgba(255,255,255,.045);
+}
+.pt650-media-pending-mark{
+  width:44px;height:44px;border-radius:14px;display:grid;place-items:center;margin-bottom:3px;
+  color:var(--acc);background:color-mix(in srgb,var(--acc) 10%,transparent);
+  border:1px solid color-mix(in srgb,var(--acc) 18%,transparent);
+}
+.pt650-media-pending-mark .icn{font-size:20px;--icon-stroke:2}
+.pt650-media-pending strong{color:rgba(255,255,255,.88);font-size:14px;font-weight:650}
+.pt650-media-pending small{color:rgba(255,255,255,.42);font-size:11px;line-height:1.35}
 .pt650-media-credit{
   position:absolute;top:8px;inset-inline-start:8px;z-index:4;display:inline-flex;align-items:center;gap:5px;
   max-width:calc(100% - 16px);padding:4px 8px;border-radius:99px;background:rgba(0,0,0,.52);
