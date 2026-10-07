@@ -113,6 +113,6 @@ The V3.4 gate treats seated versus standing, supported versus unsupported, unila
 
 ## Barbell Precision V3.5
 
-V3.5 adds **11 reviewed PT650 mappings**. Eight new Workout Guide source slugs required **24 new SVG files**; `0039` safely reuses the already-pinned `front-squat` frames. Workout Guide now maps **104 PT650 exercises** with **285 local SVG files**. Runtime selects Workout Guide for **103** because bear crawl remains on higher-priority OpenGym3D.
+V3.5 adds **11 reviewed PT650 mappings**. Eight new Workout Guide source slugs required **24 new SVG files**; `0039` safely reuses the already-pinned `front-squat` frames. Workout Guide now maps **104 PT650 exercises** with **282 local SVG files**. Runtime selects Workout Guide for **103** because bear crawl remains on higher-priority OpenGym3D.
 
 The V3.5 gate treats bench angle, grip orientation and width, seated versus standing posture, bar placement, unilateral versus bilateral execution, support geometry and dead-stop mechanics as semantic identity. Close-looking variants are explicitly blocked rather than collapsed into generic barbell assets.
