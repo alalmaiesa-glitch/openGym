@@ -7,17 +7,16 @@ This baseline measures real renderable animation coverage after Workout Guide Se
 ## Baseline
 
 - PT650 catalogue: **1,327 exercises** = 1,324 imported catalogue exercises + 3 PT650-native exercises.
-- Resolved animation coverage: **112 exercises**.
+- Resolved animation coverage: **109 exercises**.
 - Uncovered: **1,215 exercises**.
-- Coverage: **8.44%**.
+- Coverage: **8.21%**.
 
 Selected runtime providers:
 
 - PT650 / OpenGym3D: **6**
-- PT650 Authored SVG: **4**
-- Workout Guide: **102**
+- Workout Guide: **103**
 
-Workout Guide contains 104 mapped exercises, but `3360` bear crawl resolves to higher-priority OpenGym3D and `0043` barbell full squat resolves to higher-priority PT650 Authored SVG. This is expected and proves that raw map count is not the same as runtime-selected coverage.
+Workout Guide contains 104 mapped exercises, but `3360` bear crawl resolves to higher-priority OpenGym3D. The legacy PT650 Authored SVG provider is retired from public rendering; `0043` barbell full squat therefore falls through to Workout Guide. This is expected and proves that raw map count is not the same as runtime-selected coverage.
 
 ## Largest body-part gaps
 
@@ -26,8 +25,8 @@ Workout Guide contains 104 mapped exercises, but `3360` bear crawl resolves to h
 | upper arms | 277 |
 | back | 187 |
 | upper legs | 186 |
-| waist | 153 |
-| chest | 148 |
+| waist | 155 |
+| chest | 149 |
 | shoulders | 127 |
 | lower legs | 53 |
 | lower arms | 36 |
@@ -39,10 +38,10 @@ Workout Guide contains 104 mapped exercises, but `3360` bear crawl resolves to h
 
 | Equipment | Missing |
 | --- | ---: |
-| body weight | 286 |
+| body weight | 288 |
 | dumbbell | 273 |
 | cable | 146 |
-| barbell | 133 |
+| barbell | 134 |
 | leverage machine | 70 |
 | band | 54 |
 | smith machine | 48 |
@@ -113,6 +112,11 @@ The V3.4 gate treats seated versus standing, supported versus unsupported, unila
 
 ## Barbell Precision V3.5
 
-V3.5 adds **11 reviewed PT650 mappings**. Eight new Workout Guide source slugs required **24 new SVG files**; `0039` safely reuses the already-pinned `front-squat` frames. Workout Guide now maps **104 PT650 exercises** with **282 local SVG files**. Runtime selects Workout Guide for **102** because bear crawl and barbell full squat resolve to higher-priority PT650 providers.
+V3.5 adds **11 reviewed PT650 mappings**. Eight new Workout Guide source slugs required **24 new SVG files**; `0039` safely reuses the already-pinned `front-squat` frames. Workout Guide now maps **104 PT650 exercises** with **282 local SVG files**. Runtime selects Workout Guide for **103** because bear crawl alone resolves to higher-priority OpenGym3D; barbell full squat now falls through to Workout Guide after legacy authored SVG retirement.
 
 The V3.5 gate treats bench angle, grip orientation and width, seated versus standing posture, bar placement, unilateral versus bilateral execution, support geometry and dead-stop mechanics as semantic identity. Close-looking variants are explicitly blocked rather than collapsed into generic barbell assets.
+
+
+## Legacy Authored SVG Retirement
+
+The `pt650_authored_svg` provider is **retired from public rendering**. Its historical registry remains in source control for provenance and replacement tracking, but the public provider renderer no longer exposes the old schematic stick-figure SVG style. Exercises that have a modern approved provider fall through to it; exercises without one show a clean pending state in detail views.
