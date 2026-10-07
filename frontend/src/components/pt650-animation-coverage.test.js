@@ -26,12 +26,12 @@ describe('PT650 animation coverage gap baseline V1', () => {
 
   it('surfaces the largest body-part gaps deterministically', () => {
     expect(report.byBodyPart.slice(0, 6).map(x => [x.key, x.missing])).toEqual([
-      ['upper arms', 289],
-      ['upper legs', 218],
-      ['back', 194],
+      ['upper arms', 287],
+      ['upper legs', 206],
+      ['back', 192],
       ['waist', 158],
       ['chest', 155],
-      ['shoulders', 140],
+      ['shoulders', 133],
     ])
   })
 

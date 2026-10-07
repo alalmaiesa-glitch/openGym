@@ -23,15 +23,16 @@ Workout Guide contains 42 mapped exercises, but `3360` bear crawl resolves to th
 
 | Body part | Missing |
 | --- | ---: |
-| upper arms | 289 |
-| upper legs | 218 |
-| back | 194 |
+| upper arms | 287 |
+| upper legs | 206 |
+| back | 192 |
 | waist | 158 |
 | chest | 155 |
-| shoulders | 140 |
+| shoulders | 133 |
 | lower legs | 59 |
-| lower arms | 37 |
+| lower arms | 36 |
 | cardio | 24 |
+| full body | 24 |
 | neck | 2 |
 
 ## Largest equipment gaps
