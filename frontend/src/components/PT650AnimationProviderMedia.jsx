@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import PT650ExerciseAnimation from './PT650ExerciseAnimation.jsx'
 import PT650ThreeExercise from './PT650ThreeExercise.jsx'
 
 export const providerAssetId = candidate =>
@@ -76,10 +75,6 @@ function Renderer({ candidates, index, playing, onTogglePlaying }) {
         fallback={fallback}
       />
     )
-  }
-
-  if (candidate.renderer === 'svg') {
-    return <PT650ExerciseAnimation exerciseId={candidate.exerciseId} playing={playing} />
   }
 
   if (candidate.renderer === 'video') {
