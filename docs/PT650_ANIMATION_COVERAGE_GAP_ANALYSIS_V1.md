@@ -2,32 +2,32 @@
 
 Status: **implemented**
 
-This baseline measures real renderable animation coverage after Workout Guide Semantic Alias Matching V3. It uses the provider resolver rather than raw asset counts, so higher-priority providers win exactly as they do at runtime.
+This baseline measures real renderable animation coverage after Workout Guide Semantic Alias Matching V3.1. It uses the provider resolver rather than raw asset counts, so higher-priority providers win exactly as they do at runtime.
 
 ## Baseline
 
 - PT650 catalogue: **1,327 exercises** = 1,324 imported catalogue exercises + 3 PT650-native exercises.
-- Resolved animation coverage: **62 exercises**.
-- Uncovered: **1,265 exercises**.
-- Coverage: **4.67%**.
+- Resolved animation coverage: **73 exercises**.
+- Uncovered: **1,254 exercises**.
+- Coverage: **5.50%**.
 
 Selected runtime providers:
 
 - PT650 / OpenGym3D: **6**
 - PT650 Authored SVG: **4**
-- Workout Guide: **52**
+- Workout Guide: **63**
 
-Workout Guide contains 53 mapped exercises, but `3360` bear crawl resolves to the higher-priority OpenGym3D provider. This is expected and proves that raw map count is not the same as runtime-selected coverage.
+Workout Guide contains 64 mapped exercises, but `3360` bear crawl resolves to the higher-priority OpenGym3D provider. This is expected and proves that raw map count is not the same as runtime-selected coverage.
 
 ## Largest body-part gaps
 
 | Body part | Missing |
 | --- | ---: |
-| upper arms | 284 |
-| upper legs | 204 |
+| upper arms | 282 |
+| upper legs | 199 |
 | back | 190 |
-| waist | 158 |
-| chest | 151 |
+| waist | 156 |
+| chest | 149 |
 | shoulders | 133 |
 | lower legs | 59 |
 | lower arms | 36 |
@@ -39,10 +39,10 @@ Workout Guide contains 53 mapped exercises, but `3360` bear crawl resolves to th
 
 | Equipment | Missing |
 | --- | ---: |
-| body weight | 297 |
-| dumbbell | 286 |
+| body weight | 295 |
+| dumbbell | 281 |
 | cable | 148 |
-| barbell | 147 |
+| barbell | 143 |
 | leverage machine | 80 |
 | band | 54 |
 | smith machine | 48 |
@@ -79,3 +79,12 @@ The baseline is executable in `pt650-animation-coverage.js` and locked by `pt650
 V3 adds **11 reviewed aliases / 33 SVG frames** after movement, equipment, target-muscle and visual checks. Workout Guide local coverage is now **53 exercises / 159 SVG frames**; **52** are selected at runtime because bear crawl continues to resolve to higher-priority OpenGym3D.
 
 The semantic candidate generator is intentionally not an auto-ingest path. High-scoring false positives were observed and explicitly blocked, including neutral-grip ambiguity, hammer/palm-in grip variants, exercise-ball support changes and pike-to-cobra versus pike-only movement.
+
+
+## Priority Gap V3.1
+
+V3.1 adds **11 reviewed mappings**. Ten require newly ingested source slugs; `0315` safely reuses the already-ingested `incline-dumbbell-curl` source frames also used by `0318`.
+
+Workout Guide now maps **64 PT650 exercises**. Runtime selects Workout Guide for **63** because bear crawl continues to resolve to higher-priority OpenGym3D. The local Workout Guide media directory contains **189 SVG frame files**.
+
+Strict review also blocked candidates where a seemingly close name hid a material execution difference: supported vs unsupported wrist curl, generic row vs Pendlay dead-stop, straight vs bent-knee hanging raise, and shoulder tap without an unambiguous push-up phase.

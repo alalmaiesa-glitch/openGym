@@ -496,3 +496,165 @@ export const WORKOUT_GUIDE_V3_BLOCKED_ALIASES = Object.freeze([
     "reason": "PT650 is a pike-to-cobra transition sequence; the source asset represents only the pike push-up."
   }
 ])
+
+export const WORKOUT_GUIDE_V31_ACCEPTED = Object.freeze([
+  {
+    "pt650Id": "0042",
+    "pt650Name": "barbell front squat",
+    "sourceSlug": "front-squat",
+    "sourceEquipment": "Barbell",
+    "sourcePrimaryMuscle": "Quads",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "priority-gap-v3.1",
+    "reason": "PT650 and source both describe the same barbell front squat; the source omits only the redundant equipment word and the reviewed frames show the bar in the front-rack position."
+  },
+  {
+    "pt650Id": "0044",
+    "pt650Name": "barbell good morning",
+    "sourceSlug": "good-morning",
+    "sourceEquipment": "Barbell",
+    "sourcePrimaryMuscle": "Hamstrings",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "priority-gap-v3.1",
+    "reason": "Same barbell good-morning hip hinge; equipment, posterior-chain semantics and reviewed frames match PT650."
+  },
+  {
+    "pt650Id": "0074",
+    "pt650Name": "barbell rack pull",
+    "sourceSlug": "rack-pull",
+    "sourceEquipment": "Barbell",
+    "sourcePrimaryMuscle": "Back",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "priority-gap-v3.1",
+    "reason": "Same shortened-range barbell rack-pull pattern; PT650 specifies a knee-height rack start and source metadata/frames represent the rack-pull movement."
+  },
+  {
+    "pt650Id": "0085",
+    "pt650Name": "barbell romanian deadlift",
+    "sourceSlug": "romanian-deadlift",
+    "sourceEquipment": "Barbell",
+    "sourcePrimaryMuscle": "Hamstrings",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "priority-gap-v3.1",
+    "reason": "Same barbell Romanian deadlift; PT650 instructions and source both use the controlled hip-hinge with soft knees and matching hamstring/glute semantics."
+  },
+  {
+    "pt650Id": "0297",
+    "pt650Name": "dumbbell concentration curl",
+    "sourceSlug": "concentration-curl",
+    "sourceEquipment": "Dumbbell",
+    "sourcePrimaryMuscle": "Biceps",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "priority-gap-v3.1",
+    "reason": "Same dumbbell concentration curl; source metadata supplies Dumbbell and the reviewed seated elbow-braced posture matches PT650."
+  },
+  {
+    "pt650Id": "0301",
+    "pt650Name": "dumbbell decline bench press",
+    "sourceSlug": "decline-dumbbell-press",
+    "sourceEquipment": "Dumbbell",
+    "sourcePrimaryMuscle": "Chest",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "priority-gap-v3.1",
+    "reason": "Same decline dumbbell chest press; decline support, dumbbells, press path and target semantics all match."
+  },
+  {
+    "pt650Id": "0314",
+    "pt650Name": "dumbbell incline bench press",
+    "sourceSlug": "incline-dumbbell-press",
+    "sourceEquipment": "Dumbbell",
+    "sourcePrimaryMuscle": "Chest",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "priority-gap-v3.1",
+    "reason": "Same incline dumbbell chest press; incline bench, dumbbells and reviewed press path match PT650."
+  },
+  {
+    "pt650Id": "0315",
+    "pt650Name": "dumbbell incline biceps curl",
+    "sourceSlug": "incline-dumbbell-curl",
+    "sourceEquipment": "Dumbbell",
+    "sourcePrimaryMuscle": "Biceps",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "priority-gap-v3.1",
+    "reason": "Same incline dumbbell biceps curl. This safely reuses the already-ingested source asset used by PT650 0318 because both PT650 exercise descriptions specify the same incline-bench curl movement."
+  },
+  {
+    "pt650Id": "0865",
+    "pt650Name": "lying leg-hip raise",
+    "sourceSlug": "lying-leg-raise",
+    "sourceEquipment": "Bodyweight",
+    "sourcePrimaryMuscle": "Core",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "priority-gap-v3.1",
+    "reason": "PT650's description is a standard lying straight-leg raise despite the legacy 'leg-hip raise' name; source frames and bodyweight core movement match the described execution."
+  },
+  {
+    "pt650Id": "1757",
+    "pt650Name": "dumbbell single leg deadlift",
+    "sourceSlug": "single-leg-romanian-deadlift",
+    "sourceEquipment": "Dumbbell",
+    "sourcePrimaryMuscle": "Hamstrings",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "priority-gap-v3.1",
+    "reason": "PT650 describes the same single-leg dumbbell Romanian hip hinge: one support leg, opposite leg extended rearward, dumbbell lowered under a neutral spine."
+  },
+  {
+    "pt650Id": "0475",
+    "pt650Name": "hanging straight leg raise",
+    "sourceSlug": "hanging-leg-raise",
+    "sourceEquipment": "Bodyweight",
+    "sourcePrimaryMuscle": "Core",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "priority-gap-v3.1",
+    "reason": "Source naming is broader, but all reviewed movement frames preserve straight legs and match PT650's hanging straight-leg raise instructions."
+  }
+])
+
+export const WORKOUT_GUIDE_V31_BLOCKED_ALIASES = Object.freeze([
+  {
+    "pt650Id": "0038",
+    "pt650Name": "barbell drag curl",
+    "sourceSlug": "drag-curl",
+    "decision": "rejected",
+    "reason": "PT650 instructions describe a conventional curl with stationary upper arms and do not establish the defining drag/elbow-back path; do not trust the name alone."
+  },
+  {
+    "pt650Id": "3017",
+    "pt650Name": "barbell pendlay row",
+    "sourceSlug": "pendlay-row",
+    "decision": "rejected",
+    "reason": "PT650 instructions describe a generic bent-over row and do not require a dead-stop return to the floor between reps, which is defining for a Pendlay row."
+  },
+  {
+    "pt650Id": "0126",
+    "pt650Name": "barbell wrist curl",
+    "sourceSlug": "wrist-curl",
+    "decision": "rejected",
+    "reason": "PT650 specifies seated forearm support on the thighs; the reviewed source frames depict a standing unsupported barbell wrist curl."
+  },
+  {
+    "pt650Id": "0699",
+    "pt650Name": "shoulder tap push-up",
+    "sourceSlug": "push-up-shoulder-tap",
+    "decision": "held",
+    "reason": "The source frames clearly show shoulder taps but do not unambiguously demonstrate the push-up lowering phase required by PT650."
+  },
+  {
+    "pt650Id": "1764",
+    "pt650Name": "hanging leg hip raise",
+    "sourceSlug": "hanging-leg-raise",
+    "decision": "rejected",
+    "reason": "PT650 explicitly raises flexed knees until the thighs are parallel; the reviewed source asset is a straight-leg hanging raise."
+  }
+])

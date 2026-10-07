@@ -5,8 +5,10 @@ import {
   WORKOUT_GUIDE_V2_ACCEPTED,
   WORKOUT_GUIDE_V21_ACCEPTED,
   WORKOUT_GUIDE_V3_ACCEPTED,
+  WORKOUT_GUIDE_V31_ACCEPTED,
   WORKOUT_GUIDE_EXCLUDED,
   WORKOUT_GUIDE_V3_BLOCKED_ALIASES,
+  WORKOUT_GUIDE_V31_BLOCKED_ALIASES,
 } from './pt650-workout-guide-review.js'
 import { animationAssetFor, animationCandidatesFor } from './pt650-animation-provider.js'
 
@@ -14,7 +16,8 @@ const V1_IDS = Object.freeze(["0289","0405","0178","0293","0652","1326","0868","
 const V2_IDS = Object.freeze(["0095","0406","1409","1459","0549","0514","0872","0687","0630","0276","0282","0832","0846","0407","0493","0283","0279","3294","0471","1489","3561","3360","1471","1160","1511","0811","0688"])
 const V21_IDS = Object.freeze(["0017","0841","2612"])
 const V3_IDS = Object.freeze(["0171","0318","0861","0030","0033","0047","0165","0168","0196","0238","1311"])
-const EXPECTED_IDS = Object.freeze([...V1_IDS, ...V2_IDS, ...V21_IDS, ...V3_IDS])
+const V31_IDS = Object.freeze(["0042","0044","0074","0085","0297","0301","0314","0315","0865","1757","0475"])
+const EXPECTED_IDS = Object.freeze([...V1_IDS, ...V2_IDS, ...V21_IDS, ...V3_IDS, ...V31_IDS])
 
 describe('PT650 Workout Guide reviewed ingest through Semantic Alias V3', () => {
   it('contains only reviewed local mappings', () => {
@@ -23,7 +26,8 @@ describe('PT650 Workout Guide reviewed ingest through Semantic Alias V3', () => 
     expect(V2_IDS).toHaveLength(27)
     expect(V21_IDS).toHaveLength(3)
     expect(V3_IDS).toHaveLength(11)
-    expect(EXPECTED_IDS).toHaveLength(53)
+    expect(V31_IDS).toHaveLength(11)
+    expect(EXPECTED_IDS).toHaveLength(64)
   })
 
   it('keeps each asset bound to the exact PT650 exercise identity reviewed at ingest', () => {
@@ -78,6 +82,22 @@ describe('PT650 Workout Guide reviewed ingest through Semantic Alias V3', () => 
       expect(WORKOUT_GUIDE_ASSETS[row.pt650Id]?.sourceSlug).not.toBe(row.sourceSlug)
     }
     expect(WORKOUT_GUIDE_ASSETS['0651']).toBeUndefined()
+  })
+
+  it('locks V3.1 priority-gap aliases and strict negative reviews', () => {
+    expect(WORKOUT_GUIDE_V31_ACCEPTED.map(x => x.pt650Id).sort()).toEqual([...V31_IDS].sort())
+    for (const id of V31_IDS) {
+      const asset = WORKOUT_GUIDE_ASSETS[id]
+      expect(asset.matchReview).toBe('accepted-v3.1')
+      expect(asset.matchConfidence).toBe('high')
+      expect(asset.aliasReview).toBeTruthy()
+      expect(animationCandidatesFor(id).some(candidate => candidate.provider === 'workout_guide' && candidate.available)).toBe(true)
+    }
+    for (const row of WORKOUT_GUIDE_V31_BLOCKED_ALIASES) {
+      expect(WORKOUT_GUIDE_ASSETS[row.pt650Id]?.sourceSlug).not.toBe(row.sourceSlug)
+    }
+    expect(WORKOUT_GUIDE_ASSETS['0126']).toBeUndefined()
+    expect(WORKOUT_GUIDE_ASSETS['1764']).toBeUndefined()
   })
 
   it('keeps existing higher-priority PT650 media behavior', () => {
