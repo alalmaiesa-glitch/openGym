@@ -658,3 +658,218 @@ export const WORKOUT_GUIDE_V31_BLOCKED_ALIASES = Object.freeze([
     "reason": "PT650 explicitly raises flexed knees until the thighs are parallel; the reviewed source asset is a straight-leg hanging raise."
   }
 ])
+
+export const WORKOUT_GUIDE_V32_ACCEPTED = Object.freeze([
+  {
+    "pt650Id": "0175",
+    "pt650Name": "cable kneeling crunch",
+    "sourceSlug": "cable-crunch",
+    "sourceEquipment": "Cable",
+    "sourcePrimaryMuscle": "Core",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-machine-v3.2",
+    "reason": "PT650 specifies a kneeling high-pulley rope crunch; the source frames show the same kneeling cable-crunch posture and high cable path."
+  },
+  {
+    "pt650Id": "0197",
+    "pt650Name": "cable pulldown (pro lat bar)",
+    "sourceSlug": "lat-pulldown",
+    "sourceEquipment": "Cable",
+    "sourcePrimaryMuscle": "Lats",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-machine-v3.2",
+    "reason": "PT650 describes a seated overhand lat-bar pulldown to the chest; source equipment, bar path, seated support and lat movement match."
+  },
+  {
+    "pt650Id": "0585",
+    "pt650Name": "lever leg extension",
+    "sourceSlug": "leg-extension",
+    "sourceEquipment": "Machine",
+    "sourcePrimaryMuscle": "Quads",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-machine-v3.2",
+    "reason": "Same seated machine leg extension with padded shin lever and knee extension."
+  },
+  {
+    "pt650Id": "0586",
+    "pt650Name": "lever lying leg curl",
+    "sourceSlug": "lying-leg-curl",
+    "sourceEquipment": "Machine",
+    "sourcePrimaryMuscle": "Hamstrings",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-machine-v3.2",
+    "reason": "Same prone machine leg curl; body position, heel pad and knee-flexion path match PT650."
+  },
+  {
+    "pt650Id": "0592",
+    "pt650Name": "lever preacher curl",
+    "sourceSlug": "preacher-curl",
+    "sourceEquipment": "Machine",
+    "sourcePrimaryMuscle": "Biceps",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-machine-v3.2",
+    "reason": "Same machine preacher curl with upper arms supported on the preacher pad and underhand curl path."
+  },
+  {
+    "pt650Id": "0593",
+    "pt650Name": "lever reverse hyperextension",
+    "sourceSlug": "reverse-hyperextension",
+    "sourceEquipment": "Machine",
+    "sourcePrimaryMuscle": "Glutes",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-machine-v3.2",
+    "reason": "Same reverse-hyperextension machine pattern with torso supported and legs extending behind the body."
+  },
+  {
+    "pt650Id": "0594",
+    "pt650Name": "lever seated calf raise",
+    "sourceSlug": "seated-calf-raise",
+    "sourceEquipment": "Machine",
+    "sourcePrimaryMuscle": "Calves",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-machine-v3.2",
+    "reason": "Same seated calf-raise machine with knee/thigh loading and plantar-flexion movement."
+  },
+  {
+    "pt650Id": "0597",
+    "pt650Name": "lever seated hip abduction",
+    "sourceSlug": "hip-abduction-machine",
+    "sourceEquipment": "Machine",
+    "sourcePrimaryMuscle": "Glutes",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-machine-v3.2",
+    "reason": "Same seated hip-abduction machine; pads, seated support and outward leg path match PT650."
+  },
+  {
+    "pt650Id": "0598",
+    "pt650Name": "lever seated hip adduction",
+    "sourceSlug": "hip-adduction-machine",
+    "sourceEquipment": "Machine",
+    "sourcePrimaryMuscle": "Adductors",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-machine-v3.2",
+    "reason": "Same seated hip-adduction machine; pads, seated support and inward leg path match PT650."
+  },
+  {
+    "pt650Id": "0599",
+    "pt650Name": "lever seated leg curl",
+    "sourceSlug": "seated-leg-curl",
+    "sourceEquipment": "Machine",
+    "sourcePrimaryMuscle": "Hamstrings",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-machine-v3.2",
+    "reason": "Same seated machine leg curl with back support, lower-leg pad and knee-flexion movement."
+  },
+  {
+    "pt650Id": "0605",
+    "pt650Name": "lever standing calf raise",
+    "sourceSlug": "standing-calf-raise",
+    "sourceEquipment": "Machine",
+    "sourcePrimaryMuscle": "Calves",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-machine-v3.2",
+    "reason": "Same standing calf-raise machine with shoulder support and ankle plantar flexion."
+  },
+  {
+    "pt650Id": "1385",
+    "pt650Name": "lever seated squat calf raise on leg press machine",
+    "sourceSlug": "leg-press-calf-raise",
+    "sourceEquipment": "Machine",
+    "sourcePrimaryMuscle": "Calves",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-machine-v3.2",
+    "reason": "PT650 explicitly uses a leg-press footplate for calf raises; source frames show the same leg-press calf-raise setup."
+  }
+])
+
+export const WORKOUT_GUIDE_V32_BLOCKED_ALIASES = Object.freeze([
+  {
+    "pt650Id": "0180",
+    "pt650Name": "cable low seated row",
+    "sourceSlug": "seated-row",
+    "decision": "rejected",
+    "reason": "PT650 specifies an overhand palms-down handle; the reviewed source depicts a close/neutral seated-row handle. Handle and grip semantics differ."
+  },
+  {
+    "pt650Id": "0606",
+    "pt650Name": "lever t bar row",
+    "sourceSlug": "t-bar-row",
+    "decision": "rejected",
+    "reason": "PT650 specifies a seated chest-supported leverage row; the reviewed source depicts a standing T-bar/landmine-style row. Body support and machine geometry differ."
+  },
+  {
+    "pt650Id": "0576",
+    "pt650Name": "lever chest press",
+    "sourceSlug": "machine-chest-press",
+    "decision": "held",
+    "reason": "Machine and press direction match, but the reviewed frames do not establish PT650's specified overhand grip clearly enough for strict V3.2 acceptance."
+  },
+  {
+    "pt650Id": "0577",
+    "pt650Name": "lever chest press",
+    "sourceSlug": "machine-chest-press",
+    "decision": "held",
+    "reason": "Duplicate PT650 entry has the same unresolved grip-geometry ambiguity as 0576; keep unavailable until grip is proven."
+  },
+  {
+    "pt650Id": "1432",
+    "pt650Name": "assisted standing pull-up",
+    "sourceSlug": "assisted-pull-up",
+    "decision": "rejected",
+    "reason": "PT650 describes standing on a foot platform; the source assisted-pull-up frames use a knee/support-pad assistance posture. Support mechanism differs."
+  },
+  {
+    "pt650Id": "0572",
+    "pt650Name": "lever assisted chin-up",
+    "sourceSlug": "assisted-chin-up",
+    "decision": "rejected",
+    "reason": "PT650's own instructions specify an overhand grip despite the chin-up name; source is labelled chin-up. The exercise identity is internally inconsistent, so no asset is assigned."
+  },
+  {
+    "pt650Id": "1431",
+    "pt650Name": "assisted standing chin-up",
+    "sourceSlug": "assisted-chin-up",
+    "decision": "rejected",
+    "reason": "PT650's instructions again specify an overhand grip while the source identity is chin-up; do not guess through the naming/instruction conflict."
+  },
+  {
+    "pt650Id": "0009",
+    "pt650Name": "assisted chest dip (kneeling)",
+    "sourceSlug": "assisted-dip",
+    "decision": "rejected",
+    "reason": "PT650 requires a kneeling counterweight pad; reviewed source frames depict a seated dip-style machine/support geometry."
+  },
+  {
+    "pt650Id": "0019",
+    "pt650Name": "assisted triceps dip (kneeling)",
+    "sourceSlug": "assisted-dip",
+    "decision": "rejected",
+    "reason": "PT650 requires kneeling assistance; source body support and machine geometry do not match."
+  },
+  {
+    "pt650Id": "1722",
+    "pt650Name": "cable high pulley overhead tricep extension",
+    "sourceSlug": "overhead-tricep-extension",
+    "decision": "held",
+    "reason": "Body position and cable direction match, but PT650 explicitly requires a rope attachment and the reviewed frames do not prove the attachment type unambiguously."
+  },
+  {
+    "pt650Id": "1253",
+    "pt650Name": "lever donkey calf raise",
+    "sourceSlug": "donkey-calf-raise",
+    "decision": "rejected",
+    "reason": "The source donkey-calf-raise frames are partner-loaded rather than a leverage machine, so loading mechanism and equipment do not match."
+  }
+])
