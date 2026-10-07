@@ -57,7 +57,7 @@ export const PT650_ANIMATION_PROVIDERS = Object.freeze({
     attributionRequired: true,
     shareAlike: true,
     version: 1,
-    assetStatus: 'partial-ingest-v2',
+    assetStatus: 'partial-ingest-v2.1',
   }),
   gymvisual: Object.freeze({
     id: 'gymvisual',

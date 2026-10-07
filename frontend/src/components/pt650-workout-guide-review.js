@@ -1,5 +1,6 @@
-// Controlled semantic review ledger for Workout Guide Expansion V2.
-// Exact-name matching is only a candidate generator; this ledger records the human-reviewed decision.
+// Controlled semantic review ledger for Workout Guide Expansion V2 + Deferred Visual Review V2.1.
+// Exact-name matching is only a candidate generator. Equipment taxonomy may be overridden only
+// when the pinned source frames themselves provide unambiguous visual evidence.
 export const WORKOUT_GUIDE_V2_ACCEPTED = Object.freeze([
   {
     "pt650Id": "0095",
@@ -245,27 +246,50 @@ export const WORKOUT_GUIDE_V2_ACCEPTED = Object.freeze([
     "confidence": "high"
   }
 ])
-export const WORKOUT_GUIDE_V2_HELD = Object.freeze([
+
+export const WORKOUT_GUIDE_V21_ACCEPTED = Object.freeze([
+  {
+    "pt650Id": "0017",
+    "pt650Name": "assisted pull-up",
+    "sourceSlug": "assisted-pull-up",
+    "sourceEquipment": "Machine",
+    "sourcePrimaryMuscle": "Lats",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "visual-v2.1",
+    "reason": "Accepted V2.1: all reviewed source frames depict a counterweighted assisted pull-up machine, matching PT650 leverage-machine assistance semantics."
+  },
+  {
+    "pt650Id": "0841",
+    "pt650Name": "weighted pull-up",
+    "sourceSlug": "weighted-pull-up",
+    "sourceEquipment": "Bodyweight",
+    "sourcePrimaryMuscle": "Lats",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "visual-v2.1",
+    "reason": "Accepted V2.1: source metadata groups equipment as Bodyweight, but the reviewed frames visibly show a suspended external weight plate, matching PT650 weighted pull-up semantics."
+  },
+  {
+    "pt650Id": "2612",
+    "pt650Name": "jump rope",
+    "sourceSlug": "jump-rope",
+    "sourceEquipment": "Cardio",
+    "sourcePrimaryMuscle": "Calves",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "visual-v2.1",
+    "reason": "Accepted V2.1: source metadata groups equipment as Cardio, while the reviewed frames visibly show the jump rope itself and match PT650 rope-based movement semantics."
+  }
+])
+
+export const WORKOUT_GUIDE_EXCLUDED = Object.freeze([
   {
     "pt650Id": "0662",
     "pt650Name": "push-up",
     "sourceSlug": "push-up",
     "decision": "held",
     "reason": "PT650 already has a higher-priority exact authored/OpenGym3D movement; do not duplicate fallback in V2."
-  },
-  {
-    "pt650Id": "0017",
-    "pt650Name": "assisted pull-up",
-    "sourceSlug": "assisted-pull-up",
-    "decision": "deferred",
-    "reason": "Assistance mechanism needs visual confirmation; PT650 specifies leverage machine while Workout Guide metadata says generic machine."
-  },
-  {
-    "pt650Id": "0841",
-    "pt650Name": "weighted pull-up",
-    "sourceSlug": "weighted-pull-up",
-    "decision": "deferred",
-    "reason": "Workout Guide metadata says Bodyweight; verify that the external load is visibly represented before mapping a weighted PT650 exercise."
   },
   {
     "pt650Id": "1460",
@@ -285,14 +309,7 @@ export const WORKOUT_GUIDE_V2_HELD = Object.freeze([
     "pt650Id": "0284",
     "pt650Name": "donkey calf raise",
     "sourceSlug": "donkey-calf-raise",
-    "decision": "deferred",
-    "reason": "Equipment conflict requires visual review: PT650 body weight vs Workout Guide machine."
-  },
-  {
-    "pt650Id": "2612",
-    "pt650Name": "jump rope",
-    "sourceSlug": "jump-rope",
-    "decision": "deferred",
-    "reason": "Movement matches, but source equipment taxonomy is Cardio while PT650 is Rope; hold until visual/equipment review."
+    "decision": "rejected",
+    "reason": "Visual V2.1 review shows a partner-loaded donkey calf raise with another person seated on the athlete. PT650 defines a body-weight calf raise using a stable support, so loading/equipment semantics do not match."
   }
 ])
