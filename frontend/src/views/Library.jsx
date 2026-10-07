@@ -10,8 +10,7 @@ import { t, exerciseNameFor, exerciseNameClass } from '../lib/i18n.js'
 import { exerciseDetailSheet, addToRoutineSheet, customExSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
 import { Button } from '../components/ui.jsx'
-import { animatedModelFor } from '../components/PT650ExerciseAnimation.jsx'
-import { threeDModelFor } from '../components/pt650-3d-registry.js'
+import { hasAnimationFor } from '../components/pt650-animation-provider.js'
 import { tappable, useRevealActiveChip } from '../lib/use-sheet-keyboard.js'
 import { isFav, sortFavouritesFirst } from '../lib/favourites.js'
 
@@ -131,7 +130,7 @@ export default function Library() {
     <div className="list library-list">
       {f.slice(0, shown).map(e => {
         const best = bestWeightFor(S, e.id)
-        const hasDemo = !!(threeDModelFor(e.id) || animatedModelFor(e.id))
+        const hasDemo = hasAnimationFor(e.id)
         return <div key={e.id} className={'item library-item' + (hasDemo ? ' has-demo' : '')} {...tappable(() => exerciseDetailSheet(e))}>
           {hasDemo && <div className="library-card-mark" aria-hidden="true"><Icon name="play" /></div>}
           <div className="grow">
