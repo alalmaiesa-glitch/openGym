@@ -3321,3 +3321,265 @@ body.chips-dragging *{cursor:inherit}
   .exercise-detail-media .pt650-media-pending{min-height:180px}
   .exercise-detail-panel{padding:11px;border-radius:14px}
 }
+
+
+/* ========================================================================
+   PT650 Workout Experience Redesign V3
+   Live-session Sport Tech surface. Scoped so planning/history keep their contracts.
+   ======================================================================== */
+.pt650-workout-v3,.pt650-start-workout-v3{
+  --pt-neon:#c9ff3d;
+  --pt-cyan:#57e7ff;
+  --pt-work-panel:#111411;
+  --pt-work-line:rgba(201,255,61,.16);
+  position:relative;isolation:isolate;
+}
+:root[data-theme="light"] .pt650-workout-v3,
+:root[data-theme="light"] .pt650-start-workout-v3{
+  --pt-neon:#69a900;--pt-cyan:#008aa3;--pt-work-panel:#fff;--pt-work-line:rgba(79,128,0,.16);
+}
+.pt650-workout-v3::before,.pt650-start-workout-v3::before{
+  content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(680px 300px at 50% -70px,color-mix(in srgb,var(--pt-neon) 8%,transparent),transparent 72%),
+    radial-gradient(440px 260px at 100% 42%,color-mix(in srgb,var(--pt-cyan) 4%,transparent),transparent 72%),
+    var(--bg);
+}
+
+/* session header */
+.pt650-workout-v3 .pt650-workout-head{
+  position:relative;border-radius:18px;padding:10px 12px 8px;margin-bottom:12px;
+  background:color-mix(in srgb,var(--surface) 94%,transparent);
+  border:1px solid color-mix(in srgb,var(--pt-neon) 12%,var(--sep-op));
+  box-shadow:0 16px 36px -32px color-mix(in srgb,var(--pt-neon) 55%,transparent);
+}
+.pt650-workout-v3 .pt650-workout-head.stick{
+  border-radius:0 0 18px 18px;
+  border-width:0 0 1px;
+  margin:calc(-1 * (var(--sat) + var(--conn) + 8px)) calc(-1 * var(--pad)) 10px;
+  padding:calc(var(--sat) + var(--conn) + 9px) var(--pad) 8px;
+  background:color-mix(in srgb,var(--bg) 94%,transparent);
+  box-shadow:0 14px 28px -28px rgba(0,0,0,.8);
+}
+.pt650-workout-v3 .pt650-workout-head .hdr{margin-bottom:8px;min-height:42px}
+.pt650-session-identity{
+  flex:1;min-width:0;text-align:center;display:flex;flex-direction:column;align-items:center;gap:3px;
+}
+.pt650-session-identity strong{
+  max-width:100%;font-size:15px;font-weight:680;line-height:1.15;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.pt650-session-identity span{
+  color:var(--label-3);font-size:10.5px;font-weight:520;font-variant-numeric:tabular-nums;
+}
+.pt650-workout-v3 .pt650-workout-head .iconbtn{
+  width:36px;height:36px;border-radius:11px;
+  background:color-mix(in srgb,var(--surface-2) 76%,transparent);
+  border:1px solid var(--sep-op);
+}
+.pt650-session-actions .iconbtn:last-child{
+  color:var(--pt-neon)!important;
+  background:color-mix(in srgb,var(--pt-neon) 8%,transparent);
+  border-color:color-mix(in srgb,var(--pt-neon) 18%,transparent);
+}
+.pt650-workout-v3 .wprog{
+  height:3px;margin:0;background:color-mix(in srgb,var(--surface-3) 82%,transparent);
+}
+.pt650-workout-v3 .wprog i{
+  background:var(--pt-neon);
+  box-shadow:0 0 10px color-mix(in srgb,var(--pt-neon) 52%,transparent);
+}
+
+/* exercise identity + media */
+.pt650-workout-v3 .exmedia{
+  border-radius:17px;margin-bottom:10px;
+  border:1px solid rgba(255,255,255,.045);
+  box-shadow:0 16px 30px -30px rgba(0,0,0,.85);
+}
+.pt650-workout-v3 .workout-exercise-head{
+  min-height:40px;margin-bottom:5px!important;padding-inline:2px;
+}
+.pt650-workout-v3 .workout-exercise-head>div:first-child{
+  font-size:18px!important;font-weight:660!important;line-height:1.2!important;letter-spacing:-.022em!important;
+}
+.pt650-workout-v3 .workout-exercise-head .iconbtn{
+  width:34px;height:34px;border-radius:10px;background:transparent;color:var(--label-2);
+}
+.pt650-workout-v3 .workout-exercise-tags{gap:5px!important;margin-bottom:7px!important}
+.pt650-workout-v3 .workout-exercise-tags .tag{
+  min-height:24px;padding:3px 7px;border-radius:8px;
+  font-size:10px;color:var(--label-2);
+  background:color-mix(in srgb,var(--surface) 93%,transparent);
+  border:1px solid var(--sep-op);
+}
+.pt650-workout-v3 .workout-exercise-tags .tag.acc{
+  color:var(--pt-neon);
+  background:color-mix(in srgb,var(--pt-neon) 7%,transparent);
+  border-color:color-mix(in srgb,var(--pt-neon) 15%,transparent);
+}
+.pt650-workout-v3 .exnote{
+  padding:9px 11px;margin-bottom:7px;border-radius:11px;
+  background:color-mix(in srgb,var(--surface) 94%,transparent);
+  border:1px solid var(--sep-op);font-size:12px;line-height:1.4;
+}
+.pt650-workout-v3 .planline,.pt650-workout-v3 .refline{
+  font-size:11px;line-height:1.35;
+}
+.pt650-workout-v3 .progline{
+  margin:5px 0 3px;padding:7px 9px;border-radius:10px;
+  font-size:11px;line-height:1.35;color:var(--pt-neon);
+  background:color-mix(in srgb,var(--pt-neon) 6%,transparent);
+  border:1px solid color-mix(in srgb,var(--pt-neon) 12%,transparent);
+}
+
+/* logging surface */
+.pt650-workout-v3 .workout-sets-card{
+  padding:11px 10px 8px!important;border-radius:16px;
+  background:color-mix(in srgb,var(--surface) 96%,transparent);
+  border:1px solid var(--sep-op);
+  box-shadow:none;
+}
+.pt650-workout-v3 .sethead{
+  padding:0 1px 5px;font-size:9px;letter-spacing:.055em;color:var(--label-3);
+}
+.pt650-workout-v3 .setrow{
+  min-height:53px;padding:6px 0;gap:7px;
+  transition:opacity var(--fast),background var(--fast);
+}
+.pt650-workout-v3 .setrow+.setrow::before{
+  inset-inline-start:31px;background:color-mix(in srgb,var(--sep) 72%,transparent);
+}
+.pt650-workout-v3 .setrow .n,.pt650-workout-v3 .setrow-side>.n{
+  width:25px;height:25px;background:color-mix(in srgb,var(--surface-2) 88%,transparent);
+  border:1px solid var(--sep-op);font-size:11px;font-weight:650;
+}
+.pt650-workout-v3 .setrow.done,.pt650-workout-v3 .setrow.side.done{opacity:.68}
+.pt650-workout-v3 .setrow.done .n,.pt650-workout-v3 .setrow.side.done .sidetag{
+  background:var(--pt-neon);color:#080a07;border-color:var(--pt-neon);
+  box-shadow:0 0 12px color-mix(in srgb,var(--pt-neon) 28%,transparent);
+}
+.pt650-workout-v3 .stp{
+  background:color-mix(in srgb,var(--surface-2) 88%,transparent);
+  border:1px solid var(--sep-op);border-radius:11px;
+}
+.pt650-workout-v3 .setrow .stp button{
+  color:var(--label-3);
+}
+.pt650-workout-v3 .setrow .stp .num{
+  color:var(--label);font-weight:640;
+}
+.pt650-workout-v3 .setrow .chk,.pt650-workout-v3 .setrow .ck{
+  width:31px;height:31px;
+}
+.pt650-workout-v3 .setrow .chk.on,.pt650-workout-v3 .setrow .ck.on{
+  background:var(--pt-neon);color:#080a07;
+  box-shadow:0 0 14px color-mix(in srgb,var(--pt-neon) 30%,transparent);
+}
+.pt650-workout-v3 .setph{
+  color:var(--pt-neon);font-size:9px;margin-top:7px;
+}
+.pt650-workout-v3 .setph::after{background:color-mix(in srgb,var(--pt-neon) 14%,var(--sep))}
+.pt650-workout-v3 .plateline{font-size:10.5px;padding-bottom:4px}
+.pt650-workout-v3 .subrow{font-size:11px}
+.pt650-workout-v3 .effcell{
+  background:color-mix(in srgb,var(--surface-2) 88%,transparent);
+}
+.pt650-workout-v3 .setgo{
+  color:var(--pt-neon);
+  background:color-mix(in srgb,var(--pt-neon) 8%,var(--surface-2));
+}
+
+/* cards/list navigation */
+.pt650-workout-v3 .workout-unit-counter{
+  display:inline-flex;align-items:center;min-height:24px;margin:0 2px 7px!important;
+  color:var(--label-3);font-size:10px;
+}
+.pt650-workout-v3 .workout-card-nav{gap:8px}
+.pt650-workout-v3 .workout-card-nav>.btn{
+  min-height:42px;border-radius:12px;background:var(--surface);border:1px solid var(--sep-op);
+}
+.pt650-workout-v3 .workout-list{gap:10px}
+.pt650-workout-v3 .wl-unit{
+  padding:11px 11px 4px;border-radius:17px;
+  background:color-mix(in srgb,var(--surface) 94%,transparent);
+  border:1px solid var(--sep-op);
+}
+.pt650-workout-v3 .wl-unit.cur{
+  border-color:color-mix(in srgb,var(--pt-neon) 22%,var(--sep-op));
+  box-shadow:inset 2px 0 0 var(--pt-neon),0 12px 26px -28px color-mix(in srgb,var(--pt-neon) 55%,transparent);
+}
+[dir="rtl"] .pt650-workout-v3 .wl-unit.cur{box-shadow:inset -2px 0 0 var(--pt-neon),0 12px 26px -28px color-mix(in srgb,var(--pt-neon) 55%,transparent)}
+.pt650-workout-v3 .wl-hd{margin-bottom:7px}
+.pt650-workout-v3 .wl-hd .tag.acc{
+  color:#080a07;background:var(--pt-neon);
+}
+.pt650-workout-v3 .ss-card{
+  border-radius:15px;background:color-mix(in srgb,var(--surface) 96%,transparent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--pt-neon) 14%,var(--sep-op));
+}
+.pt650-workout-v3 .ss-hd,.pt650-workout-v3 .ss-amp{color:var(--pt-neon)}
+
+/* session actions */
+.pt650-workout-v3 .workout-add-exercise{margin-top:2px}
+.pt650-workout-v3 .workout-add-exercise>.btn{
+  min-height:42px;border-radius:12px;
+  background:color-mix(in srgb,var(--pt-neon) 7%,var(--surface));
+  border:1px solid color-mix(in srgb,var(--pt-neon) 16%,var(--sep-op));
+  color:var(--pt-neon);
+}
+.pt650-workout-v3 .workout-session-note{
+  display:flex;justify-content:center;margin:10px 0 8px;
+}
+.pt650-workout-v3 .workout-finish{
+  min-height:48px;border-radius:14px;font-weight:650;
+}
+.pt650-workout-v3 .workout-finish.primary{
+  background:var(--pt-neon);color:#080a07;
+  box-shadow:0 12px 28px -18px color-mix(in srgb,var(--pt-neon) 72%,transparent);
+}
+
+/* rest/work timer becomes part of the same visual system while an active workout is mounted */
+body:has(.pt650-workout-v3) #timer{
+  border:1px solid color-mix(in srgb,var(--pt-neon) 14%,var(--sep-op));
+  border-radius:17px;
+  background:color-mix(in srgb,var(--bg-el) 97%,transparent);
+  box-shadow:0 16px 38px -18px rgba(0,0,0,.72);
+}
+body:has(.pt650-workout-v3) #timer .t{
+  font-size:24px;font-weight:680;
+}
+body:has(.pt650-workout-v3) #timer .bar{height:3px}
+body:has(.pt650-workout-v3) #timer .bar i{
+  background:var(--pt-neon);
+  box-shadow:0 0 10px color-mix(in srgb,var(--pt-neon) 45%,transparent);
+}
+body:has(.pt650-workout-v3) #timer.working{
+  border-color:color-mix(in srgb,var(--pt-cyan) 30%,var(--sep-op));
+}
+body:has(.pt650-workout-v3) #timer.working .t{color:var(--pt-cyan)}
+
+/* start chooser shares the redesign instead of dropping back to the legacy page */
+.pt650-start-workout-v3 .hdr h1{font-size:25px}
+.pt650-start-workout-v3>.card{
+  border-radius:18px!important;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--surface) 96%,var(--pt-neon) 4%),var(--surface));
+  border-color:color-mix(in srgb,var(--pt-neon) 20%,var(--sep-op))!important;
+}
+.pt650-start-workout-v3>.card .btn.primary{
+  background:var(--pt-neon);color:#080a07;
+}
+.pt650-start-workout-v3>.list .item{
+  border-radius:14px;border:1px solid var(--sep-op);background:var(--surface);
+}
+
+/* preserve the tight geometry on phones: V3 is visual hierarchy, not bigger controls. */
+@media (max-width:420px){
+  .pt650-workout-v3 .pt650-workout-head{border-radius:15px;padding-inline:9px}
+  .pt650-workout-v3 .pt650-workout-head.stick{border-radius:0 0 15px 15px}
+  .pt650-session-identity strong{font-size:14px}
+  .pt650-workout-v3 .workout-exercise-head>div:first-child{font-size:16.5px!important}
+  .pt650-workout-v3 .workout-sets-card{padding-inline:8px!important;border-radius:14px}
+  .pt650-workout-v3 .setrow{gap:6px}
+  .pt650-workout-v3 .wl-unit{padding:9px 8px 3px}
+  body:has(.pt650-workout-v3) #timer{inset-inline:8px;border-radius:15px}
+}
