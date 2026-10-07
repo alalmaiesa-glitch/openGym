@@ -14,30 +14,30 @@ describe('PT650 animation coverage gap baseline V1', () => {
 
   it('locks the current catalogue and resolved animation baseline', () => {
     expect(report.total).toBe(1327)
-    expect(report.covered).toBe(85)
-    expect(report.uncovered).toBe(1242)
-    expect(report.coveragePct).toBe(6.41)
+    expect(report.covered).toBe(94)
+    expect(report.uncovered).toBe(1233)
+    expect(report.coveragePct).toBe(7.08)
     expect(report.selectedByProvider).toEqual({
       pt650_opengym3d: 6,
       pt650_authored_svg: 4,
-      workout_guide: 75,
+      workout_guide: 84,
     })
   })
 
   it('surfaces the largest body-part gaps deterministically', () => {
     expect(report.byBodyPart.slice(0, 6).map(x => [x.key, x.missing])).toEqual([
       ['upper arms', 281],
-      ['upper legs', 193],
-      ['back', 189],
-      ['waist', 155],
-      ['chest', 149],
+      ['upper legs', 191],
+      ['back', 188],
+      ['waist', 153],
+      ['chest', 148],
       ['shoulders', 133],
     ])
   })
 
   it('surfaces the largest equipment gaps deterministically', () => {
     expect(report.byEquipment.slice(0, 8).map(x => [x.key, x.missing])).toEqual([
-      ['body weight', 295],
+      ['body weight', 286],
       ['dumbbell', 281],
       ['cable', 146],
       ['barbell', 143],
@@ -57,6 +57,6 @@ describe('PT650 animation coverage gap baseline V1', () => {
       ...Object.keys(GYM_VISUAL_ASSETS),
     ])
     for (const id of mappedIds) expect(EXIDX[id], id).toBeTruthy()
-    expect(Object.keys(WORKOUT_GUIDE_ASSETS)).toHaveLength(76)
+    expect(Object.keys(WORKOUT_GUIDE_ASSETS)).toHaveLength(85)
   })
 })

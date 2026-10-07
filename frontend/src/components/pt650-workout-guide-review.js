@@ -873,3 +873,185 @@ export const WORKOUT_GUIDE_V32_BLOCKED_ALIASES = Object.freeze([
     "reason": "The source donkey-calf-raise frames are partner-loaded rather than a leverage machine, so loading mechanism and equipment do not match."
   }
 ])
+
+export const WORKOUT_GUIDE_V33_ACCEPTED = Object.freeze([
+  {
+    "pt650Id": "3470",
+    "pt650Name": "forward lunge (male)",
+    "sourceSlug": "forward-lunge",
+    "sourceEquipment": "Bodyweight",
+    "sourcePrimaryMuscle": "Quads",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "bodyweight-v3.3",
+    "reason": "PT650 describes the standard alternating forward lunge; source movement, bodyweight loading, knee path and stance match."
+  },
+  {
+    "pt650Id": "3699",
+    "pt650Name": "shoulder tap",
+    "sourceSlug": "plank-shoulder-tap",
+    "sourceEquipment": "Bodyweight",
+    "sourcePrimaryMuscle": "Core",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "bodyweight-v3.3",
+    "reason": "PT650 starts in a high plank and alternates opposite shoulder taps while stabilizing the hips; source frames depict the same full-plank shoulder-tap sequence."
+  },
+  {
+    "pt650Id": "0497",
+    "pt650Name": "inverted row v. 2",
+    "sourceSlug": "inverted-row",
+    "sourceEquipment": "Bodyweight",
+    "sourcePrimaryMuscle": "Back",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "bodyweight-v3.3",
+    "reason": "PT650 explicitly allows a waist-height fixed bar; source frames show that valid fixed-bar inverted-row implementation with matching overhand pull path."
+  },
+  {
+    "pt650Id": "0513",
+    "pt650Name": "jump squat v. 2",
+    "sourceSlug": "jump-squat",
+    "sourceEquipment": "Bodyweight",
+    "sourcePrimaryMuscle": "Quads",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "bodyweight-v3.3",
+    "reason": "Same bodyweight squat-to-explosive-jump sequence with soft landing and immediate return to squat."
+  },
+  {
+    "pt650Id": "1373",
+    "pt650Name": "bodyweight standing calf raise",
+    "sourceSlug": "calf-raise",
+    "sourceEquipment": "Bodyweight",
+    "sourcePrimaryMuscle": "Calves",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "bodyweight-v3.3",
+    "reason": "Same two-leg bodyweight standing calf raise; PT650 permits a wall or stable surface for balance and the source uses stable hand support."
+  },
+  {
+    "pt650Id": "1377",
+    "pt650Name": "calf stretch with hands against wall",
+    "sourceSlug": "wall-calf-stretch",
+    "sourceEquipment": "Bodyweight",
+    "sourcePrimaryMuscle": "Calves",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "bodyweight-v3.3",
+    "reason": "Same wall-supported calf stretch with rear heel grounded and rear leg straight."
+  },
+  {
+    "pt650Id": "1387",
+    "pt650Name": "one leg floor calf raise",
+    "sourceSlug": "single-leg-calf-raise",
+    "sourceEquipment": "Bodyweight",
+    "sourcePrimaryMuscle": "Calves",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "bodyweight-v3.3",
+    "reason": "Same single-leg bodyweight calf raise with a stable hand support for balance and the non-working leg off the floor."
+  },
+  {
+    "pt650Id": "3785",
+    "pt650Name": "incline push-up (on box)",
+    "sourceSlug": "incline-push-up",
+    "sourceEquipment": "Bodyweight",
+    "sourcePrimaryMuscle": "Chest",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "bodyweight-v3.3",
+    "reason": "PT650 explicitly uses a box/elevated surface with a straight-body incline push-up; source frames show the same elevated support and press path."
+  },
+  {
+    "pt650Id": "0474",
+    "pt650Name": "hanging straight leg hip raise",
+    "sourceSlug": "hanging-leg-raise",
+    "sourceEquipment": "Bodyweight",
+    "sourcePrimaryMuscle": "Core",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "bodyweight-v3.3",
+    "reason": "PT650 raises straight legs from a dead hang to roughly parallel; the reviewed source frames preserve straight legs and the same hanging raise path."
+  }
+])
+
+export const WORKOUT_GUIDE_V33_BLOCKED_ALIASES = Object.freeze([
+  {
+    "pt650Id": "0710",
+    "pt650Name": "side hip abduction",
+    "sourceSlug": "side-lying-hip-abduction",
+    "decision": "rejected",
+    "reason": "PT650 is a standing alternating hip abduction; source is side-lying. Body position and stabilization pattern differ."
+  },
+  {
+    "pt650Id": "0274",
+    "pt650Name": "crunch floor",
+    "sourceSlug": "crunch",
+    "decision": "rejected",
+    "reason": "PT650 requires feet flat on the floor; reviewed source frames place the lower legs on an elevated support. Support position differs."
+  },
+  {
+    "pt650Id": "0620",
+    "pt650Name": "lying leg raise flat bench",
+    "sourceSlug": "lying-leg-raise",
+    "decision": "rejected",
+    "reason": "PT650 explicitly uses a flat bench; the source is floor-supported. Support surface is part of the exercise setup."
+  },
+  {
+    "pt650Id": "0129",
+    "pt650Name": "bench dip (knees bent)",
+    "sourceSlug": "bench-dip",
+    "decision": "rejected",
+    "reason": "PT650 title says knees bent while its own instructions say straighten the legs with heels on the ground; source uses elevated foot support. The record is internally inconsistent and the setup is not a safe match."
+  },
+  {
+    "pt650Id": "1753",
+    "pt650Name": "three bench dip",
+    "sourceSlug": "bench-dip",
+    "decision": "rejected",
+    "reason": "The PT650 title indicates a multi-bench variant while its instructions describe a generic bench dip; source does not establish the named three-bench configuration."
+  },
+  {
+    "pt650Id": "0814",
+    "pt650Name": "triceps dip",
+    "sourceSlug": "dip",
+    "decision": "rejected",
+    "reason": "PT650 instructions describe a bench/chair dip; Workout Guide dip is a parallel-support dip. Support geometry differs."
+  },
+  {
+    "pt650Id": "0490",
+    "pt650Name": "incline close-grip push-up",
+    "sourceSlug": "incline-push-up",
+    "decision": "rejected",
+    "reason": "Close-grip hand placement is a material triceps-biased variant not established by the generic incline-push-up frames."
+  },
+  {
+    "pt650Id": "3239",
+    "pt650Name": "kneeling plank tap shoulder (male)",
+    "sourceSlug": "plank-shoulder-tap",
+    "decision": "rejected",
+    "reason": "PT650 is a kneeling plank variation; source maintains a full high-plank position on the toes."
+  },
+  {
+    "pt650Id": "0807",
+    "pt650Name": "suspended reverse crunch",
+    "sourceSlug": "reverse-crunch",
+    "decision": "rejected",
+    "reason": "PT650 uses suspension support; source reverse crunch is unsuspended. Equipment/support semantics differ."
+  },
+  {
+    "pt650Id": "3217",
+    "pt650Name": "modified hindu push-up (male)",
+    "sourceSlug": "hindu-push-up",
+    "decision": "rejected",
+    "reason": "The modified movement is not interchangeable with the full Hindu push-up sequence."
+  },
+  {
+    "pt650Id": "1429",
+    "pt650Name": "wide grip pull-up",
+    "sourceSlug": "pull-up",
+    "decision": "rejected",
+    "reason": "Wide-grip geometry is a material pull-up variation and must not collapse to a generic grip asset."
+  }
+])
