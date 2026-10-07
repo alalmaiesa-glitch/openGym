@@ -313,3 +313,186 @@ export const WORKOUT_GUIDE_EXCLUDED = Object.freeze([
     "reason": "Visual V2.1 review shows a partner-loaded donkey calf raise with another person seated on the athlete. PT650 defines a body-weight calf raise using a stable support, so loading/equipment semantics do not match."
   }
 ])
+
+export const WORKOUT_GUIDE_V3_ACCEPTED = Object.freeze([
+  {
+    "pt650Id": "0171",
+    "pt650Name": "cable incline fly",
+    "sourceSlug": "incline-cable-fly",
+    "sourceEquipment": "Cable",
+    "sourcePrimaryMuscle": "Chest",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "semantic-alias-v3",
+    "reason": "Same incline cable-fly movement; alias differs only by word order. PT650 instructions also specify an incline bench and low cable handles."
+  },
+  {
+    "pt650Id": "0318",
+    "pt650Name": "dumbbell incline curl",
+    "sourceSlug": "incline-dumbbell-curl",
+    "sourceEquipment": "Dumbbell",
+    "sourcePrimaryMuscle": "Biceps",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "semantic-alias-v3",
+    "reason": "Same incline dumbbell curl; alias differs only by word order and frames show the incline-bench curl."
+  },
+  {
+    "pt650Id": "0861",
+    "pt650Name": "cable seated row",
+    "sourceSlug": "seated-row",
+    "sourceEquipment": "Cable",
+    "sourcePrimaryMuscle": "Back",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "semantic-alias-v3",
+    "reason": "Same seated cable row; source name omits no movement detail and frames show seated cable rowing with foot support."
+  },
+  {
+    "pt650Id": "0030",
+    "pt650Name": "barbell close-grip bench press",
+    "sourceSlug": "close-grip-bench-press",
+    "sourceEquipment": "Barbell",
+    "sourcePrimaryMuscle": "Triceps",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "semantic-alias-v3",
+    "reason": "Same close-grip bench press; source equipment metadata supplies Barbell and frames show the close-grip barbell press."
+  },
+  {
+    "pt650Id": "0033",
+    "pt650Name": "barbell decline bench press",
+    "sourceSlug": "decline-bench-press",
+    "sourceEquipment": "Barbell",
+    "sourcePrimaryMuscle": "Chest",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "semantic-alias-v3",
+    "reason": "Same decline barbell bench press; source name omits the redundant equipment word while metadata and frames confirm Barbell."
+  },
+  {
+    "pt650Id": "0047",
+    "pt650Name": "barbell incline bench press",
+    "sourceSlug": "incline-bench-press",
+    "sourceEquipment": "Barbell",
+    "sourcePrimaryMuscle": "Chest",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "semantic-alias-v3",
+    "reason": "Same incline barbell bench press; source name omits the redundant equipment word while metadata and frames confirm Barbell."
+  },
+  {
+    "pt650Id": "0165",
+    "pt650Name": "cable hammer curl (with rope)",
+    "sourceSlug": "rope-hammer-curl",
+    "sourceEquipment": "Cable",
+    "sourcePrimaryMuscle": "Biceps",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "semantic-alias-v3",
+    "reason": "Same rope hammer curl on a cable; PT650 explicitly says rope attachment and source metadata is Cable with matching biceps/forearm semantics."
+  },
+  {
+    "pt650Id": "0168",
+    "pt650Name": "cable hip adduction",
+    "sourceSlug": "cable-standing-hip-adduction",
+    "sourceEquipment": "Cable",
+    "sourcePrimaryMuscle": "Adductors",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "semantic-alias-v3",
+    "reason": "Same standing cable hip adduction; PT650 instructions explicitly use an ankle cuff while standing and frames show the same setup."
+  },
+  {
+    "pt650Id": "0196",
+    "pt650Name": "cable pull through (with rope)",
+    "sourceSlug": "cable-pull-through",
+    "sourceEquipment": "Cable",
+    "sourcePrimaryMuscle": "Glutes",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "semantic-alias-v3",
+    "reason": "Same cable pull-through; PT650 explicitly specifies the rope and source frames show the low-pulley hip-hinge movement."
+  },
+  {
+    "pt650Id": "0238",
+    "pt650Name": "cable straight arm pulldown",
+    "sourceSlug": "straight-arm-pulldown",
+    "sourceEquipment": "Cable",
+    "sourcePrimaryMuscle": "Lats",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "semantic-alias-v3",
+    "reason": "Same straight-arm cable pulldown; source equipment is Cable and frames preserve the straight-arm high-cable movement."
+  },
+  {
+    "pt650Id": "1311",
+    "pt650Name": "wide hand push up",
+    "sourceSlug": "wide-push-up",
+    "sourceEquipment": "Bodyweight",
+    "sourcePrimaryMuscle": "Chest",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "semantic-alias-v3",
+    "reason": "Same wide-hand push-up; source frames clearly show the wide hand placement and bodyweight chest movement."
+  }
+])
+
+export const WORKOUT_GUIDE_V3_BLOCKED_ALIASES = Object.freeze([
+  {
+    "pt650Id": "0651",
+    "pt650Name": "pull up (neutral grip)",
+    "sourceSlug": "neutral-grip-pull-up",
+    "decision": "held",
+    "reason": "Name and metadata look strong, but the pinned frames use a straight horizontal bar and do not visually establish a neutral grip. Do not map until grip geometry is unambiguous."
+  },
+  {
+    "pt650Id": "0290",
+    "pt650Name": "dumbbell bench seated press",
+    "sourceSlug": "dumbbell-bench-press",
+    "decision": "rejected",
+    "reason": "PT650 targets delts and describes a seated press; the candidate is a chest bench press. Token overlap is misleading."
+  },
+  {
+    "pt650Id": "0303",
+    "pt650Name": "dumbbell decline hammer press",
+    "sourceSlug": "decline-dumbbell-press",
+    "decision": "rejected",
+    "reason": "Hammer/neutral-grip variation is material and is not established by the generic decline dumbbell press asset."
+  },
+  {
+    "pt650Id": "0320",
+    "pt650Name": "dumbbell incline hammer curl",
+    "sourceSlug": "incline-dumbbell-curl",
+    "decision": "rejected",
+    "reason": "Hammer grip differs from the reviewed incline dumbbell curl asset; do not collapse grip-specific exercises."
+  },
+  {
+    "pt650Id": "0321",
+    "pt650Name": "dumbbell incline hammer press",
+    "sourceSlug": "incline-dumbbell-press",
+    "decision": "rejected",
+    "reason": "Hammer/neutral grip is a material variation not represented by the generic incline press mapping."
+  },
+  {
+    "pt650Id": "0324",
+    "pt650Name": "dumbbell incline palm-in press",
+    "sourceSlug": "incline-dumbbell-press",
+    "decision": "rejected",
+    "reason": "Palm-in grip is a material variation not represented by the generic incline press mapping."
+  },
+  {
+    "pt650Id": "1283",
+    "pt650Name": "dumbbell incline press on exercise ball",
+    "sourceSlug": "incline-dumbbell-press",
+    "decision": "rejected",
+    "reason": "PT650 uses an exercise ball while the source asset uses an incline bench; support/equipment semantics differ."
+  },
+  {
+    "pt650Id": "3662",
+    "pt650Name": "pike-to-cobra push-up",
+    "sourceSlug": "pike-push-up",
+    "decision": "rejected",
+    "reason": "PT650 is a pike-to-cobra transition sequence; the source asset represents only the pike push-up."
+  }
+])

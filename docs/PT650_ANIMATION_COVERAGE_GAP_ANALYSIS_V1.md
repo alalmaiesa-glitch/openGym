@@ -2,32 +2,32 @@
 
 Status: **implemented**
 
-This baseline measures real renderable animation coverage after Workout Guide Deferred Visual Review V2.1. It uses the provider resolver rather than raw asset counts, so higher-priority providers win exactly as they do at runtime.
+This baseline measures real renderable animation coverage after Workout Guide Semantic Alias Matching V3. It uses the provider resolver rather than raw asset counts, so higher-priority providers win exactly as they do at runtime.
 
 ## Baseline
 
 - PT650 catalogue: **1,327 exercises** = 1,324 imported catalogue exercises + 3 PT650-native exercises.
-- Resolved animation coverage: **51 exercises**.
-- Uncovered: **1,276 exercises**.
-- Coverage: **3.84%**.
+- Resolved animation coverage: **62 exercises**.
+- Uncovered: **1,265 exercises**.
+- Coverage: **4.67%**.
 
 Selected runtime providers:
 
 - PT650 / OpenGym3D: **6**
 - PT650 Authored SVG: **4**
-- Workout Guide: **41**
+- Workout Guide: **52**
 
-Workout Guide contains 42 mapped exercises, but `3360` bear crawl resolves to the higher-priority OpenGym3D provider. This is expected and proves that raw map count is not the same as runtime-selected coverage.
+Workout Guide contains 53 mapped exercises, but `3360` bear crawl resolves to the higher-priority OpenGym3D provider. This is expected and proves that raw map count is not the same as runtime-selected coverage.
 
 ## Largest body-part gaps
 
 | Body part | Missing |
 | --- | ---: |
-| upper arms | 287 |
-| upper legs | 206 |
-| back | 192 |
+| upper arms | 284 |
+| upper legs | 204 |
+| back | 190 |
 | waist | 158 |
-| chest | 155 |
+| chest | 151 |
 | shoulders | 133 |
 | lower legs | 59 |
 | lower arms | 36 |
@@ -39,10 +39,10 @@ Workout Guide contains 42 mapped exercises, but `3360` bear crawl resolves to th
 
 | Equipment | Missing |
 | --- | ---: |
-| body weight | 298 |
-| dumbbell | 287 |
-| cable | 154 |
-| barbell | 150 |
+| body weight | 297 |
+| dumbbell | 286 |
+| cable | 148 |
+| barbell | 147 |
 | leverage machine | 80 |
 | band | 54 |
 | smith machine | 48 |
@@ -72,3 +72,10 @@ The next expansion must be **semantic alias matching**, with these gates:
 5. preserve provider precedence and source/licence provenance.
 
 The baseline is executable in `pt650-animation-coverage.js` and locked by `pt650-animation-coverage.test.js`. Any future expansion changes the baseline intentionally rather than silently.
+
+
+## Semantic Alias Matching V3
+
+V3 adds **11 reviewed aliases / 33 SVG frames** after movement, equipment, target-muscle and visual checks. Workout Guide local coverage is now **53 exercises / 159 SVG frames**; **52** are selected at runtime because bear crawl continues to resolve to higher-priority OpenGym3D.
+
+The semantic candidate generator is intentionally not an auto-ingest path. High-scoring false positives were observed and explicitly blocked, including neutral-grip ambiguity, hammer/palm-in grip variants, exercise-ball support changes and pike-to-cobra versus pike-only movement.

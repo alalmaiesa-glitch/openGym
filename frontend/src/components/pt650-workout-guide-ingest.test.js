@@ -4,25 +4,29 @@ import { WORKOUT_GUIDE_ASSETS } from './pt650-animation-assets.js'
 import {
   WORKOUT_GUIDE_V2_ACCEPTED,
   WORKOUT_GUIDE_V21_ACCEPTED,
+  WORKOUT_GUIDE_V3_ACCEPTED,
   WORKOUT_GUIDE_EXCLUDED,
+  WORKOUT_GUIDE_V3_BLOCKED_ALIASES,
 } from './pt650-workout-guide-review.js'
 import { animationAssetFor, animationCandidatesFor } from './pt650-animation-provider.js'
 
 const V1_IDS = Object.freeze(["0289","0405","0178","0293","0652","1326","0868","0472","0308","0251","0162","0499"])
 const V2_IDS = Object.freeze(["0095","0406","1409","1459","0549","0514","0872","0687","0630","0276","0282","0832","0846","0407","0493","0283","0279","3294","0471","1489","3561","3360","1471","1160","1511","0811","0688"])
 const V21_IDS = Object.freeze(["0017","0841","2612"])
-const EXPECTED_IDS = Object.freeze([...V1_IDS, ...V2_IDS, ...V21_IDS])
+const V3_IDS = Object.freeze(["0171","0318","0861","0030","0033","0047","0165","0168","0196","0238","1311"])
+const EXPECTED_IDS = Object.freeze([...V1_IDS, ...V2_IDS, ...V21_IDS, ...V3_IDS])
 
-describe('PT650 Workout Guide Controlled Ingest V1 + Expansion V2 + Visual Review V2.1', () => {
+describe('PT650 Workout Guide reviewed ingest through Semantic Alias V3', () => {
   it('contains only reviewed local mappings', () => {
     expect(Object.keys(WORKOUT_GUIDE_ASSETS).sort()).toEqual([...EXPECTED_IDS].sort())
     expect(V1_IDS).toHaveLength(12)
     expect(V2_IDS).toHaveLength(27)
     expect(V21_IDS).toHaveLength(3)
-    expect(EXPECTED_IDS).toHaveLength(42)
+    expect(V3_IDS).toHaveLength(11)
+    expect(EXPECTED_IDS).toHaveLength(53)
   })
 
-  it('keeps each asset bound to the exact PT650 exercise name reviewed at ingest', () => {
+  it('keeps each asset bound to the exact PT650 exercise identity reviewed at ingest', () => {
     for (const [id, asset] of Object.entries(WORKOUT_GUIDE_ASSETS)) {
       expect(EXIDX[id]?.n).toBe(asset.pt650ExerciseName)
       expect(asset.assetStatus).toBe('ready')
@@ -44,27 +48,41 @@ describe('PT650 Workout Guide Controlled Ingest V1 + Expansion V2 + Visual Revie
     }
   })
 
-  it('records every V2 acceptance and keeps final excluded candidates out', () => {
+  it('keeps hard excluded candidates out', () => {
     expect(WORKOUT_GUIDE_V2_ACCEPTED.map(x => x.pt650Id).sort()).toEqual([...V2_IDS].sort())
     for (const row of WORKOUT_GUIDE_EXCLUDED) expect(WORKOUT_GUIDE_ASSETS[row.pt650Id]).toBeUndefined()
     expect(WORKOUT_GUIDE_EXCLUDED.find(x => x.pt650Id === '0860')?.reason).toMatch(/triceps.*glutes/i)
     expect(WORKOUT_GUIDE_EXCLUDED.find(x => x.pt650Id === '0284')?.reason).toMatch(/partner-loaded.*body-weight/i)
   })
 
-  it('locks V2.1 visual-review decisions and evidence', () => {
+  it('locks V2.1 visual-review decisions', () => {
     expect(WORKOUT_GUIDE_V21_ACCEPTED.map(x => x.pt650Id).sort()).toEqual([...V21_IDS].sort())
     for (const id of V21_IDS) {
       const asset = WORKOUT_GUIDE_ASSETS[id]
       expect(asset.matchReview).toBe('accepted-v2.1')
       expect(asset.matchConfidence).toBe('high')
       expect(asset.visualReview).toMatch(/Accepted V2\.1/)
+    }
+  })
+
+  it('locks V3 semantic aliases and keeps blocked alias pairs from leaking in', () => {
+    expect(WORKOUT_GUIDE_V3_ACCEPTED.map(x => x.pt650Id).sort()).toEqual([...V3_IDS].sort())
+    for (const id of V3_IDS) {
+      const asset = WORKOUT_GUIDE_ASSETS[id]
+      expect(asset.matchReview).toBe('accepted-v3')
+      expect(asset.matchConfidence).toBe('high')
+      expect(asset.aliasReview).toBeTruthy()
       expect(animationCandidatesFor(id).some(candidate => candidate.provider === 'workout_guide' && candidate.available)).toBe(true)
     }
-    expect(WORKOUT_GUIDE_ASSETS['0284']).toBeUndefined()
+    for (const row of WORKOUT_GUIDE_V3_BLOCKED_ALIASES) {
+      expect(WORKOUT_GUIDE_ASSETS[row.pt650Id]?.sourceSlug).not.toBe(row.sourceSlug)
+    }
+    expect(WORKOUT_GUIDE_ASSETS['0651']).toBeUndefined()
   })
 
   it('keeps existing higher-priority PT650 media behavior', () => {
     expect(animationAssetFor('0662')?.provider).toBe('pt650_opengym3d')
     expect(animationAssetFor('0025')?.provider).toBe('pt650_authored_svg')
+    expect(animationAssetFor('3360')?.provider).toBe('pt650_opengym3d')
   })
 })
