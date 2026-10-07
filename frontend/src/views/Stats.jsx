@@ -142,7 +142,7 @@ function MuscleBalance({ S }) {
   const max = worked.length ? load[worked[0]] : 0
   const sets = m => fmtNum(Math.round((load[m] || 0) * 10) / 10)
 
-  return <div className="card">
+  return <div className="card pt650-progress-card pt650-muscle-card">
     <Segmented className="seg-range" value={view} onChange={setView}
       options={[{ value: 'balance', label: t('Muscle balance') }, { value: 'fatigue', label: t('Fatigue') }, { value: 'strength', label: t('Strength') }]} />
     {view === 'balance' ? <>
@@ -252,7 +252,7 @@ function EffortCard({ S }) {
   // Bins run hardest-first in both scales: RIR 0 and RPE 10 are the same set.
   const binLabel = b => kind === 'rpe' ? (b.tail ? '≤ 6' : String(10 - b.rir)) : (b.tail ? b.rir + '+' : String(b.rir))
 
-  return <div className="card">
+  return <div className="card pt650-progress-card pt650-effort-card">
     <h2>{t('Effort')} <span className="dim" style={{ textTransform: 'none', letterSpacing: 0 }}>· {t('how close to failure')}</span></h2>
     <Segmented className="seg-range" value={win} onChange={setWin}
       options={[{ value: 30, label: statsPeriodLabel('30d', lang) }, { value: 90, label: statsPeriodLabel('90d', lang) }, { value: 365, label: statsPeriodLabel('1y', lang) }, { value: 0, label: t('All') }]} />
@@ -452,11 +452,11 @@ export default function Stats() {
   if (showE1) exOpts.push({ value: 'e1rm', label: t('Est. 1RM') })
   if (showEff) exOpts.push({ value: 'effort', label: t('Effort') })
 
-  return <>
-    <div className="hdr"><div><h1>{t('Stats')}</h1><div className="sub">{t('Progress & history')}</div></div>
+  return <div className="pt650-progress-v4">
+    <div className="hdr pt650-progress-head"><div><h1>{t('Stats')}</h1><div className="sub">{t('Progress & history')}</div></div>
       <button className="iconbtn" onClick={() => nav('/history')} aria-label={t('History')}><Icon name="history" /></button></div>
 
-    <div className="tiles">
+    <div className="tiles pt650-progress-metrics">
       <div className="tile"><div className="l"><Icon name="dumbbell" />{t('Workouts')}</div><div className="v">{workouts.length}</div></div>
       <div className="tile"><div className="l"><Icon name="calendar" />{t('This month')}</div><div className="v">{monthW}</div></div>
       <div className="tile"><div className="l"><Icon name="flame" />{t('Week streak')}</div><div className="v">{streakWeeks(S)}</div></div>
@@ -464,7 +464,7 @@ export default function Stats() {
 
     </div>
 
-    <div className="card">
+    <div className="card pt650-progress-card pt650-activity-card">
       <h2>{t('Activity — last 12 months')}</h2>
       <Heatmap
         S={S}
@@ -475,15 +475,15 @@ export default function Stats() {
     </div>
 
     {workouts.length > 0 && <MuscleBalance S={S} />}
-    {workouts.length > 0 && <div className="card row between" style={{ alignItems: 'center', gap: 12 }}>
+    {workouts.length > 0 && <div className="card row between pt650-progress-card pt650-structural-card" style={{ alignItems: 'center', gap: 12 }}>
       <div style={{ minWidth: 0 }}><h2 style={{ margin: 0 }}>{t('Structural balance')}</h2>
         <div className="muted small" style={{ marginTop: 4 }}>{t('See which lift is holding back the rest.')}</div></div>
       <Button size="sm" variant="tinted" trailingIcon="chevronRight" style={{ flexShrink: 0 }} onClick={() => nav('/structural-balance')}>{t('Open')}</Button>
     </div>}
     {hasEffort(S) && <EffortCard S={S} />}
 
-    <div className="cols">
-      <div className="card">
+    <div className="cols pt650-progress-cols">
+      <div className="card pt650-progress-card pt650-weight-progress-card">
         <div className="row between bw-head" style={{ marginBottom: 8 }}>
           <h2 style={{ margin: 0 }}>{t('Body weight')}</h2>
           <div className="row" style={{ gap: 8 }}>
@@ -500,7 +500,7 @@ export default function Stats() {
         </div>}
       </div>
 
-      <div className="card">
+      <div className="card pt650-progress-card pt650-exercise-progress-card">
         <h2>{t('Exercise progress')}</h2>
         {exHist.length ? <>
           <div className="sect-b" style={{ marginBottom: 10 }}>
@@ -535,12 +535,12 @@ export default function Stats() {
       </div>
     </div>
 
-    {workouts.length > 0 && <>
+    {workouts.length > 0 && <section className="pt650-recent-progress">
       <div className="row between" style={{ marginBottom: 10 }}>
         <h4 className="sec" style={{ margin: 0 }}>{t('Recent workouts')}</h4>
         <Button size="sm" variant="ghost" trailingIcon="chevronRight" onClick={() => nav('/history')}>{t('All')} {workouts.length}</Button>
       </div>
       <div className="list">{[...workouts].reverse().slice(0, 6).map(w => <WorkoutRow key={w.id} w={w} onClick={() => workoutDetailSheet(w)} />)}</div>
-    </>}
-  </>
+    </section>}
+  </div>
 }
