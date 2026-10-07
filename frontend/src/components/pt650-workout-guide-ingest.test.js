@@ -184,9 +184,10 @@ describe('PT650 Workout Guide reviewed ingest through Semantic Alias V3.5', () =
     expect(WORKOUT_GUIDE_ASSETS['0123']).toBeUndefined()
   })
 
-  it('keeps existing higher-priority PT650 media behavior', () => {
+  it('keeps modern provider precedence after legacy SVG retirement', () => {
     expect(animationAssetFor('0662')?.provider).toBe('pt650_opengym3d')
-    expect(animationAssetFor('0025')?.provider).toBe('pt650_authored_svg')
+    expect(animationAssetFor('0025')).toBeNull()
+    expect(animationAssetFor('0043')?.provider).toBe('workout_guide')
     expect(animationAssetFor('3360')?.provider).toBe('pt650_opengym3d')
   })
 })
