@@ -46,7 +46,7 @@ function StartChooser() {
   const todayOvr = S.dayPlan[todayISO()] !== undefined
   const idSet = new Set(todayIds)
   const others = S.routines.filter(r => !idSet.has(r.id))
-  return <div className="narrow">
+  return <div className="narrow pt650-workout-v3" data-workout-view={listMode ? (dense ? 'compact' : 'list') : 'cards'}>
     <div className="hdr"><div><h1>{t('Start workout')}</h1><div className="sub">{t(DAYN[new Date().getDay()])} — {todayRoutines.length ? t('today is {0}', todayName) : t('rest day, but no one’s stopping you')}</div></div></div>
     {todayRoutines.length > 0 && <div className="card" style={{ borderColor: 'var(--acc)' }}>
       <h2 className="accent">{t("Today's plan")}{todayOvr ? ' · ' + t('rescheduled') : ''}</h2>
@@ -497,7 +497,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
   )
   return <>
     {!dense && <Media ex={ex} key={entry.id} compact={compact} minimizable />}
-    <div className="row between" style={{ marginBottom: 6 }}>
+    <div className="row between workout-exercise-head" style={{ marginBottom: 6 }}>
       <div style={{ fontSize: (compact || dense) ? 17 : 20, fontWeight: 600, letterSpacing: '-.02em', lineHeight: 1.2 }} className={exerciseNameClass(ex)}>{exerciseNameFor(ex)}</div>
       <div className="row" style={{ gap: 2, flex: 'none' }}>
         {entry.note && <button className="iconbtn" aria-label={t('Note')} title={t('Note')} style={{ color: 'var(--acc)' }}
@@ -521,7 +521,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
     {/* compact view drops everything from here to the sets card — it is all still on the ⋯ menu
         (note, details, history, bar weight, progression) or is display-only (tags, "last time"). */}
     {!dense && <>
-    <div className="row" style={{ gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
+    <div className="row workout-exercise-tags" style={{ gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
       {cardio && <span className="tag acc"><Icon name="figureRun" />{t('Cardio')}</span>}
       {/* A unilateral exercise is logged per side directly (the L/R rows below), so the old
           "{n} per side" chip — which halved the combined total for display — is gone: the split
@@ -550,7 +550,7 @@ function ExerciseBlock({ entryIdx, compact, dense, editing, onToggle, onToggleSi
       <span><strong>{t(guidance.policyLabel)}</strong> · {t(...guidance.why)}</span>
     </button>}
     </>}
-    <div className="card" style={{ marginTop: 10, marginBottom: 0 }}>
+    <div className="card workout-sets-card" style={{ marginTop: 10, marginBottom: 0 }}>
       {/* the header carries the same eff3/timed sizing as the rows, or the labels drift off their
           columns; over L/R rows it also has to skip the side badge that sits in front of the weight cell */}
       <div className={'sethead' + (col3 ? ' eff3' : '') + (timed ? ' timed' : '') + (perSide ? ' per-side' : '') + (wc.steppers ? '' : ' plain')}><span className="n-sp" /><span className="w-sp">{col1.hd}</span>{col2 && <span className="r-sp">{col2.hd}</span>}{col3 && <span className="eff-sp">{col3.hd}</span>}{timed && <span className="ck-sp" />}<span className="ck-sp" /></div>
@@ -1249,11 +1249,11 @@ function ActiveWorkout() {
     {/* In list mode the whole session scrolls under the header, so the header (name, clock,
         set counter, discard/finish, progress) stays pinned — the one thing you want in view
         while you are somewhere in the middle of a long stack. Cards mode never scrolls far. */}
-    <div className={'whdr' + (listMode ? ' stick' : '')} ref={hdrRef}>
+    <div className={'whdr pt650-workout-head' + (listMode ? ' stick' : '')} ref={hdrRef}>
     <div className="hdr">
       <button className="iconbtn" aria-label={t(editing ? 'Close editor' : 'Discard')} onClick={() => editing ? exitWorkoutEdit() : confirmSheet({ title: t('Discard workout?'), message: t('The sets you logged in this session will be lost.'), confirmText: t('Discard'), danger: true, onConfirm: () => { update(s => { s.active = null }); stopRest(); stopWork(); nav('/home') } })}><Icon name="xmark" /></button>
-      <div style={{ textAlign: 'center' }}><div style={{ fontWeight: 600 }}>{A.name}</div><div className="sub">{(A.backfill || editing) ? fmtDate(A.d, true) : <Elapsed start={A.start} />} · {t('{0} sets', done + '/' + total)}</div></div>
-      <div className="row" style={{ gap: 4, flex: 'none' }}>
+      <div className="pt650-session-identity"><strong>{A.name}</strong><span>{(A.backfill || editing) ? fmtDate(A.d, true) : <Elapsed start={A.start} />} · {t('{0} sets', done + '/' + total)}</span></div>
+      <div className="row pt650-session-actions" style={{ gap: 4, flex: 'none' }}>
         <button className="iconbtn" aria-label={t('Workout view')} title={t('Workout view')} onClick={openViewMenu}><Icon name="more" /></button>
         <button className="iconbtn" style={{ color: 'var(--acc)' }} aria-label={t(editing ? 'Save changes' : 'Finish')} onClick={finishWorkout}><Icon name="check" /></button>
       </div>
@@ -1300,7 +1300,7 @@ function ActiveWorkout() {
         })}
       </div>
     ) : <>
-      <div className="muted small" style={{ marginBottom: 6 }}>{isSuperset ? t('Superset {0} / {1}', unitIdx + 1, units.length) : t('Exercise {0} / {1}', unitIdx + 1, units.length)}</div>
+      <div className="muted small workout-unit-counter" style={{ marginBottom: 6 }}>{isSuperset ? t('Superset {0} / {1}', unitIdx + 1, units.length) : t('Exercise {0} / {1}', unitIdx + 1, units.length)}</div>
       <SwipeCards index={unitIdx} count={units.length} revision={A}
         timerKey={timer && `${timer.endsAt}:${timer.forIdx ?? ''}`} workKey={work?.endsAt}
         onNavigate={navigateUnit} renderPreview={direction => {
@@ -1342,13 +1342,13 @@ function ActiveWorkout() {
     </>) : <div className="empty"><div className="ico"><Icon name="shuffle" /></div>{t('Freestyle workout — add your first exercise.')}</div>}
 
     <div style={{ height: 12 }} />
-    {!listMode && <div className="row">
+    {!listMode && <div className="row workout-card-nav">
       <Button icon="chevronLeft" disabled={unitIdx <= 0} onClick={() => navigateUnit(-1)}>{t('Prev')}</Button>
       <Button trailingIcon="chevronRight" disabled={unitIdx < 0 || unitIdx >= units.length - 1} onClick={() => navigateUnit(1)}>{t('Next')}</Button>
     </div>}
     {!listMode && <div style={{ height: 10 }} />}
     {wc.exerciseButtons && listMode && A.entries.length > 0 && <div className="muted small" style={{ marginBottom: 6 }}>{t('Move, swap and remove below act on the exercise marked {0}.', t('Current'))}</div>}
-    <Button onClick={() => exercisePicker((ex, quick) => {
+    <div className="workout-add-exercise"><Button onClick={() => exercisePicker((ex, quick) => {
       // A freehand add inherits the current unit's routine (its `rid`) so it lands in that
       // routine's block in a combined session and gets a real prescription; a routine-less
       // freestyle session has no `rid` to inherit. It inherits the block's `noProg` too: an
@@ -1390,7 +1390,7 @@ function ActiveWorkout() {
       if (quick) { commit(seed || defaultConfig(ex.id)); useUI.getState().toast(t('“{0}” added to {1}', exerciseNameText(ex), routine ? routine.name : t('Freestyle'))) }
       // The confirm names what it changes: this workout, never the routine behind it.
       else exConfigSheet(ex, null, commit, null, routine, seed, null, t('Add to this workout'))
-    })} icon="plus">{t('Add exercise')}</Button>
+    })} icon="plus">{t('Add exercise')}</Button></div>
     {wc.exerciseButtons && A.entries.length > 0 && <>
       <div style={{ height: 6 }} />
       <div className="row">
@@ -1412,7 +1412,7 @@ function ActiveWorkout() {
     <div style={{ height: 10 }} />
     {/* Wrapping up is when you know how the session went, so the note sits with the finish
         button rather than somewhere in the header. */}
-    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
+    <div className="workout-session-note">
       <Button size="sm" icon="pencil" variant={A.note ? 'tinted' : undefined} onClick={sessionNoteSheet}>
         {A.note ? t('Edit session note') : t('Add session note')}
       </Button>
@@ -1420,7 +1420,7 @@ function ActiveWorkout() {
     {(() => {
       const exDone = A.entries.filter(e => e.sets.length && e.sets.every(s => s.done)).length
       const allDone = A.entries.length > 0 && exDone === A.entries.length
-      return <button className={allDone ? 'btn primary' : 'btn ghost dim'} onClick={finishWorkout}>
+      return <button className={'workout-finish ' + (allDone ? 'btn primary' : 'btn ghost dim')} onClick={finishWorkout}>
         {editing ? t('Save changes') : allDone ? t('Finish workout') : t('Finish workout early · {0} exercises', exDone + '/' + A.entries.length)}
       </button>
     })()}
