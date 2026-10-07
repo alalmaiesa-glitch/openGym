@@ -2881,6 +2881,13 @@ body.chips-dragging *{cursor:inherit}
   white-space:normal;overflow-wrap:break-word;
 }
 .pt650-today-card .ss{margin-top:6px;font-size:12px;color:var(--label-3)}
+.pt650-today-actions{display:flex;align-items:center;gap:8px;flex:none}
+.pt650-today-state{
+  padding:4px 7px;border-radius:7px;background:color-mix(in srgb,var(--orange) 12%,transparent);
+  color:var(--orange);font-size:10px;font-weight:700;letter-spacing:.02em;text-transform:none;
+}
+.pt650-today-state.ready{background:color-mix(in srgb,var(--pt-neon) 10%,transparent);color:var(--pt-neon)}
+.pt650-today-state.done{background:color-mix(in srgb,var(--green) 10%,transparent);color:var(--green)}
 .pt650-today-go{
   width:48px;height:48px;border-radius:15px;display:grid;place-items:center;flex:none;
   background:var(--pt-neon);color:#080a07;
