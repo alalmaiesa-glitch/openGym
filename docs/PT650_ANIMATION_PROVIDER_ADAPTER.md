@@ -20,7 +20,7 @@ Highest eligible mapped provider wins:
 
 1. `exercise_animatic` — priority 500 — planned until licensed/imported.
 2. `pt650_opengym3d` — priority 400 — active.
-3. `pt650_authored_svg` — priority 300 — active.
+3. `pt650_authored_svg` — priority 300 — **retired from public rendering**; historical registry retained for provenance/replacement.
 4. `workout_guide` — priority 200 — active partial fallback (Semantic Alias Matching V3.5).
 5. `gymvisual` — priority 100 — planned selective gap fill.
 
@@ -58,7 +58,7 @@ asset
 V1 supports these renderer types without page changes:
 
 - `three` — existing PT650/OpenGym3D GLB runtime.
-- `svg` — existing PT650-authored SVG motion.
+- `svg` — historical PT650-authored SVG motion; **not exposed by the public renderer**.
 - `video` — normalized MP4/WebM loop (future Exercise Animatic / licensed assets).
 - `frame-sequence` — ordered image/SVG frames (Workout Guide fallback).
 
