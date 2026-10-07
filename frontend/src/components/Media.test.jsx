@@ -25,7 +25,7 @@ vi.mock('../store/useStore.js', () => {
   return { useStore }
 })
 
-const EX = { id: '0025', n: 'barbell bench press', gif: 'legacy.gif', img: 'legacy.jpg' }
+const EX = { id: '0043', n: 'barbell full squat', gif: 'legacy.gif', img: 'legacy.jpg' }
 
 let host, root
 beforeEach(() => {
@@ -44,7 +44,8 @@ const mount = props => act(() => root.render(<Media ex={EX} {...props} />))
 describe('Media gifSize', () => {
   it('renders the full animation by default and toggles to mini in the workout', () => {
     mount({ minimizable: true })
-    expect(host.querySelector('.pt650-anim-stage[data-pt650-animation="bench-press-v1"]')).toBeTruthy()
+    expect(host.querySelector('.pt650-provider-frames')).toBeTruthy()
+    expect(host.querySelector('.exmedia')?.dataset.pt650Provider).toBe('workout_guide')
     expect(host.querySelector('.exmedia.mini')).toBeFalsy()
     act(() => { host.querySelector('.giftoggle').click() })
     expect(mocks.S.gifSize).toBe('mini')
@@ -63,21 +64,35 @@ describe('Media gifSize', () => {
   it("'off' only applies to the workout — the detail sheet (not minimizable) still shows media", () => {
     mocks.S = { gifSize: 'off' }
     mount({})
-    expect(host.querySelector('.pt650-anim-stage[data-pt650-animation="bench-press-v1"]')).toBeTruthy()
+    expect(host.querySelector('.pt650-provider-frames')).toBeTruthy()
+    expect(host.querySelector('.exmedia')?.dataset.pt650Provider).toBe('workout_guide')
   })
 
   it('treats a legacy/unknown value as full', () => {
     mocks.S = { gifSize: 'huge' }
     mount({ minimizable: true })
-    expect(host.querySelector('.pt650-anim-stage[data-pt650-animation="bench-press-v1"]')).toBeTruthy()
+    expect(host.querySelector('.pt650-provider-frames')).toBeTruthy()
+    expect(host.querySelector('.exmedia')?.dataset.pt650Provider).toBe('workout_guide')
     expect(host.querySelector('.exmedia.mini')).toBeFalsy()
   })
 
-  it('renders no generic built-in demo when an exercise-specific animation is not approved yet', () => {
+  it('uses a clean pending state when a detail has no modern approved animation', () => {
     act(() => root.render(<Media ex={{ id: '0026', n: 'unmodelled exercise', img: 'legacy.jpg', gif: 'legacy.gif' }} />))
-    expect(host.querySelector('.exmedia')).toBeNull()
+    expect(host.querySelector('.pt650-media-pending')).toBeTruthy()
     expect(host.querySelector('.pt650-anim-stage')).toBeNull()
     expect(host.querySelector('img')).toBeNull()
+  })
+
+  it('never renders a retired authored SVG figure in exercise detail', () => {
+    act(() => root.render(<Media ex={{ id: '0025', n: 'barbell bench press', img: 'legacy.jpg', gif: 'legacy.gif' }} />))
+    expect(host.querySelector('.pt650-media-pending')).toBeTruthy()
+    expect(host.querySelector('.pt650-anim-svg')).toBeNull()
+    expect(host.querySelector('[data-pt650-provider="pt650_authored_svg"]')).toBeNull()
+  })
+
+  it('does not add pending placeholders inside the active workout layout', () => {
+    act(() => root.render(<Media ex={{ id: '0025', n: 'barbell bench press' }} minimizable />))
+    expect(host.innerHTML).toBe('')
   })
 })
 
