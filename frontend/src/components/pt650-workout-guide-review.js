@@ -1055,3 +1055,181 @@ export const WORKOUT_GUIDE_V33_BLOCKED_ALIASES = Object.freeze([
     "reason": "Wide-grip geometry is a material pull-up variation and must not collapse to a generic grip asset."
   }
 ])
+
+export const WORKOUT_GUIDE_V34_ACCEPTED = Object.freeze([
+  {
+    "pt650Id": "0294",
+    "pt650Name": "dumbbell biceps curl",
+    "sourceSlug": "bicep-curl",
+    "sourceEquipment": "Dumbbell",
+    "sourcePrimaryMuscle": "Biceps",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "dumbbell-v3.4",
+    "reason": "PT650 describes the standard standing two-dumbbell supinated biceps curl; source frames show the same standing curl with matching equipment and arm path."
+  },
+  {
+    "pt650Id": "0317",
+    "pt650Name": "dumbbell incline curl v. 2",
+    "sourceSlug": "incline-dumbbell-curl",
+    "sourceEquipment": "Dumbbell",
+    "sourcePrimaryMuscle": "Biceps",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "dumbbell-v3.4",
+    "reason": "PT650 describes the same seated incline-bench dumbbell curl already visually verified for this source slug; no grip or support difference is introduced."
+  },
+  {
+    "pt650Id": "0431",
+    "pt650Name": "dumbbell step-up",
+    "sourceSlug": "step-up",
+    "sourceEquipment": "Dumbbell",
+    "sourcePrimaryMuscle": "Quads",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "dumbbell-v3.4",
+    "reason": "Same dumbbell step-up onto a bench/box with one foot fully supported and a controlled step-down."
+  },
+  {
+    "pt650Id": "1760",
+    "pt650Name": "dumbbell goblet squat",
+    "sourceSlug": "goblet-squat",
+    "sourceEquipment": "Dumbbell",
+    "sourcePrimaryMuscle": "Quads",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "dumbbell-v3.4",
+    "reason": "Same goblet squat with one dumbbell held vertically at the chest and a standard squat path."
+  },
+  {
+    "pt650Id": "0334",
+    "pt650Name": "dumbbell lateral raise",
+    "sourceSlug": "lateral-raise",
+    "sourceEquipment": "Dumbbell",
+    "sourcePrimaryMuscle": "Shoulders",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "dumbbell-v3.4",
+    "reason": "Same standing bilateral dumbbell lateral raise to shoulder height with a slight elbow bend."
+  },
+  {
+    "pt650Id": "0310",
+    "pt650Name": "dumbbell front raise",
+    "sourceSlug": "front-raise",
+    "sourceEquipment": "Dumbbell",
+    "sourcePrimaryMuscle": "Shoulders",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "dumbbell-v3.4",
+    "reason": "Same standing bilateral dumbbell front raise to shoulder level with straight arms and no alternate or seated variation."
+  },
+  {
+    "pt650Id": "2292",
+    "pt650Name": "dumbbell rear delt raise",
+    "sourceSlug": "rear-delt-fly",
+    "sourceEquipment": "Dumbbell",
+    "sourcePrimaryMuscle": "Rear Delts",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "dumbbell-v3.4",
+    "reason": "PT650 uses a standing hip hinge and raises both dumbbells laterally for the rear delts; source rear-delt fly frames show the same unsupported bent-over pattern."
+  },
+  {
+    "pt650Id": "0410",
+    "pt650Name": "dumbbell single leg split squat",
+    "sourceSlug": "bulgarian-split-squat",
+    "sourceEquipment": "Dumbbell",
+    "sourcePrimaryMuscle": "Quads",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "dumbbell-v3.4",
+    "reason": "Although PT650 calls it single-leg split squat, its instructions explicitly elevate the rear foot on a bench; that is the same dumbbell Bulgarian split squat shown by the source."
+  }
+])
+
+export const WORKOUT_GUIDE_V34_BLOCKED_ALIASES = Object.freeze([
+  {
+    "pt650Id": "0292",
+    "pt650Name": "dumbbell one arm bent-over row",
+    "sourceSlug": "one-arm-dumbbell-row",
+    "decision": "rejected",
+    "reason": "PT650 describes an unsupported hip-hinged one-arm row; source frames brace the free hand and knee on a bench. Support geometry differs."
+  },
+  {
+    "pt650Id": "0313",
+    "pt650Name": "dumbbell hammer curl",
+    "sourceSlug": "hammer-curl",
+    "decision": "rejected",
+    "reason": "PT650 instructions rotate the palms forward before curling, conflicting with the neutral grip that defines a hammer curl. The PT650 record is internally inconsistent."
+  },
+  {
+    "pt650Id": "1677",
+    "pt650Name": "dumbbell seated bicep curl",
+    "sourceSlug": "bicep-curl",
+    "decision": "rejected",
+    "reason": "PT650 is seated on a bench; source bicep-curl frames are standing. Body position differs."
+  },
+  {
+    "pt650Id": "1735",
+    "pt650Name": "dumbbell lying single extension",
+    "sourceSlug": "single-arm-dumbbell-tricep-extension",
+    "decision": "rejected",
+    "reason": "PT650 is a lying single-arm extension toward the forehead; source is a standing overhead single-arm extension. Position and elbow path differ."
+  },
+  {
+    "pt650Id": "2137",
+    "pt650Name": "dumbbell arnold press",
+    "sourceSlug": "arnold-press",
+    "decision": "rejected",
+    "reason": "PT650 explicitly performs the Arnold press seated with back support; source frames depict a standing Arnold press."
+  },
+  {
+    "pt650Id": "0287",
+    "pt650Name": "dumbbell arnold press v. 2",
+    "sourceSlug": "arnold-press",
+    "decision": "rejected",
+    "reason": "Same seated-with-back-support mismatch as PT650 2137 versus the standing source asset."
+  },
+  {
+    "pt650Id": "0333",
+    "pt650Name": "dumbbell kickback",
+    "sourceSlug": "tricep-kickback",
+    "decision": "rejected",
+    "reason": "PT650 uses both arms unsupported in a hip hinge; source is a single-arm kickback with the opposite arm supported on a bench."
+  },
+  {
+    "pt650Id": "2133",
+    "pt650Name": "farmers walk",
+    "sourceSlug": "farmer-carry",
+    "decision": "held",
+    "reason": "Movement and equipment appear equivalent, but PT650 classifies quadriceps as the target while the source classifies forearms/upper back/core. Hold until the PT650 exercise taxonomy is normalized."
+  },
+  {
+    "pt650Id": "3545",
+    "pt650Name": "dumbbell incline alternate press",
+    "sourceSlug": "incline-dumbbell-press",
+    "decision": "rejected",
+    "reason": "PT650 requires alternating arms; the source represents the standard simultaneous incline dumbbell press."
+  },
+  {
+    "pt650Id": "1624",
+    "pt650Name": "dumbbell reverse bench press",
+    "sourceSlug": "dumbbell-bench-press",
+    "decision": "rejected",
+    "reason": "Reverse-grip bench pressing is a material grip variant not represented by the standard dumbbell bench press asset."
+  },
+  {
+    "pt650Id": "1743",
+    "pt650Name": "dumbbell twisting bench press",
+    "sourceSlug": "dumbbell-bench-press",
+    "decision": "rejected",
+    "reason": "PT650 includes a rotational/twisting press component that is absent from the standard source bench press."
+  },
+  {
+    "pt650Id": "0374",
+    "pt650Name": "dumbbell prone incline curl",
+    "sourceSlug": "incline-dumbbell-curl",
+    "decision": "rejected",
+    "reason": "PT650's prone incline setup is not equivalent to the source's seated/reclined incline curl posture."
+  }
+])

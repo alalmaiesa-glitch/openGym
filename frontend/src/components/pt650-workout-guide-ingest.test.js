@@ -8,11 +8,13 @@ import {
   WORKOUT_GUIDE_V31_ACCEPTED,
   WORKOUT_GUIDE_V32_ACCEPTED,
   WORKOUT_GUIDE_V33_ACCEPTED,
+  WORKOUT_GUIDE_V34_ACCEPTED,
   WORKOUT_GUIDE_EXCLUDED,
   WORKOUT_GUIDE_V3_BLOCKED_ALIASES,
   WORKOUT_GUIDE_V31_BLOCKED_ALIASES,
   WORKOUT_GUIDE_V32_BLOCKED_ALIASES,
   WORKOUT_GUIDE_V33_BLOCKED_ALIASES,
+  WORKOUT_GUIDE_V34_BLOCKED_ALIASES,
 } from './pt650-workout-guide-review.js'
 import { animationAssetFor, animationCandidatesFor } from './pt650-animation-provider.js'
 
@@ -23,7 +25,8 @@ const V3_IDS = Object.freeze(["0171","0318","0861","0030","0033","0047","0165","
 const V31_IDS = Object.freeze(["0042","0044","0074","0085","0297","0301","0314","0315","0865","1757","0475"])
 const V32_IDS = Object.freeze(["0175","0197","0585","0586","0592","0593","0594","0597","0598","0599","0605","1385"])
 const V33_IDS = Object.freeze(["3470","3699","0497","0513","1373","1377","1387","3785","0474"])
-const EXPECTED_IDS = Object.freeze([...V1_IDS, ...V2_IDS, ...V21_IDS, ...V3_IDS, ...V31_IDS, ...V32_IDS, ...V33_IDS])
+const V34_IDS = Object.freeze(["0294","0317","0431","1760","0334","0310","2292","0410"])
+const EXPECTED_IDS = Object.freeze([...V1_IDS, ...V2_IDS, ...V21_IDS, ...V3_IDS, ...V31_IDS, ...V32_IDS, ...V33_IDS, ...V34_IDS])
 
 describe('PT650 Workout Guide reviewed ingest through Semantic Alias V3', () => {
   it('contains only reviewed local mappings', () => {
@@ -35,7 +38,8 @@ describe('PT650 Workout Guide reviewed ingest through Semantic Alias V3', () => 
     expect(V31_IDS).toHaveLength(11)
     expect(V32_IDS).toHaveLength(12)
     expect(V33_IDS).toHaveLength(9)
-    expect(EXPECTED_IDS).toHaveLength(85)
+    expect(V34_IDS).toHaveLength(8)
+    expect(EXPECTED_IDS).toHaveLength(93)
   })
 
   it('keeps each asset bound to the exact PT650 exercise identity reviewed at ingest', () => {
@@ -140,6 +144,23 @@ describe('PT650 Workout Guide reviewed ingest through Semantic Alias V3', () => 
     expect(WORKOUT_GUIDE_ASSETS['0710']).toBeUndefined()
     expect(WORKOUT_GUIDE_ASSETS['0274']).toBeUndefined()
     expect(WORKOUT_GUIDE_ASSETS['0620']).toBeUndefined()
+  })
+
+  it('locks V3.4 dumbbell precision decisions', () => {
+    expect(WORKOUT_GUIDE_V34_ACCEPTED.map(x => x.pt650Id).sort()).toEqual([...V34_IDS].sort())
+    for (const id of V34_IDS) {
+      const asset = WORKOUT_GUIDE_ASSETS[id]
+      expect(asset.matchReview).toBe('accepted-v3.4')
+      expect(asset.matchConfidence).toBe('high')
+      expect(asset.aliasReview).toBeTruthy()
+      expect(animationCandidatesFor(id).some(candidate => candidate.provider === 'workout_guide' && candidate.available)).toBe(true)
+    }
+    for (const row of WORKOUT_GUIDE_V34_BLOCKED_ALIASES) {
+      expect(WORKOUT_GUIDE_ASSETS[row.pt650Id]?.sourceSlug).not.toBe(row.sourceSlug)
+    }
+    expect(WORKOUT_GUIDE_ASSETS['0292']).toBeUndefined()
+    expect(WORKOUT_GUIDE_ASSETS['0313']).toBeUndefined()
+    expect(WORKOUT_GUIDE_ASSETS['2137']).toBeUndefined()
   })
 
   it('keeps existing higher-priority PT650 media behavior', () => {

@@ -2,33 +2,33 @@
 
 Status: **implemented**
 
-This baseline measures real renderable animation coverage after Workout Guide Semantic Alias Matching V3.3. It uses the provider resolver rather than raw asset counts, so higher-priority providers win exactly as they do at runtime.
+This baseline measures real renderable animation coverage after Workout Guide Semantic Alias Matching V3.4. It uses the provider resolver rather than raw asset counts, so higher-priority providers win exactly as they do at runtime.
 
 ## Baseline
 
 - PT650 catalogue: **1,327 exercises** = 1,324 imported catalogue exercises + 3 PT650-native exercises.
-- Resolved animation coverage: **94 exercises**.
-- Uncovered: **1,233 exercises**.
-- Coverage: **7.08%**.
+- Resolved animation coverage: **102 exercises**.
+- Uncovered: **1,225 exercises**.
+- Coverage: **7.69%**.
 
 Selected runtime providers:
 
 - PT650 / OpenGym3D: **6**
 - PT650 Authored SVG: **4**
-- Workout Guide: **84**
+- Workout Guide: **92**
 
-Workout Guide contains 85 mapped exercises, but `3360` bear crawl resolves to the higher-priority OpenGym3D provider. This is expected and proves that raw map count is not the same as runtime-selected coverage.
+Workout Guide contains 93 mapped exercises, but `3360` bear crawl resolves to the higher-priority OpenGym3D provider. This is expected and proves that raw map count is not the same as runtime-selected coverage.
 
 ## Largest body-part gaps
 
 | Body part | Missing |
 | --- | ---: |
-| upper arms | 281 |
-| upper legs | 191 |
+| upper arms | 279 |
+| upper legs | 188 |
 | back | 188 |
 | waist | 153 |
 | chest | 148 |
-| shoulders | 133 |
+| shoulders | 130 |
 | lower legs | 53 |
 | lower arms | 36 |
 | cardio | 24 |
@@ -40,7 +40,7 @@ Workout Guide contains 85 mapped exercises, but `3360` bear crawl resolves to th
 | Equipment | Missing |
 | --- | ---: |
 | body weight | 286 |
-| dumbbell | 281 |
+| dumbbell | 273 |
 | cable | 146 |
 | barbell | 143 |
 | leverage machine | 70 |
@@ -102,3 +102,10 @@ The V3.2 gate treats grip, handle, pulley direction, support pad, seated/standin
 V3.3 adds **9 reviewed PT650 mappings**. Five source slugs required **15 new SVG files**; four mappings safely reuse already-pinned Workout Guide source frames. Workout Guide now maps **85 PT650 exercises** with **240 local SVG files**. Runtime selects Workout Guide for **84** because bear crawl still resolves to higher-priority OpenGym3D.
 
 Bodyweight matching deliberately treats support surface, grip width, kneeling versus full plank, suspension, leg position and multi-stage movement variants as identity. Generic push-up/pull-up/crunch assets are not reused for materially different variants.
+
+
+## Dumbbell Precision V3.4
+
+V3.4 adds **8 reviewed PT650 mappings**. Seven source slugs required **21 new SVG files**; `0317` safely reuses the already-pinned `incline-dumbbell-curl` frames. Workout Guide now maps **93 PT650 exercises** with **261 local SVG files**. Runtime selects Workout Guide for **92** because bear crawl remains on higher-priority OpenGym3D.
+
+The V3.4 gate treats seated versus standing, supported versus unsupported, unilateral versus bilateral, alternating versus simultaneous, grip rotation and bench angle as semantic identity rather than cosmetic variation.
