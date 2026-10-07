@@ -31,7 +31,7 @@ const V34_IDS = Object.freeze(["0294","0317","0431","1760","0334","0310","2292",
 const V35_IDS = Object.freeze(["0027","0032","0039","0043","0060","0080","0117","0119","0120","0121","3562"])
 const EXPECTED_IDS = Object.freeze([...V1_IDS, ...V2_IDS, ...V21_IDS, ...V3_IDS, ...V31_IDS, ...V32_IDS, ...V33_IDS, ...V34_IDS, ...V35_IDS])
 
-describe('PT650 Workout Guide reviewed ingest through Semantic Alias V3', () => {
+describe('PT650 Workout Guide reviewed ingest through Semantic Alias V3.5', () => {
   it('contains only reviewed local mappings', () => {
     expect(Object.keys(WORKOUT_GUIDE_ASSETS).sort()).toEqual([...EXPECTED_IDS].sort())
     expect(V1_IDS).toHaveLength(12)
