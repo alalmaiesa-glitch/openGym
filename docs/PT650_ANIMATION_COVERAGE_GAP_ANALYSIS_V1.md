@@ -17,7 +17,7 @@ Selected runtime providers:
 - PT650 Authored SVG: **4**
 - Workout Guide: **102**
 
-Workout Guide contains 104 mapped exercises, but `3360` bear crawl resolves to the higher-priority OpenGym3D provider. This is expected and proves that raw map count is not the same as runtime-selected coverage.
+Workout Guide contains 104 mapped exercises, but `3360` bear crawl resolves to higher-priority OpenGym3D and `0043` barbell full squat resolves to higher-priority PT650 Authored SVG. This is expected and proves that raw map count is not the same as runtime-selected coverage.
 
 ## Largest body-part gaps
 
