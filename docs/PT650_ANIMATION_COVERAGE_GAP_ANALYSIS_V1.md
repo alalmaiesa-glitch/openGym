@@ -7,15 +7,15 @@ This baseline measures real renderable animation coverage after Workout Guide Se
 ## Baseline
 
 - PT650 catalogue: **1,327 exercises** = 1,324 imported catalogue exercises + 3 PT650-native exercises.
-- Resolved animation coverage: **113 exercises**.
-- Uncovered: **1,214 exercises**.
-- Coverage: **8.52%**.
+- Resolved animation coverage: **112 exercises**.
+- Uncovered: **1,215 exercises**.
+- Coverage: **8.44%**.
 
 Selected runtime providers:
 
 - PT650 / OpenGym3D: **6**
 - PT650 Authored SVG: **4**
-- Workout Guide: **103**
+- Workout Guide: **102**
 
 Workout Guide contains 104 mapped exercises, but `3360` bear crawl resolves to the higher-priority OpenGym3D provider. This is expected and proves that raw map count is not the same as runtime-selected coverage.
 
@@ -25,7 +25,7 @@ Workout Guide contains 104 mapped exercises, but `3360` bear crawl resolves to t
 | --- | ---: |
 | upper arms | 277 |
 | back | 187 |
-| upper legs | 183 |
+| upper legs | 186 |
 | waist | 153 |
 | chest | 148 |
 | shoulders | 127 |
@@ -42,7 +42,7 @@ Workout Guide contains 104 mapped exercises, but `3360` bear crawl resolves to t
 | body weight | 286 |
 | dumbbell | 273 |
 | cable | 146 |
-| barbell | 132 |
+| barbell | 133 |
 | leverage machine | 70 |
 | band | 54 |
 | smith machine | 48 |
@@ -113,6 +113,6 @@ The V3.4 gate treats seated versus standing, supported versus unsupported, unila
 
 ## Barbell Precision V3.5
 
-V3.5 adds **11 reviewed PT650 mappings**. Eight new Workout Guide source slugs required **24 new SVG files**; `0039` safely reuses the already-pinned `front-squat` frames. Workout Guide now maps **104 PT650 exercises** with **282 local SVG files**. Runtime selects Workout Guide for **103** because bear crawl remains on higher-priority OpenGym3D.
+V3.5 adds **11 reviewed PT650 mappings**. Eight new Workout Guide source slugs required **24 new SVG files**; `0039` safely reuses the already-pinned `front-squat` frames. Workout Guide now maps **104 PT650 exercises** with **282 local SVG files**. Runtime selects Workout Guide for **102** because bear crawl and barbell full squat resolve to higher-priority PT650 providers.
 
 The V3.5 gate treats bench angle, grip orientation and width, seated versus standing posture, bar placement, unilateral versus bilateral execution, support geometry and dead-stop mechanics as semantic identity. Close-looking variants are explicitly blocked rather than collapsed into generic barbell assets.
