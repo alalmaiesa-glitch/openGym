@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useStore } from '../store/useStore.js'
 import { t } from '../lib/i18n.js'
+import { getLang } from '../lib/i18n-core.js'
 import Icon from './Icon.jsx'
 import CustomMedia, { CustomThumb } from './CustomMedia.jsx'
 import PT650AnimationProviderMedia, { providerAssetId } from './PT650AnimationProviderMedia.jsx'
@@ -8,9 +9,11 @@ import { animationCandidatesFor, hasAnimationFor } from './pt650-animation-provi
 
 // Built-in PT650 exercise instruction media never loads the inherited real-person image/GIF
 // library. The page asks the provider layer for an exercise-specific approved asset and does not
-// know whether it came from PT650/OpenGym3D, authored SVG, Workout Guide or a future licensed
-// provider. If nothing approved is ready, the detail sheet shows no demo rather than a generic
-// human figure that could be mistaken for the exercise. User-created exercises remain separate.
+// know whether it came from PT650/OpenGym3D, Workout Guide or a future licensed provider.
+// Legacy PT650 authored SVG figures are intentionally retired from public rendering. If nothing
+// modern is approved yet, the detail sheet shows a clean pending state rather than a schematic
+// human figure that could be mistaken for the final exercise animation. User-created exercises
+// remain separate.
 export default function Media(p) {
   return p.ex?.custom ? <CustomMedia {...p} /> : <BuiltinMedia {...p} />
 }
@@ -39,7 +42,17 @@ function BuiltinMedia({ ex, id, compact, minimizable }) {
   const mini = minimizable && gifSize === 'mini'
   const candidates = animationCandidatesFor(ex.id).filter(candidate => candidate.available)
   const selected = candidates[0] || null
-  if (!selected) return null
+  if (!selected) {
+    if (minimizable) return null
+    const ar = String(getLang()).toLowerCase().startsWith('ar')
+    return (
+      <div className="exmedia pt650-built-in-media pt650-media-pending" id={id} data-exercise-id={ex.id} data-pt650-media="pending">
+        <span className="pt650-media-pending-mark"><Icon name="bolt" /></span>
+        <strong>{ar ? 'الحركة قيد التحديث' : 'Movement preview being updated'}</strong>
+        <small>{ar ? 'لن نعرض رسماً تقريبيًا غير معتمد.' : 'No approximate legacy figure will be shown.'}</small>
+      </div>
+    )
+  }
 
   const toggleSize = e => {
     e.stopPropagation()
