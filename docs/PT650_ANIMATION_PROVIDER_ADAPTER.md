@@ -21,7 +21,7 @@ Highest eligible mapped provider wins:
 1. `exercise_animatic` — priority 500 — planned until licensed/imported.
 2. `pt650_opengym3d` — priority 400 — active.
 3. `pt650_authored_svg` — priority 300 — active.
-4. `workout_guide` — priority 200 — registered fallback, awaiting controlled ingest.
+4. `workout_guide` — priority 200 — active partial fallback (Controlled Ingest V1).
 5. `gymvisual` — priority 100 — planned selective gap fill.
 
 A provider can have higher priority and still not win because:
