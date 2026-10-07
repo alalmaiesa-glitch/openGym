@@ -2,7 +2,7 @@
 //
 // External/provider-owned assets are mapped only after exact exercise matching, licence review,
 // provenance capture and a controlled ingest. Exercise Animatic and GymVisual stay empty until
-// their licensed assets are available. Workout Guide V3.4 extends the verified local fallback with strict dumbbell posture, grip, support and unilateral/bilateral review gates.
+// their licensed assets are available. Workout Guide V3.5 extends the verified local fallback with strict barbell bench-angle, grip, posture, bar-placement and support-geometry review gates.
 
 const WG_ASSET_ROOT = (import.meta.env.BASE_URL || './') + 'pt650-media/workout-guide/v1/'
 const freezeAsset = value => Object.freeze(value)
