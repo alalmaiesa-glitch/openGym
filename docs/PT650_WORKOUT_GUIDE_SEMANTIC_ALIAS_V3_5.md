@@ -7,7 +7,7 @@ Status: **implemented**
 - New local SVG files: **24**
 - Reused pinned source slug: **1** (`front-squat`)
 - Workout Guide mappings after V3.5: **104**
-- Local Workout Guide SVG files: **285**
+- Local Workout Guide SVG files: **282**
 - Runtime animation coverage: **113 / 1,327 = 8.52%**
 
 ## Accepted
