@@ -104,7 +104,13 @@ export default function Home() {
             {next && !doneToday && <div className="ss">{t('Next session: {0}, {1}', t(DAYN[next.weekday]), next.routine.name)}</div>}
           </div>
         </div>
-        <span className="pt650-today-go"><Icon name={S.active ? (editingSaved ? 'pencil' : 'play') : doneToday ? 'check' : routine ? 'dumbbell' : 'plus'} /></span>
+        <div className="pt650-today-actions">
+          {S.active ? <span className="tag pt650-today-state">{editingSaved ? t('Edit') : t('Resume')}</span>
+            : doneToday ? <span className="tag pt650-today-state done">{t('Done')}</span>
+            : routine ? <span className="tag pt650-today-state ready">{t('Start')}</span>
+            : null}
+          <span className="pt650-today-go"><Icon name={S.active ? (editingSaved ? 'pencil' : 'play') : doneToday ? 'check' : routine ? 'dumbbell' : 'plus'} /></span>
+        </div>
       </div>
 
       {!S.active && <button className="pt650-alt-workout" onClick={() => nav('/workout')}>
