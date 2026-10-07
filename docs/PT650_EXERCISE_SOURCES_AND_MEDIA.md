@@ -140,7 +140,7 @@ Exercise Data Layer
 Animation Provider Layer
   - Exercise Animatic (future licensed primary)
   - PT650 / OpenGym3D
-  - PT650 Authored SVG
+  - PT650 Authored SVG — historical registry only; retired from public rendering
   - Workout Guide (open fallback)
   - GymVisual (rare gap fill)
         |
@@ -175,3 +175,8 @@ PT650 Media Pipeline
 - A planned/registered provider with no approved mapping is **not available** in the UI.
 - A failed preferred asset falls through to the next approved provider; the losing/fallback source
   remains intact.
+
+
+### Legacy PT650 Authored SVG retirement
+
+Legacy authored SVG figures are not public fallbacks. Their registry remains only for provenance and migration bookkeeping. The public UI must use an approved modern provider (3D, reviewed Workout Guide assets, or a future licensed provider); otherwise exercise detail shows a clean pending state instead of the old schematic figure.
