@@ -55,8 +55,8 @@ export default function Plan() {
     onConfirm: () => update(s => { deleteRoutine(s, r.id) })
   })
 
-  return <>
-    <div className="hdr">
+  return <div className="pt650-plan-v4">
+    <div className="hdr pt650-plan-head">
       <div><h1>{t('Plan')}</h1><div className="sub">{t('Your weekly routine')}</div></div>
       <button className="iconbtn" onClick={planToolsSheet} aria-label={t('Share your plan')} title={t('Share your plan')}><Icon name="upload" /></button>
     </div>
@@ -69,13 +69,18 @@ export default function Plan() {
       <Icon name="chevronRight" className="coach-cta-chev" />
     </button>}
 
-    <div className="cols"><div>
+    <div className="pt650-plan-overview">
+      <div><strong>{S.routines.length}</strong><span>{t('Routines')}</span></div>
+      <div><strong>{Object.values(S.week || {}).filter(v => [].concat(v || []).length).length}</strong><span>{t('Week schedule')}</span></div>
+    </div>
+
+    <div className="cols pt650-plan-cols"><section className="pt650-plan-panel pt650-week-panel-v4">
       <h4 className="sec">{t('Week schedule')}</h4>
-      <div className="list" style={{ display: 'flex', flexDirection: 'column' }}>
+      <div className="list pt650-week-list" style={{ display: 'flex', flexDirection: 'column' }}>
         {weekOrder(weekStartOf(S)).map(d => {
           const dayRoutines = [].concat(S.week[d] || []).map(id => S.routines.find(x => x.id === id)).filter(Boolean)
           // An empty day stays one tappable row → pick its first routine (today's behaviour).
-          if (!dayRoutines.length) return <div key={d} className="item" {...tappable(() => dayAssignSheet(d))}>
+          if (!dayRoutines.length) return <div key={d} className="item pt650-day-row rest-day" {...tappable(() => dayAssignSheet(d))}>
             <div className="grow"><div className="tt">{t(DAYN[d])}</div></div>
             <span className="tag">{t('Rest')}</span>
             <Icon name="chevronRight" className="chev" /></div>
@@ -83,7 +88,7 @@ export default function Plan() {
           // is a small ＋ in the day's header, centred over the ✕ column (#276): a full-width
           // "＋ Add routine" under every planned day made the week read as a list of buttons,
           // when most people train one routine a day. The ＋ keeps the option for those who don't.
-          return <div key={d} className="item" style={{ display: 'block', padding: '10px 14px' }}>
+          return <div key={d} className="item pt650-day-row training-day" style={{ display: 'block', padding: '10px 14px' }}>
             <div className="row between" style={{ marginBottom: 6 }}>
               <div className="tt">{t(DAYN[d])}</div>
               <div className="row" style={{ gap: 8 }}>
@@ -101,12 +106,12 @@ export default function Plan() {
           </div>
         })}
       </div>
-    </div><div>
-      <div className="row between" style={{ marginTop: 22, marginBottom: 10 }}>
+    </section><section className="pt650-plan-panel pt650-routines-panel">
+      <div className="row between pt650-routines-head" style={{ marginTop: 22, marginBottom: 10 }}>
         <h4 className="sec" style={{ margin: 0 }}>{t('Routines')}</h4>
         <Button size="sm" variant="tinted" icon="plus" onClick={addRoutine}>{t('New')}</Button>
       </div>
-      {S.routines.length ? <div className="list">{S.routines.map((r, i) => <SwipeToDelete key={r.id} className="item"
+      {S.routines.length ? <div className="list pt650-routine-list">{S.routines.map((r, i) => <SwipeToDelete key={r.id} className="item pt650-routine-row"
         deleteLabel={t('Delete routine')} onDelete={() => confirmDelete(r)} {...tappable(() => nav('/plan/r/' + r.id))}>
         <span className="lrow-i"><Icon name={glyphOf(r.emoji)} /></span>
         <div className="grow"><div className="tt">{r.name}</div><div className="ss">{exCount(r.ex.length)}</div></div>
@@ -125,6 +130,6 @@ export default function Plan() {
         <div className="empty"><div className="ico"><Icon name="clipboard" /></div>{t('No routines yet.')}<br />{t('Create one or load the starter plan.')}</div>
         <Button icon="sparkles" onClick={starterPlanSheet}>{t('Load starter plan')}</Button>
       </>}
-    </div></div>
-  </>
+    </section></div>
+  </div>
 }
