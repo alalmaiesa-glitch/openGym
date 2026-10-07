@@ -14,13 +14,12 @@ describe('PT650 animation coverage gap baseline V1', () => {
 
   it('locks the current catalogue and resolved animation baseline', () => {
     expect(report.total).toBe(1327)
-    expect(report.covered).toBe(112)
-    expect(report.uncovered).toBe(1215)
-    expect(report.coveragePct).toBe(8.44)
+    expect(report.covered).toBe(109)
+    expect(report.uncovered).toBe(1218)
+    expect(report.coveragePct).toBe(8.21)
     expect(report.selectedByProvider).toEqual({
       pt650_opengym3d: 6,
-      pt650_authored_svg: 4,
-      workout_guide: 102,
+      workout_guide: 103,
     })
   })
 
@@ -29,18 +28,18 @@ describe('PT650 animation coverage gap baseline V1', () => {
       ['upper arms', 277],
       ['back', 187],
       ['upper legs', 186],
-      ['waist', 153],
-      ['chest', 148],
+      ['waist', 155],
+      ['chest', 149],
       ['shoulders', 127],
     ])
   })
 
   it('surfaces the largest equipment gaps deterministically', () => {
     expect(report.byEquipment.slice(0, 8).map(x => [x.key, x.missing])).toEqual([
-      ['body weight', 286],
+      ['body weight', 288],
       ['dumbbell', 273],
       ['cable', 146],
-      ['barbell', 133],
+      ['barbell', 134],
       ['leverage machine', 70],
       ['band', 54],
       ['smith machine', 48],
