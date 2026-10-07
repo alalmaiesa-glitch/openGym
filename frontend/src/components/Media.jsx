@@ -15,6 +15,20 @@ export default function Media(p) {
   return p.ex?.custom ? <CustomMedia {...p} /> : <BuiltinMedia {...p} />
 }
 
+function MediaCredit({ candidate }) {
+  if (!candidate?.attributionRequired) return null
+  const upstream = candidate.attribution?.upstream?.name
+  const creator = candidate.attribution?.creator || candidate.providerName
+  const label = upstream ? `${creator} / ${upstream}` : creator
+  return (
+    <div className="pt650-media-credit" onClick={e => e.stopPropagation()} title={candidate.pt650Changes || undefined}>
+      <a href={candidate.attribution?.creatorUrl || candidate.source} target="_blank" rel="noopener noreferrer">{label}</a>
+      <span>·</span>
+      <a href={candidate.licenceUrl || candidate.source} target="_blank" rel="noopener noreferrer">{candidate.licence}</a>
+    </div>
+  )
+}
+
 function BuiltinMedia({ ex, id, compact, minimizable }) {
   const [playing, setPlaying] = useState(true)
   const gifSize = useStore(s => s.S.gifSize)
@@ -48,6 +62,7 @@ function BuiltinMedia({ ex, id, compact, minimizable }) {
         playing={playing}
         onTogglePlaying={() => setPlaying(p => !p)}
       />
+      <MediaCredit candidate={selected} />
       {minimizable && (
         <button className="giftoggle" onClick={toggleSize}>
           <Icon name={mini ? 'expand' : 'minimize'} />{mini ? t('Expand') : t('Minimize')}

@@ -50,14 +50,14 @@ export const PT650_ANIMATION_PROVIDERS = Object.freeze({
     id: 'workout_guide',
     name: 'Workout Guide',
     priority: 200,
-    status: 'registered',
+    status: 'active',
     renderer: 'frame-sequence',
     source: 'https://github.com/bryllim/workout-guide',
     licence: 'MIT code; CC BY-SA 4.0 visual assets',
     attributionRequired: true,
     shareAlike: true,
     version: 1,
-    assetStatus: 'awaiting-ingest',
+    assetStatus: 'partial-ingest-v1',
   }),
   gymvisual: Object.freeze({
     id: 'gymvisual',
@@ -90,7 +90,7 @@ const PROVIDER_ASSET_MAPS = Object.freeze({
 })
 
 function providerCanRender(provider) {
-  return provider?.status === 'active' || provider?.status === 'registered'
+  return provider?.status === 'active'
 }
 
 function normalizedAsset(provider, exerciseId, sourceAsset) {
@@ -107,7 +107,12 @@ function normalizedAsset(provider, exerciseId, sourceAsset) {
     available: providerCanRender(provider) && status === 'ready',
     version: Number(sourceAsset.version || provider.version || 1),
     licence: sourceAsset.licence || sourceAsset.license || provider.licence,
+    licenceUrl: sourceAsset.licenceUrl || sourceAsset.licenseUrl || provider.licenceUrl || null,
     licenceSource: sourceAsset.licenceSource || sourceAsset.licenseSource || provider.source,
+    attribution: sourceAsset.attribution || null,
+    sourceCommit: sourceAsset.sourceCommit || null,
+    sourceVersion: sourceAsset.sourceVersion || null,
+    pt650Changes: sourceAsset.pt650Changes || null,
     attributionRequired: sourceAsset.attributionRequired ?? provider.attributionRequired,
     shareAlike: sourceAsset.shareAlike ?? provider.shareAlike,
     source: sourceAsset.source || provider.source,

@@ -25,7 +25,7 @@ describe('PT650 Animation Provider Adapter V1', () => {
     })
     expect(PT650_ANIMATION_PROVIDERS.workout_guide).toMatchObject({
       priority: 200,
-      status: 'registered',
+      status: 'active',
       renderer: 'frame-sequence',
       attributionRequired: true,
       shareAlike: true,
