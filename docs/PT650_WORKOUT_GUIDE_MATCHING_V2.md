@@ -1,6 +1,6 @@
 # PT650 Workout Guide Matching & Expansion V2
 
-Status: **implemented**
+Status: **implemented** · Deferred cases resolved further in **V2.1**.
 
 - Upstream: `bryllim/workout-guide`
 - Pinned commit: `aac599224bb9780305239607ef98540b7e0ce389`
@@ -45,7 +45,7 @@ availability and licence provenance.
 - `0811` — trap bar deadlift → `trap-bar-deadlift` · Barbell · Posterior Chain
 - `0688` — scapular pull-up → `scapular-pull-up` · Pull-up Bar · Lats
 
-## Explicitly held or rejected
+## Explicitly held or rejected at V2
 
 - `0662` — push-up → `push-up` — **held**: PT650 already has a higher-priority exact authored/OpenGym3D movement; do not duplicate fallback in V2.
 - `0017` — assisted pull-up → `assisted-pull-up` — **deferred**: Assistance mechanism needs visual confirmation; PT650 specifies leverage machine while Workout Guide metadata says generic machine.
@@ -72,3 +72,15 @@ Git blob SHA. No visual adaptation was performed.
 
 Workout Guide remains priority 200, below Exercise Animatic, PT650/OpenGym3D and PT650-authored
 SVG motion. V2 changes coverage, not provider precedence.
+
+
+## V2.1 follow-up
+
+Deferred Visual Review V2.1 inspected all three source frames for the four deferred movement/equipment cases.
+
+- Accepted: `0017` assisted pull-up — source frames show the assisted machine.
+- Accepted: `0841` weighted pull-up — source frames visibly show an external suspended weight plate.
+- Accepted: `2612` jump rope — source frames visibly show the rope; upstream `Cardio` is a category label, not a conflicting implement.
+- Rejected: `0284` donkey calf raise — source frames show partner-loaded resistance, while PT650 defines body-weight execution using a stable support.
+
+After V2.1, local Workout Guide coverage is **42 exercises / 126 SVG frames**.

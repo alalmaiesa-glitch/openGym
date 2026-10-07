@@ -55,7 +55,7 @@ PT650 requirements before an asset is marked ready:
 - provenance in the asset manifest,
 - PT650 Media Pipeline output.
 
-Current provider state: `active` for the reviewed Controlled Ingest V1 + Matching & Expansion V2 reviewed subset. Unreviewed exercises remain unmapped and unavailable. Registration/matching alone must never make the UI claim an animation is available.
+Current provider state: `active` for the reviewed Controlled Ingest V1 + Matching & Expansion V2 + Deferred Visual Review V2.1 subset (**42 exercises / 126 SVG frames**). Unreviewed exercises remain unmapped and unavailable. Registration/name matching alone must never make the UI claim an animation is available.
 
 ### ExerciseDB — exercise data enrichment adapter
 
