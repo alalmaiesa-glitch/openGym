@@ -23,6 +23,12 @@ describe('PT650 Animation Provider Adapter V1', () => {
       renderer: 'video',
       assetStatus: 'awaiting-licence-and-ingest',
     })
+    expect(PT650_ANIMATION_PROVIDERS.pt650_authored_svg).toMatchObject({
+      priority: 300,
+      status: 'retired',
+      renderer: 'svg',
+      assetStatus: 'legacy-visual-hidden',
+    })
     expect(PT650_ANIMATION_PROVIDERS.workout_guide).toMatchObject({
       priority: 200,
       status: 'active',
@@ -46,13 +52,24 @@ describe('PT650 Animation Provider Adapter V1', () => {
     })
   })
 
-  it('keeps an exact authored SVG available when there is no approved 3D mapping', () => {
-    expect(animationAssetFor('0025')).toMatchObject({
+  it('never exposes the retired authored SVG figures as public animation media', () => {
+    const authored = animationCandidatesFor('0025').find(x => x.provider === 'pt650_authored_svg')
+    expect(authored).toMatchObject({
       provider: 'pt650_authored_svg',
       renderer: 'svg',
+      available: false,
+      providerStatus: 'retired',
+    })
+    expect(animationAssetFor('0025')).toBeNull()
+    expect(hasAnimationFor('0025')).toBe(false)
+  })
+
+  it('falls through a retired authored SVG to a modern reviewed provider when one exists', () => {
+    expect(animationAssetFor('0043')).toMatchObject({
+      provider: 'workout_guide',
+      renderer: 'frame-sequence',
       available: true,
     })
-    expect(hasAnimationFor('0025')).toBe(true)
   })
 
   it('does not claim future or merely registered providers are available without an approved mapping', () => {
