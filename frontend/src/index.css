@@ -3583,3 +3583,212 @@ body:has(.pt650-workout-v3) #timer.working .t{color:var(--pt-cyan)}
   .pt650-workout-v3 .wl-unit{padding:9px 8px 3px}
   body:has(.pt650-workout-v3) #timer{inset-inline:8px;border-radius:15px}
 }
+
+
+/* ========================================================================
+   PT650 Plan & Progress Redesign V4
+   Weekly planning + analytics surfaces aligned with Home/Library/Workout.
+   ======================================================================== */
+.pt650-plan-v4,.pt650-progress-v4{
+  --pt-neon:#c9ff3d;
+  --pt-cyan:#57e7ff;
+  --pt-v4-panel:#111411;
+  --pt-v4-line:rgba(201,255,61,.16);
+  position:relative;isolation:isolate;
+}
+:root[data-theme="light"] .pt650-plan-v4,
+:root[data-theme="light"] .pt650-progress-v4{
+  --pt-neon:#69a900;--pt-cyan:#008aa3;--pt-v4-panel:#fff;--pt-v4-line:rgba(79,128,0,.16);
+}
+.pt650-plan-v4::before,.pt650-progress-v4::before{
+  content:'';position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(720px 300px at 50% -60px,color-mix(in srgb,var(--pt-neon) 7%,transparent),transparent 72%),
+    radial-gradient(460px 300px at 100% 38%,color-mix(in srgb,var(--pt-cyan) 3.5%,transparent),transparent 72%),
+    var(--bg);
+}
+
+/* ---------------- Plan V4 ---------------- */
+.pt650-plan-head,.pt650-progress-head{
+  min-height:48px;margin-bottom:14px;padding:2px 2px 0;
+}
+.pt650-plan-head h1,.pt650-progress-head h1{
+  margin:0;font-size:24px;line-height:1.05;font-weight:720;letter-spacing:-.035em;
+}
+.pt650-plan-head .sub,.pt650-progress-head .sub{margin-top:4px;font-size:11.5px;color:var(--label-3)}
+.pt650-plan-head>.iconbtn,.pt650-progress-head>.iconbtn{
+  width:38px;height:38px;border-radius:12px;
+  background:color-mix(in srgb,var(--surface) 92%,transparent);
+  border:1px solid var(--sep-op);color:var(--label-2);
+}
+.pt650-plan-overview{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:11px;
+}
+.pt650-plan-overview>div{
+  min-width:0;padding:11px 12px;border-radius:14px;
+  background:color-mix(in srgb,var(--surface) 95%,transparent);
+  border:1px solid var(--sep-op);
+  display:flex;align-items:baseline;gap:7px;
+}
+.pt650-plan-overview strong{
+  font-size:21px;line-height:1;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums;
+}
+.pt650-plan-overview span{
+  min-width:0;color:var(--label-3);font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.pt650-plan-cols{gap:10px}
+.pt650-plan-panel{
+  min-width:0;padding:13px;border-radius:18px;
+  background:color-mix(in srgb,var(--surface) 94%,transparent);
+  border:1px solid var(--sep-op);
+}
+.pt650-plan-panel>.sec,
+.pt650-routines-head>.sec{
+  margin:0 0 9px;font-size:11px;line-height:1.2;font-weight:700;letter-spacing:.045em;
+  color:var(--label-3);text-transform:uppercase;
+}
+.pt650-routines-head{margin-top:0!important;margin-bottom:9px!important}
+.pt650-routines-head>.btn{
+  min-height:32px;border-radius:10px;color:var(--pt-neon);
+  background:color-mix(in srgb,var(--pt-neon) 7%,transparent);
+  border:1px solid color-mix(in srgb,var(--pt-neon) 14%,var(--sep-op));
+}
+.pt650-week-list,.pt650-routine-list{gap:7px!important}
+.pt650-day-row,.pt650-routine-row{
+  position:relative;overflow:hidden;border-radius:14px!important;
+  background:color-mix(in srgb,var(--surface-2) 62%,var(--surface));
+  border:1px solid var(--sep-op)!important;
+  min-height:52px;
+}
+.pt650-day-row::before,.pt650-routine-row::before{
+  content:'';position:absolute;inset-block:10px;inset-inline-start:0;width:2px;border-radius:99px;
+  background:var(--label-4);opacity:.18;
+}
+.pt650-day-row.training-day::before{
+  background:var(--pt-neon);opacity:.9;
+  box-shadow:0 0 12px color-mix(in srgb,var(--pt-neon) 42%,transparent);
+}
+.pt650-day-row.rest-day{color:var(--label-2)}
+.pt650-day-row.rest-day .tag{
+  background:transparent;border:1px solid var(--sep-op);color:var(--label-3);
+}
+.pt650-day-row.training-day>.row:first-child .tt{font-weight:660}
+.pt650-day-row.training-day .lrow-i{
+  color:var(--pt-neon);
+  background:color-mix(in srgb,var(--pt-neon) 7%,transparent);
+}
+.pt650-routine-row::before{background:var(--pt-cyan);opacity:.48}
+.pt650-routine-row .lrow-i{
+  color:var(--pt-cyan);background:color-mix(in srgb,var(--pt-cyan) 7%,transparent);
+}
+.pt650-plan-v4 .coach-cta{
+  margin-bottom:10px;border-radius:16px;
+  border:1px solid color-mix(in srgb,var(--pt-neon) 14%,var(--sep-op));
+  background:linear-gradient(135deg,color-mix(in srgb,var(--pt-neon) 5%,var(--surface)),var(--surface));
+}
+.pt650-plan-v4 .coach-cta-av{color:var(--pt-neon)}
+@media (max-width:680px){
+  .pt650-plan-panel{padding:11px;border-radius:16px}
+  .pt650-plan-cols{display:flex!important;flex-direction:column;gap:9px!important}
+  .pt650-day-row,.pt650-routine-row{border-radius:12px!important}
+}
+@media (min-width:900px){
+  .pt650-plan-cols{grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr)}
+}
+
+/* ---------------- Progress / Stats V4 ---------------- */
+.pt650-progress-v4{max-width:100%}
+.pt650-progress-metrics{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px!important;
+  margin-bottom:10px;
+}
+.pt650-progress-metrics .tile{
+  min-width:0;min-height:86px;padding:12px;border-radius:15px;
+  background:color-mix(in srgb,var(--surface) 95%,transparent);
+  border:1px solid var(--sep-op);
+}
+.pt650-progress-metrics .tile .l{
+  color:var(--label-3);font-size:10.5px;font-weight:560;gap:5px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.pt650-progress-metrics .tile .l .icn{color:var(--pt-neon);font-size:14px}
+.pt650-progress-metrics .tile .v{
+  margin-top:8px;font-size:24px!important;line-height:1;font-weight:700;letter-spacing:-.035em;
+  font-variant-numeric:tabular-nums;
+}
+.pt650-progress-card{
+  border-radius:18px!important;
+  background:color-mix(in srgb,var(--surface) 95%,transparent)!important;
+  border:1px solid var(--sep-op)!important;
+  box-shadow:none!important;
+}
+.pt650-progress-card>h2,
+.pt650-progress-card .bw-head h2,
+.pt650-progress-card>.row h2{
+  font-size:15px;line-height:1.25;font-weight:660;letter-spacing:-.012em;
+}
+.pt650-activity-card{position:relative;overflow:hidden}
+.pt650-activity-card::before{
+  content:'';position:absolute;top:0;inset-inline-start:14px;width:100px;height:2px;
+  background:linear-gradient(90deg,var(--pt-neon),transparent);
+}
+.pt650-progress-v4 .seg{
+  background:color-mix(in srgb,var(--surface-2) 82%,transparent);
+  border:1px solid var(--sep-op);
+}
+.pt650-progress-v4 .seg-sel{
+  background:color-mix(in srgb,var(--surface) 96%,var(--pt-neon) 4%);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--pt-neon) 10%,transparent);
+}
+.pt650-progress-v4 .seg button{font-size:11.5px;min-height:29px}
+.pt650-muscle-card .seg-range:first-child{margin-bottom:12px}
+.pt650-progress-v4 .mrow{min-height:38px}
+.pt650-progress-v4 .mrow .bar{height:5px;border-radius:99px;overflow:hidden}
+.pt650-progress-v4 .mrow .bar i{background:var(--pt-neon)}
+.pt650-structural-card{
+  min-height:74px;padding:13px 14px!important;
+}
+.pt650-structural-card .btn{
+  border-radius:10px;color:var(--pt-neon);
+  background:color-mix(in srgb,var(--pt-neon) 7%,transparent);
+}
+.pt650-progress-cols{gap:10px}
+.pt650-weight-progress-card .chart,
+.pt650-exercise-progress-card .chart{
+  margin-top:7px;border-radius:12px;overflow:hidden;
+  background:color-mix(in srgb,var(--surface-2) 45%,transparent);
+}
+.pt650-exercise-progress-card .sect-b{
+  border-radius:12px;overflow:hidden;border:1px solid var(--sep-op);
+}
+.pt650-exercise-progress-card .row.between.small{
+  gap:10px;min-width:0;
+}
+.pt650-recent-progress{
+  margin-top:4px;padding:13px;border-radius:18px;
+  background:color-mix(in srgb,var(--surface) 94%,transparent);
+  border:1px solid var(--sep-op);
+}
+.pt650-recent-progress>.row .sec{
+  font-size:11px;letter-spacing:.045em;color:var(--label-3);
+}
+.pt650-recent-progress>.list{gap:7px!important}
+.pt650-recent-progress>.list>.item,
+.pt650-recent-progress>.list>.lrow{
+  border-radius:13px;background:color-mix(in srgb,var(--surface-2) 60%,var(--surface));
+}
+@media (max-width:680px){
+  .pt650-progress-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .pt650-progress-metrics .tile{min-height:74px;padding:10px}
+  .pt650-progress-metrics .tile .v{font-size:21px!important}
+  .pt650-progress-card{border-radius:16px!important;padding:12px!important}
+  .pt650-progress-cols{display:flex!important;flex-direction:column;gap:9px!important}
+  .pt650-recent-progress{padding:11px;border-radius:16px}
+}
+@media (max-width:380px){
+  .pt650-progress-metrics{gap:6px!important}
+  .pt650-progress-metrics .tile{min-height:70px;padding:9px}
+  .pt650-progress-metrics .tile .l{font-size:10px}
+  .pt650-progress-metrics .tile .v{font-size:20px!important}
+  .pt650-plan-overview>div{padding:10px}
+}
