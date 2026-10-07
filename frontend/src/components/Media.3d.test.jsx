@@ -88,10 +88,11 @@ describe('PT650 built-in 3D media', () => {
     expect(host.querySelector('.pt650-three-test')?.getAttribute('data-video')).toMatch(/pt650-3d\/jumping_jack\.mp4$/)
   })
 
-  it('keeps existing exercise-specific SVG media until a 3D replacement is registered', () => {
+  it('never exposes a legacy authored SVG while it awaits a modern replacement', () => {
     act(() => root.render(<Media ex={{ id: '0025', n: 'barbell bench press' }} />))
-    expect(host.querySelector('.exmedia')?.dataset.pt650Media).toBe('bench-press-v1')
+    expect(host.querySelector('.exmedia')?.dataset.pt650Media).toBe('pending')
+    expect(host.querySelector('.pt650-media-pending')).toBeTruthy()
     expect(host.querySelector('.pt650-three-test')).toBeNull()
-    expect(host.querySelector('[data-pt650-animation="bench-press-v1"]')).not.toBeNull()
+    expect(host.querySelector('[data-pt650-animation="bench-press-v1"]')).toBeNull()
   })
 })
