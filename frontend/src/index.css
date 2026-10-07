@@ -3153,7 +3153,7 @@ body.chips-dragging *{cursor:inherit}
   color:var(--pt-neon);font-size:11px;font-weight:650;font-variant-numeric:tabular-nums;
 }
 .library-result-motion .icn{font-size:10px;--icon-stroke:2.4}
-.pt650-library-v2 #app .library-list{gap:8px}
+#app .pt650-library-v2 .library-list{gap:8px}
 .pt650-library-v2 .library-item{
   position:relative;min-height:72px;padding:10px 10px 10px 12px;gap:10px;border-radius:15px;
   background:color-mix(in srgb,var(--surface) 96%,transparent);
