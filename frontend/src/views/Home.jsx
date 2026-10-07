@@ -69,180 +69,137 @@ export default function Home() {
   // today's session shown right under the week strip
   const onToday = () => { if (S.active) nav('/workout'); else if (todayRoutines.length) startFlow(effectiveRoutineIds(S, todayISO())); else dayOverrideSheet(todayISO()) }
 
-  return <div className="narrow">
-    <div className="hdr">
-      <div>
-        <h1>PT650</h1>
-        <div className="sub">
-          {user ? t('Hi {0}', user.name) + ' · ' : platformName ? (machineScanAr ? 'مرحبًا ' : 'Hi ') + platformName + ' · ' : ''}
-          {today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}
+  const greeting = user
+    ? t('Hi {0}', user.name)
+    : platformName
+      ? (machineScanAr ? 'مرحبًا ' : 'Hi ') + platformName
+      : (machineScanAr ? 'جاهز للتمرين؟' : 'Ready to train?')
+
+  return <div className="narrow pt650-home-v1">
+    <header className="pt650-home-head">
+      <div className="pt650-brand-lockup">
+        <div className="pt650-brand-mark"><Icon name="bolt" /></div>
+        <div>
+          <h1>PT650</h1>
+          <div className="pt650-home-kicker">{greeting}</div>
         </div>
       </div>
-      <button className="iconbtn" onClick={() => nav('/settings')} aria-label={t('Settings')}><Icon name="gear" /></button>
-    </div>
+      <button className="pt650-head-action" onClick={() => nav('/settings')} aria-label={t('Settings')}><Icon name="gear" /></button>
+    </header>
 
-    <div className="card">
-      <div className="row between" style={{ marginBottom: 8 }}>
-        <button className="iconbtn" style={{ width: 30, height: 30, fontSize: 15 }} onClick={() => setWeekOffset(w => w - 1)} aria-label={t('Previous week')}><Icon name="chevronLeft" /></button>
-        <div className="small muted" style={{ fontWeight: 500 }}>{wkLabel}</div>
-        <button className="iconbtn" style={{ width: 30, height: 30, fontSize: 15 }} onClick={() => setWeekOffset(w => w + 1)} aria-label={t('Next week')}><Icon name="chevronRight" /></button>
+    <section className="pt650-today-shell">
+      <div className="pt650-today-topline">
+        <span>{t('Today')}</span>
+        <span>{today.toLocaleDateString(dateLocale(), { weekday: 'long', day: 'numeric', month: 'long' })}</span>
       </div>
-      <div className="week">{strip}</div>
-      {/* Once today's session is logged the row stops asking for it. The week strip already
-          knew (its dot goes 'done'); this row did not, so a finished day kept showing the
-          routine name behind a green Start tag and read as still outstanding (issue #4).
-          An in-progress session still wins — that one is happening right now. Tapping the
-          row keeps working, so a second session in one day is a tap away, just not urged. */}
-      <div className="today-row" {...tappable(onToday)}>
-        <div className="row" style={{ gap: 9, minWidth: 0 }}>
-          <span className="lrow-i" style={{ background: S.active ? 'var(--orange)' : doneToday ? 'var(--surface-3)' : routine ? 'var(--acc)' : 'var(--surface-3)' }}>
-            <Icon name={S.active ? (editingSaved ? 'pencil' : 'timer') : doneToday ? 'checkCircle' : routine ? glyphOf(routine.emoji) : 'moon'}
-              style={doneToday && !S.active ? { color: 'var(--green)' } : undefined} />
-          </span>
-          <div style={{ minWidth: 0 }}>
-            <div className="lbl2">{t('Today')}</div>
+
+      <div className="today-row pt650-today-card" {...tappable(onToday)}>
+        <div className="pt650-today-copy">
+          <span className={'pt650-status-dot' + (S.active ? ' live' : doneToday ? ' done' : routine ? ' ready' : '')} />
+          <div>
+            <div className="lbl2">{S.active ? (editingSaved ? t('Edit') : t('Resume')) : doneToday ? t('Done') : routine ? t('Start') : t('Rest day')}</div>
             <div className="ttl">{S.active ? (editingSaved ? S.active.name : t('{0} — in progress', S.active.name))
               : doneToday ? (doneToday.name ? t('{0} — done', doneToday.name) : t('Workout done'))
               : routine ? todayName : t('Rest day')}{todayOvr && routine && !doneToday ? ' · ' + t('rescheduled') : ''}</div>
             {next && !doneToday && <div className="ss">{t('Next session: {0}, {1}', t(DAYN[next.weekday]), next.routine.name)}</div>}
           </div>
         </div>
-        {S.active ? <span className="tag" style={{ color: 'var(--orange)', background: 'color-mix(in srgb,var(--orange) 16%,transparent)' }}>{editingSaved ? t('Edit') : t('Resume')}</span>
-          : doneToday ? <span className="tag" style={{ color: 'var(--green)', background: 'color-mix(in srgb,var(--green) 16%,transparent)' }}>{t('Done')}</span>
-          : routine ? <span className="tag acc">{t('Start')}</span>
-          : <Icon name="plus" className="chev" />}
+        <span className="pt650-today-go"><Icon name={S.active ? (editingSaved ? 'pencil' : 'play') : doneToday ? 'check' : routine ? 'dumbbell' : 'plus'} /></span>
       </div>
-      {/* The row above starts today's plan in one tap, and so does the Start button in the tab
-          bar — which is the whole problem when you want something else. Both jump straight into
-          the planned session whenever there is one, so the Start screen (a freestyle session,
-          and your other routines) is only reachable on a day with nothing planned. The one other
-          way in, "Choose a different workout" on the weigh-in sheet, does not exist when the
-          weigh-in is switched off. This is that door, and it starts nothing on its own. */}
-      {!S.active && <div style={{ display: 'flex', justifyContent: 'center', marginTop: 4 }}>
-        <Button size="sm" variant="ghost" className="dim" icon="reset" onClick={() => nav('/workout')}>
-          {t('Choose a different workout')}
-        </Button>
-      </div>}
-    </div>
 
-    <div className="card tappable pt650-move-home" style={{ cursor: 'pointer' }} {...tappable(() => nav('/move'))}>
-      <div className="row between">
-        <div className="row" style={{ gap: 11 }}>
-          <span className="pt650-move-home-icon"><Icon name="trophy" /></span>
-          <div>
-            <div className="lbl2">PT650 Move</div>
-            <div className="ttl">{machineScanAr ? 'تحرّك واكسب وصولك' : 'Move and earn access'}</div>
-            <div className="ss">{machineScanAr ? 'أهداف موثقة · مكافآت واضحة · GPS' : 'Verified goals · clear rewards · GPS'}</div>
-          </div>
-        </div>
-        <Icon name="chevronRight" className="chev" />
+      {!S.active && <button className="pt650-alt-workout" onClick={() => nav('/workout')}>
+        <Icon name="reset" /> <span>{t('Choose a different workout')}</span>
+      </button>}
+
+      <div className="pt650-performance-strip">
+        <div><strong>{wThisWeek}{plannedPerWeek ? '/' + plannedPerWeek : ''}</strong><span>{machineScanAr ? 'هذا الأسبوع' : 'This week'}</span></div>
+        <div><strong>{streakWeeks(S)}</strong><span>{machineScanAr ? 'سلسلة الأسابيع' : 'Week streak'}</span></div>
+        <div><strong>{bw ? fmtNum(bw.w) : '—'}</strong><span>{bw ? S.unit : (machineScanAr ? 'الوزن' : 'Weight')}</span></div>
       </div>
-    </div>
+    </section>
 
-    <div className="card tappable pt650-health-home" style={{ cursor: 'pointer' }} {...tappable(() => nav('/health'))}>
-      <div className="row between">
-        <div className="row" style={{ gap: 11 }}>
-          <span className="pt650-health-home-icon"><Icon name="heart" /></span>
-          <div>
-            <div className="lbl2">PT650 Health</div>
-            <div className="ttl">{machineScanAr ? 'صحتك ونشاطك في سجل واحد' : 'Health and endurance in one record'}</div>
-            <div className="ss">{machineScanAr ? 'Move · الوزن · الأجهزة القابلة للارتداء قريبًا' : 'Move · body weight · wearables next'}</div>
-          </div>
-        </div>
-        <Icon name="chevronRight" className="chev" />
+    <section className="pt650-module-grid" aria-label={machineScanAr ? 'الوحدات الرئيسية' : 'Main modules'}>
+      <button className="pt650-module-card" onClick={() => nav('/plan')}>
+        <span className="pt650-module-icon"><Icon name="calendar" /></span>
+        <span className="pt650-module-copy"><strong>{t('Plan')}</strong><small>{machineScanAr ? 'خطتك الأسبوعية' : 'Weekly training'}</small></span>
+        <Icon name="chevronRight" className="pt650-module-chevron" />
+      </button>
+      <button className="pt650-module-card" onClick={() => nav('/library')}>
+        <span className="pt650-module-icon"><Icon name="list" /></span>
+        <span className="pt650-module-copy"><strong>{t('Exercises')}</strong><small>{machineScanAr ? 'المكتبة والحركات' : 'Library & movement'}</small></span>
+        <Icon name="chevronRight" className="pt650-module-chevron" />
+      </button>
+      <button className="pt650-module-card machine" onClick={() => nav('/machine-scan')}>
+        <span className="pt650-module-icon"><Icon name="camera" /></span>
+        <span className="pt650-module-copy"><strong>{machineScanAr ? 'مسح الجهاز' : 'Machine Scan'}</strong><small>{machineScanAr ? 'تقنية · ضبط · حمل' : 'Technique · setup · load'}</small></span>
+        <Icon name="chevronRight" className="pt650-module-chevron" />
+      </button>
+      <button className="pt650-module-card move" onClick={() => nav('/move')}>
+        <span className="pt650-module-icon"><Icon name="figureRun" /></span>
+        <span className="pt650-module-copy"><strong>PT650 Move</strong><small>{machineScanAr ? 'تحرّك واكسب وصولك' : 'Move and earn access'}</small></span>
+        <Icon name="chevronRight" className="pt650-module-chevron" />
+      </button>
+    </section>
+
+    <button className="pt650-health-ribbon" onClick={() => nav('/health')}>
+      <span className="pt650-health-ribbon-icon"><Icon name="heart" /></span>
+      <span><strong>PT650 Health</strong><small>{machineScanAr ? 'الصحة والنشاط والوزن في سجل واحد' : 'Health, activity and weight in one record'}</small></span>
+      <Icon name="chevronRight" />
+    </button>
+
+    <section className="pt650-week-panel">
+      <div className="pt650-week-head">
+        <button className="iconbtn" onClick={() => setWeekOffset(w => w - 1)} aria-label={t('Previous week')}><Icon name="chevronLeft" /></button>
+        <span>{wkLabel}</span>
+        <button className="iconbtn" onClick={() => setWeekOffset(w => w + 1)} aria-label={t('Next week')}><Icon name="chevronRight" /></button>
       </div>
-    </div>
+      <div className="week">{strip}</div>
+    </section>
 
-    <div className="card tappable machine-scan-home" style={{ cursor: 'pointer' }} {...tappable(() => nav('/machine-scan'))}>
-      <div className="row between">
-        <div className="row" style={{ gap: 11 }}>
-          <span className="machine-scan-home-icon"><Icon name="camera" /></span>
-          <div>
-            <div className="lbl2">PT650 Machine Scan</div>
-            <div className="ttl">{machineScanAr ? 'صوّر الجهاز' : 'Scan a machine'}</div>
-            <div className="ss">{machineScanAr ? 'التكنيك · الضبط · الحمل · العدات' : 'Technique · setup · load · reps'}</div>
-          </div>
-        </div>
-        <Icon name="chevronRight" className="chev" />
+    {S.checkIn !== false && <button className="pt650-utility-row" onClick={() => nav('/checkin')}>
+      <span className="pt650-utility-icon"><Icon name="qr" /></span>
+      <span><strong>{t('Check in')}</strong><small>{t('At the gym')}</small></span>
+      <Icon name="chevronRight" />
+    </button>}
+
+    {!S.routines.length && !S.active && <section className="pt650-setup-card">
+      <span className="pt650-setup-icon"><Icon name="sparkles" /></span>
+      <div>
+        <strong>{t('Welcome!')}</strong>
+        <p>{t('Set up your weekly routine to get going — or load a ready-made starter plan.')}</p>
       </div>
-    </div>
-
-    {/* Jump to the gym check-in cards (QR membership codes). Shown here as a quick tap on
-        arrival at the gym; folds away per user via the "Gym check-in" switch in Settings. */}
-    {S.checkIn !== false && (
-      <div className="card tappable" style={{ cursor: 'pointer' }} {...tappable(() => nav('/checkin'))}>
-        <div className="row between">
-          <div className="row" style={{ gap: 9 }}>
-            <span className="lrow-i" style={{ background: 'var(--blue)' }}><Icon name="qr" /></span>
-            <div>
-              <div className="lbl2">{t('At the gym')}</div>
-              <div className="ttl">{t('Check in')}</div>
-            </div>
-          </div>
-          <Icon name="chevronRight" className="chev" />
-        </div>
+      <div className="pt650-setup-actions">
+        <Button size="sm" variant="primary" icon="sparkles" onClick={starterPlanSheet}>{t('Load starter plan')}</Button>
+        <Button size="sm" onClick={() => nav('/plan')}>{t('Build my own plan')}</Button>
       </div>
-    )}
+    </section>}
 
-    {!S.routines.length && !S.active && (
-      <div className="card">
-        <div className="row" style={{ gap: 10, marginBottom: 6 }}>
-          <span className="lrow-i"><Icon name="sparkles" /></span>
-          <div className="big" style={{ fontSize: 22 }}>{t('Welcome!')}</div>
-        </div>
-        <div className="muted small" style={{ marginBottom: 12 }}>{t('Set up your weekly routine to get going — or load a ready-made starter plan.')}</div>
-        <Button variant="primary" icon="sparkles" onClick={starterPlanSheet}>{t('Load starter plan')}</Button>
-        <div style={{ height: 8 }} /><Button onClick={() => nav('/plan')}>{t('Build my own plan')}</Button>
-      </div>
-    )}
-
-    {S.showWeightCard !== false && <div className="card">
-      <div className="row between bw-head" style={{ marginBottom: 6 }}>
-        <h2 style={{ margin: 0 }}>{t('Body weight')}</h2>
+    {S.showWeightCard !== false && <section className="card pt650-weight-card">
+      <div className="row between bw-head">
+        <h2>{t('Body weight')}</h2>
         <div className="row" style={{ gap: 8 }}>
           <Button size="sm" icon="target" style={S.targetW ? { color: 'var(--yellow)' } : undefined} onClick={goalSheet}>{S.targetW ? fmtNum(S.targetW) : t('Goal')}</Button>
           <Button size="sm" icon="plus" onClick={() => bwSheet()}>{t('Log')}</Button>
         </div>
       </div>
       {bw ? <>
-        <div className="row" style={{ gap: 8, alignItems: 'baseline' }}>
-          <div className="big">{fmtNum(bw.w)} <span className="muted" style={{ fontSize: '1rem' }}>{S.unit}</span></div>
-          {/* only when it actually moved — an unchanged weight used to read as "− 0" */}
-          {!!delta && (
-            <span className="small row" style={{ gap: 2, fontWeight: 500, color: bwDeltaColor(delta, bw.w) }}>
-              <Icon name={delta > 0 ? 'arrowUp' : 'arrowDown'} style={{ fontSize: 12 }} />
-              {fmtNum(Math.abs(delta))}
-            </span>
-          )}
-          <span className="dim small" style={{ marginInlineStart: 'auto' }}>{fmtDate(bw.d, true)}</span>
+        <div className="pt650-weight-value">
+          <strong>{fmtNum(bw.w)} <span>{S.unit}</span></strong>
+          {!!delta && <small style={{ color: bwDeltaColor(delta, bw.w) }}><Icon name={delta > 0 ? 'arrowUp' : 'arrowDown'} /> {fmtNum(Math.abs(delta))}</small>}
+          <em>{fmtDate(bw.d, true)}</em>
         </div>
-        {S.targetW && (
-          <div className="small row" style={{ color: 'var(--yellow)', marginTop: 4, gap: 5 }}>
-            <Icon name="target" style={{ fontSize: 13 }} />
-            <span>{t('Goal')} {fmtNum(S.targetW)} {S.unit} · {Math.abs(S.targetW - bw.w) < 0.05 ? t('reached!') : t(S.targetW > bw.w ? '{0} to gain' : '{0} to lose', fmtNum(Math.abs(S.targetW - bw.w)) + ' ' + S.unit)}</span>
-          </div>
-        )}
-        <div className="chart" style={{ marginTop: 8 }}><LineChart points={bwPoints} h={130} unit={S.unit} goal={S.targetW} /></div>
-        {/* every weigh-in, week by week with its average (Discord 'Weight') */}
-        <div className="row" style={{ justifyContent: 'flex-end', marginTop: 4 }}>
-          <Button size="sm" variant="ghost" trailingIcon="chevronRight" onClick={weighInsSheet}>{t('All weigh-ins')}</Button>
-        </div>
+        {S.targetW && <div className="small row pt650-weight-goal"><Icon name="target" /> <span>{t('Goal')} {fmtNum(S.targetW)} {S.unit}</span></div>}
+        <div className="chart pt650-weight-chart"><LineChart points={bwPoints} h={110} unit={S.unit} goal={S.targetW} /></div>
+        <Button size="sm" variant="ghost" trailingIcon="chevronRight" onClick={weighInsSheet}>{t('All weigh-ins')}</Button>
       </> : <div className="muted small">{S.weighIn === false
         ? t('No entries yet — log your weight to start the curve.')
         : t("No entries yet — log your weight to start the curve. It's also asked before every workout.")}</div>}
-    </div>}
+    </section>}
 
-    <div className="card tappable" style={{ cursor: 'pointer' }} {...tappable(() => calendarSheet())}>
-      <div className="row between">
-        <div>
-          <div className="row" style={{ gap: 7, fontSize: 22, fontWeight: 600, letterSpacing: '-.021em' }}>
-            <Icon name="flame" style={{ color: 'var(--orange)' }} />
-            {t('{0} week streak', streakWeeks(S))}
-          </div>
-          <div className="muted small" style={{ marginTop: 2 }}>{wThisWeek}{plannedPerWeek ? ' / ' + plannedPerWeek : ''} {t('this week')} · {t(S.workouts.length === 1 ? '{0} workout total' : '{0} workouts total', S.workouts.length)}</div>
-        </div>
-        <Icon name="calendar" className="chev" style={{ fontSize: 20 }} />
-      </div>
-    </div>
+    <button className="pt650-streak-footer" onClick={() => calendarSheet()}>
+      <span><Icon name="flame" /><strong>{t('{0} week streak', streakWeeks(S))}</strong></span>
+      <small>{wThisWeek}{plannedPerWeek ? ' / ' + plannedPerWeek : ''} {t('this week')} · {t(S.workouts.length === 1 ? '{0} workout total' : '{0} workouts total', S.workouts.length)}</small>
+      <Icon name="calendar" />
+    </button>
   </div>
 }
