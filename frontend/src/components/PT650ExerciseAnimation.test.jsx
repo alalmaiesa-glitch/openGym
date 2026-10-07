@@ -44,10 +44,12 @@ describe('PT650 animated built-in exercise media', () => {
   it('never requests inherited real-person built-in image/GIF assets', () => {
     const media = readFileSync(new URL('./Media.jsx', import.meta.url), 'utf8')
     const animation = readFileSync(new URL('./PT650ExerciseAnimation.jsx', import.meta.url), 'utf8')
+    const providerMedia = readFileSync(new URL('./PT650AnimationProviderMedia.jsx', import.meta.url), 'utf8')
     expect(media).not.toContain('imgSrc(')
     expect(media).not.toContain('gifSrc(')
     expect(media).not.toMatch(/from ['"]\.\.\/lib\/exercises\.js['"]/)
-    expect(media).toContain('<PT650ExerciseAnimation')
+    expect(media).toContain('<PT650AnimationProviderMedia')
+    expect(providerMedia).toContain('<PT650ExerciseAnimation')
     expect(animation).not.toContain('SchematicFallback')
     expect(animation).not.toContain('schematic-fallback')
   })
