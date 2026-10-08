@@ -68,11 +68,11 @@ export default function CheckIn() {
     if (card && card.id !== lastId) update(s => { s.lastGymCardId = card.id }, false)
   }
 
-  return <div className="narrow">
-    <div className="hdr">
+  return <div className="narrow pt650-checkin-v6">
+    <div className="hdr pt650-checkin-head">
       <button className="iconbtn" onClick={() => nav('/home')} aria-label={t('Home')}><Icon name="chevronLeft" /></button>
-      <div style={{ flex: 1 }}>
-        <h1 style={{ fontSize: 28 }}>{t('Check in')}</h1>
+      <div className="pt650-checkin-title">
+        <h1>{t('Check in')}</h1>
         <div className="sub">{cards.length ? t('Show this at the gym') : t('Add your gym card')}</div>
       </div>
     </div>
