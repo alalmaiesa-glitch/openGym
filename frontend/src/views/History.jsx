@@ -8,11 +8,16 @@ import Icon from '../components/Icon.jsx'
 export default function History() {
   const nav = useNavigate()
   const S = useStore(s => s.S)
-  return <>
-    <div className="hdr"><button className="iconbtn" onClick={() => nav('/stats')} aria-label={t('Stats')}><Icon name="chevronLeft" /></button>
-      <div style={{ flex: 1, marginInlineStart: 12 }}><h1>{t('History')}</h1><div className="sub">{t('{0} workouts', S.workouts.length)}</div></div></div>
-    <Button icon="plus" onClick={logPastWorkoutSheet} style={{ marginBottom: 12 }}>{t('Log a past workout')}</Button>
-    {S.workouts.length ? <div className="list">{[...S.workouts].reverse().map(w => <WorkoutRow key={w.id} w={w} onClick={() => workoutDetailSheet(w)} />)}</div>
-      : <div className="empty"><div className="ico"><Icon name="history" /></div>{t('No workouts yet.')}</div>}
-  </>
+  return <div className="pt650-history-v5">
+    <div className="hdr pt650-history-head"><button className="iconbtn" onClick={() => nav('/stats')} aria-label={t('Stats')}><Icon name="chevronLeft" /></button>
+      <div className="pt650-history-title"><h1>{t('History')}</h1><div className="sub">{t('{0} workouts', S.workouts.length)}</div></div></div>
+
+    <div className="pt650-history-summary">
+      <div><span>{t('Workouts')}</span><strong>{S.workouts.length}</strong></div>
+      <Button className="pt650-history-add" icon="plus" onClick={logPastWorkoutSheet}>{t('Log a past workout')}</Button>
+    </div>
+
+    {S.workouts.length ? <div className="list pt650-history-list">{[...S.workouts].reverse().map(w => <WorkoutRow key={w.id} w={w} onClick={() => workoutDetailSheet(w)} />)}</div>
+      : <div className="empty pt650-history-empty"><div className="ico"><Icon name="history" /></div>{t('No workouts yet.')}</div>}
+  </div>
 }
