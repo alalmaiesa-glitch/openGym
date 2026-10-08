@@ -1473,3 +1473,204 @@ export const WORKOUT_GUIDE_V35_BLOCKED_ALIASES = Object.freeze([
     "reason": "The source is a generic squat and does not explicitly establish the high-bar placement named by PT650."
   }
 ])
+
+
+export const WORKOUT_GUIDE_V36_ACCEPTED = Object.freeze([
+  {
+    "pt650Id": "0150",
+    "pt650Name": "cable bar lateral pulldown",
+    "sourceSlug": "lat-pulldown",
+    "sourceEquipment": "Cable",
+    "sourcePrimaryMuscle": "Lats",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-v3.6",
+    "reason": "PT650 specifies the standard seated high-pulley lat pulldown with a straight bar, overhand grip slightly wider than shoulder width, and pull to the chest; this is the same reviewed lat-pulldown geometry already used by 0197."
+  },
+  {
+    "pt650Id": "0161",
+    "pt650Name": "cable forward raise",
+    "sourceSlug": "cable-front-raise",
+    "sourceEquipment": "Cable",
+    "sourcePrimaryMuscle": "Shoulders",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-v3.6",
+    "reason": "Same standing cable front raise as the already-reviewed 0162 mapping: overhand grip, straight arms and raise to shoulder height."
+  },
+  {
+    "pt650Id": "0164",
+    "pt650Name": "cable front shoulder raise",
+    "sourceSlug": "cable-front-raise",
+    "sourceEquipment": "Cable",
+    "sourcePrimaryMuscle": "Shoulders",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-v3.6",
+    "reason": "PT650 instructions are materially identical to the reviewed cable-front-raise movement used by 0162; the extra word 'shoulder' changes no setup or path."
+  },
+  {
+    "pt650Id": "0198",
+    "pt650Name": "cable pulldown",
+    "sourceSlug": "lat-pulldown",
+    "sourceEquipment": "Cable",
+    "sourcePrimaryMuscle": "Lats",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-v3.6",
+    "reason": "Same seated overhand lat pulldown to the chest as the reviewed 0197 source mapping; seat, thigh support, bar grip and pull path match."
+  },
+  {
+    "pt650Id": "0199",
+    "pt650Name": "cable pushdown (straight arm) v. 2",
+    "sourceSlug": "straight-arm-pulldown",
+    "sourceEquipment": "Cable",
+    "sourcePrimaryMuscle": "Lats",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-v3.6",
+    "reason": "Despite the legacy 'pushdown' wording, PT650 explicitly uses a straight bar from a high pulley with straight arms pulled to the thighs; this is the same reviewed straight-arm pulldown as 0238."
+  },
+  {
+    "pt650Id": "0200",
+    "pt650Name": "cable pushdown (with rope attachment)",
+    "sourceSlug": "rope-tricep-pushdown",
+    "sourceEquipment": "Cable",
+    "sourcePrimaryMuscle": "Triceps",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-v3.6",
+    "reason": "Exact rope triceps pushdown: high pulley, rope attachment, elbows fixed at the sides and elbow extension to full lockout."
+  },
+  {
+    "pt650Id": "0201",
+    "pt650Name": "cable pushdown",
+    "sourceSlug": "tricep-pushdown",
+    "sourceEquipment": "Cable",
+    "sourcePrimaryMuscle": "Triceps",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-v3.6",
+    "reason": "Exact straight-bar triceps pushdown: PT650 specifies a straight bar on a high pulley, overhand grip, fixed upper arms and elbow extension."
+  },
+  {
+    "pt650Id": "0227",
+    "pt650Name": "cable standing fly",
+    "sourceSlug": "cable-fly",
+    "sourceEquipment": "Cable",
+    "sourcePrimaryMuscle": "Chest",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-v3.6",
+    "reason": "Same standing bilateral cable fly: handles at chest height, slight elbow bend and horizontal adduction bringing the hands together in front of the chest."
+  },
+  {
+    "pt650Id": "0228",
+    "pt650Name": "cable standing hip extension",
+    "sourceSlug": "cable-kickback",
+    "sourceEquipment": "Cable",
+    "sourcePrimaryMuscle": "Glutes",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-v3.6",
+    "reason": "PT650 describes a low-pulley ankle-cuff standing hip extension, extending one straight leg backward and targeting glutes/hamstrings; this is the glute cable-kickback movement. The earlier 0860 rejection remains valid because that PT650 record is a triceps exercise."
+  },
+  {
+    "pt650Id": "2330",
+    "pt650Name": "cable lat pulldown full range of motion",
+    "sourceSlug": "lat-pulldown",
+    "sourceEquipment": "Cable",
+    "sourcePrimaryMuscle": "Lats",
+    "decision": "accepted",
+    "confidence": "high",
+    "review": "cable-v3.6",
+    "reason": "PT650 describes a standard full-range seated lat pulldown with thigh pads, overhand slightly-wide grip and pull to the upper chest; no variant geometry beyond the reviewed source is introduced."
+  }
+])
+
+export const WORKOUT_GUIDE_V36_BLOCKED_ALIASES = Object.freeze([
+  {
+    "pt650Id": "0192",
+    "pt650Name": "cable one arm lateral raise",
+    "sourceSlug": "cable-lateral-raise",
+    "decision": "rejected",
+    "reason": "PT650 explicitly uses one arm and switches sides; the reviewed 0178 mapping is a bilateral cable lateral raise. Unilateral versus bilateral execution is material."
+  },
+  {
+    "pt650Id": "0237",
+    "pt650Name": "cable straight arm pulldown (with rope)",
+    "sourceSlug": "straight-arm-pulldown",
+    "decision": "rejected",
+    "reason": "PT650 explicitly requires a rope while the reviewed straight-arm-pulldown mapping is the straight-bar variant used by 0238/0199."
+  },
+  {
+    "pt650Id": "1323",
+    "pt650Name": "cable rope seated row",
+    "sourceSlug": "seated-row",
+    "decision": "rejected",
+    "reason": "PT650 specifies a rope attachment; the reviewed seated-row source uses a different handle geometry. Attachment semantics are not interchangeable."
+  },
+  {
+    "pt650Id": "0205",
+    "pt650Name": "cable rear pulldown",
+    "sourceSlug": "lat-pulldown",
+    "decision": "held",
+    "reason": "The PT650 title suggests a rear/behind variant while its instructions describe a standard pull to the chest. Keep unavailable until the record identity is normalized."
+  },
+  {
+    "pt650Id": "0154",
+    "pt650Name": "cable cross-over revers fly",
+    "sourceSlug": "cable-rear-delt-fly",
+    "decision": "held",
+    "reason": "PT650 specifies two low pulleys, crossed handles and a forward hip hinge. The generic rear-delt-fly source does not prove that exact pulley height and crossed setup."
+  },
+  {
+    "pt650Id": "1722",
+    "pt650Name": "cable high pulley overhead tricep extension",
+    "sourceSlug": "overhead-tricep-extension",
+    "decision": "held",
+    "reason": "Preserved from V3.2: PT650 explicitly requires a rope attachment and the source does not establish the attachment type unambiguously."
+  },
+  {
+    "pt650Id": "0194",
+    "pt650Name": "cable overhead triceps extension (rope attachment)",
+    "sourceSlug": "overhead-tricep-extension",
+    "decision": "held",
+    "reason": "Same rope-attachment ambiguity as 1722; do not collapse a named rope variant into a generic overhead extension."
+  },
+  {
+    "pt650Id": "0860",
+    "pt650Name": "cable kickback",
+    "sourceSlug": "cable-kickback",
+    "decision": "rejected",
+    "reason": "Preserved from V2: PT650 0860 is a triceps movement while the source cable-kickback is a glute/hamstring hip-extension movement."
+  },
+  {
+    "pt650Id": "0245",
+    "pt650Name": "cable underhand pulldown",
+    "sourceSlug": "lat-pulldown",
+    "decision": "rejected",
+    "reason": "PT650 explicitly uses an underhand grip; the reviewed standard lat-pulldown source is overhand."
+  },
+  {
+    "pt650Id": "0177",
+    "pt650Name": "cable lateral pulldown (with rope attachment)",
+    "sourceSlug": "lat-pulldown",
+    "decision": "rejected",
+    "reason": "PT650 uses a rope and standing setup; the reviewed source is a seated straight-bar lat pulldown."
+  },
+  {
+    "pt650Id": "2616",
+    "pt650Name": "cable lateral pulldown with v-bar",
+    "sourceSlug": "close-grip-lat-pulldown",
+    "decision": "held",
+    "reason": "PT650 names a V-bar attachment. The source family is plausible but the exact V-bar/parallel handle geometry has not been established."
+  },
+  {
+    "pt650Id": "0818",
+    "pt650Name": "twin handle parallel grip lat pulldown",
+    "sourceSlug": "close-grip-lat-pulldown",
+    "decision": "held",
+    "reason": "PT650 specifies twin handles and a parallel grip; those handle details are not proven by the generic close-grip source."
+  }
+])
