@@ -10,14 +10,14 @@ describe('PT650 Exercise Experience Redesign V2', () => {
   it('extends the Sport Tech library without replacing its functional contracts', () => {
     expect(library).toContain('library-page pt650-library-v2')
     expect(library).toContain('className="library-resultbar"')
-    expect(library).toContain('data-pt650-motion=')
+    expect(library).not.toContain('data-pt650-motion=')
     expect(library).toContain("exerciseDetailSheet(e)")
     expect(library).toContain("addToRoutineSheet(e)")
   })
 
   it('gives exercise detail a dedicated hierarchy around the existing actions', () => {
     expect(sheets).toContain('className="pt650-exercise-detail-v2"')
-    expect(sheets).toContain('className="exercise-detail-media"')
+    expect(sheets).toContain('ex.custom && <div className="exercise-detail-media"')
     expect(sheets).toContain('className="exercise-detail-tags"')
     expect(sheets).toContain('className="exercise-detail-actions"')
     expect(sheets).toContain('className="exercise-detail-panel exercise-detail-howto"')
@@ -42,8 +42,8 @@ describe('PT650 Exercise Experience Redesign V2', () => {
     expect(css).toContain('@media (max-width:420px)')
   })
 
-  it('preserves the clean modern-media pending state inside redesigned details', () => {
-    expect(css).toContain('.exercise-detail-media .pt650-media-pending')
-    expect(css).toContain('.exercise-detail-media .pt650-provider-frames')
+  it('does not reserve an animation stage for built-in exercises', () => {
+    expect(sheets).toContain('ex.custom && <div className="exercise-detail-media"')
+    expect(library).not.toContain('library-card-mark"')
   })
 })

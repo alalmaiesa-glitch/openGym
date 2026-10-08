@@ -19,12 +19,7 @@ describe('PT650 native exercise catalogue', () => {
     expect(arInstr['pt650-0001']).toHaveLength(4)
   })
 
-  it('binds the native row to a real PT650 3D factory model', () => {
-    expect(threeDModelFor('pt650-0001')).toMatchObject({
-      id: 'jumping-jack-3d-v1',
-      exercise: 'jumping jack',
-      generatedBy: 'PT650 3D Factory',
-      motionLicense: 'CC0-1.0',
-    })
+  it('retains the native row but removes its former 3D demonstration', () => {
+    expect(threeDModelFor('pt650-0001')).toBeNull()
   })
 })

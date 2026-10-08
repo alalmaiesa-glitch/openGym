@@ -60,9 +60,8 @@ describe('PT650 Library density', () => {
     expect(host.querySelector('.library-hero')).not.toBeNull()
     const marks = host.querySelectorAll('.library-card-mark')
     const rows = host.querySelectorAll('.library-item')
-    expect(marks.length).toBeGreaterThan(0)
-    expect(marks.length).toBeLessThan(rows.length)
-    expect([...marks].every(mark => mark.querySelector('.icn'))).toBe(true)
+    expect(marks).toHaveLength(0)
+    expect(rows).toHaveLength(24)
     expect(host.querySelectorAll('.library-item .thumb')).toHaveLength(0)
     expect(host.querySelectorAll('.library-item .library-add').length).toBeGreaterThan(0)
     expect(host.querySelectorAll('.library-item .library-meta').length).toBeGreaterThan(0)
@@ -79,9 +78,9 @@ describe('PT650 Library density', () => {
   it('does not render placeholder demo marks on exercises with no animation', () => {
     const host = render()
     const source = readFileSync(resolve(process.cwd(), 'src/views/Library.jsx'), 'utf8')
-    expect(source).toContain('{hasDemo && <div className="library-card-mark"')
-    expect(source).not.toContain("hasDemo ? 'play' : 'dumbbell'")
-    expect(host.querySelectorAll('.library-card-mark').length).toBeLessThan(host.querySelectorAll('.library-item').length)
+    expect(source).not.toContain('hasAnimationFor')
+    expect(source).not.toContain('data-pt650-motion=')
+    expect(host.querySelectorAll('.library-card-mark')).toHaveLength(0)
   })
 
   it('caps the initial result set at 24 to keep the page visually light', () => {

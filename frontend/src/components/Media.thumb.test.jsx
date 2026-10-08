@@ -29,15 +29,12 @@ describe('Thumb', () => {
     expect(host.querySelector('[data-icon="dumbbell"]')).toBeTruthy()
   })
 
-  it('marks an exercise with an approved PT650 animation without loading an image', () => {
-    const { host, root } = mount(<Thumb ex={{ id: '0662', img: 'legacy.jpg' }} />)
+  it('shows a neutral tile even for a formerly animated exercise', () => {
+    const { host } = mount(<Thumb ex={{ id: '0662', img: 'legacy.jpg' }} />)
     expect(host.querySelector('img')).toBeNull()
-    expect(host.querySelector('.pt650-thumb.ready[data-pt650-media="animated"]')).toBeTruthy()
-    expect(host.querySelector('[data-icon="play"]')).toBeTruthy()
-
-    act(() => root.render(<Thumb ex={{ id: 'b', img: 'b.jpg' }} />))
+    expect(host.querySelector('.pt650-thumb[data-pt650-media="unavailable"]')).toBeTruthy()
     expect(host.querySelector('.pt650-thumb.ready')).toBeNull()
-    expect(host.querySelector('[data-icon="dumbbell"]')).toBeTruthy()
+    expect(host.querySelector('[data-icon="play"]')).toBeNull()
   })
 
   it('a retired authored-SVG-only exercise is unavailable in thumbnails', () => {

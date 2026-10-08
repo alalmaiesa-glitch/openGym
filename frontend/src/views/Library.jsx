@@ -10,7 +10,6 @@ import { t, exerciseNameFor, exerciseNameClass } from '../lib/i18n.js'
 import { exerciseDetailSheet, addToRoutineSheet, customExSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
 import { Button } from '../components/ui.jsx'
-import { hasAnimationFor } from '../components/pt650-animation-provider.js'
 import { tappable, useRevealActiveChip } from '../lib/use-sheet-keyboard.js'
 import { isFav, sortFavouritesFirst } from '../lib/favourites.js'
 
@@ -40,7 +39,6 @@ export default function Library() {
   const profileFiltered = !!(profile && !showAll)
   const filterCount = (bp ? 1 : 0) + (eqOn ? 1 : 0) + (profileFiltered ? 1 : 0)
   const narrowed = !!(q.trim() || filterCount)
-  const readyCount = f.reduce((count, exercise) => count + (hasAnimationFor(exercise.id) ? 1 : 0), 0)
   const clearBodyPart = () => { setBp(''); setEq(''); setShown(24) }
   const clearEquipment = () => { setEq(''); setShown(24) }
 
@@ -132,15 +130,12 @@ export default function Library() {
       <span className="library-result-count">{fmtNum(f.length)}</span>
       <span className="library-result-label">{t('Exercises')}</span>
       <span className="library-result-spacer" />
-      <span className="library-result-motion"><Icon name="play" />{fmtNum(readyCount)}</span>
     </div>
 
     <div className="list library-list">
       {f.slice(0, shown).map(e => {
         const best = bestWeightFor(S, e.id)
-        const hasDemo = hasAnimationFor(e.id)
-        return <div key={e.id} className={'item library-item' + (hasDemo ? ' has-demo' : '')} data-pt650-motion={hasDemo ? 'ready' : 'pending'} {...tappable(() => exerciseDetailSheet(e))}>
-          {hasDemo && <div className="library-card-mark" aria-hidden="true"><Icon name="play" /></div>}
+        return <div key={e.id} className="item library-item" {...tappable(() => exerciseDetailSheet(e))}>
           <div className="grow">
             <div className={`tt library-name ${exerciseNameClass(e)}`}>{isFav(S, e.id) && <Icon name="starFill" className="fav-star" />}{exerciseNameFor(e)}</div>
             <div className="ss library-meta capitalize">{t(MUSCLE_NAME[e.tg] || e.tg || e.bp)}<span>·</span>{t(e.eq)}</div>

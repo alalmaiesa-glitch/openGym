@@ -1,61 +1,25 @@
 import { describe, expect, it } from 'vitest'
-import { EXIDX } from '../lib/exercises.js'
+import { CATALOGUE } from '../lib/exercises.js'
 import { PT650_3D_MODELS } from './pt650-3d-registry.js'
 import { PT650_ANIMATION_MODELS } from './pt650-animation-registry.js'
-import {
-  EXERCISE_ANIMATIC_ASSETS,
-  WORKOUT_GUIDE_ASSETS,
-  GYM_VISUAL_ASSETS,
-} from './pt650-animation-assets.js'
+import { EXERCISE_ANIMATIC_ASSETS, WORKOUT_GUIDE_ASSETS, GYM_VISUAL_ASSETS } from './pt650-animation-assets.js'
 import { buildAnimationCoverageReport } from './pt650-animation-coverage.js'
 
-describe('PT650 animation coverage gap baseline V1', () => {
+describe('PT650 public exercise motion removal coverage', () => {
   const report = buildAnimationCoverageReport()
-
-  it('locks the current catalogue and resolved animation baseline', () => {
+  it('retains 1,327 catalogue exercises but zero demonstrations', () => {
+    expect(CATALOGUE).toHaveLength(1327)
     expect(report.total).toBe(1327)
-    expect(report.covered).toBe(119)
-    expect(report.uncovered).toBe(1208)
-    expect(report.coveragePct).toBe(8.97)
-    expect(report.selectedByProvider).toEqual({
-      pt650_opengym3d: 6,
-      workout_guide: 113,
-    })
+    expect(report.covered).toBe(0)
+    expect(report.uncovered).toBe(1327)
+    expect(report.coveragePct).toBe(0)
+    expect(report.selectedByProvider).toEqual({})
+    for (const row of report.byEquipment) expect(row.missing).toBe(row.total)
+    for (const row of report.byBodyPart) expect(row.missing).toBe(row.total)
   })
-
-  it('surfaces the largest body-part gaps deterministically', () => {
-    expect(report.byBodyPart.slice(0, 6).map(x => [x.key, x.missing])).toEqual([
-      ['upper arms', 275],
-      ['upper legs', 185],
-      ['back', 183],
-      ['waist', 155],
-      ['chest', 148],
-      ['shoulders', 125],
-    ])
-  })
-
-  it('surfaces the largest equipment gaps deterministically', () => {
-    expect(report.byEquipment.slice(0, 8).map(x => [x.key, x.missing])).toEqual([
-      ['body weight', 288],
-      ['dumbbell', 273],
-      ['cable', 136],
-      ['barbell', 134],
-      ['leverage machine', 70],
-      ['band', 54],
-      ['smith machine', 48],
-      ['kettlebell', 40],
-    ])
-  })
-
-  it('keeps every provider mapping attached to a real PT650 catalogue exercise', () => {
-    const mappedIds = new Set([
-      ...Object.keys(PT650_3D_MODELS),
-      ...Object.keys(PT650_ANIMATION_MODELS),
-      ...Object.keys(EXERCISE_ANIMATIC_ASSETS),
-      ...Object.keys(WORKOUT_GUIDE_ASSETS),
-      ...Object.keys(GYM_VISUAL_ASSETS),
-    ])
-    for (const id of mappedIds) expect(EXIDX[id], id).toBeTruthy()
-    expect(Object.keys(WORKOUT_GUIDE_ASSETS)).toHaveLength(114)
+  it('retains no imported exercise motion mappings from any source', () => {
+    for (const assets of [PT650_3D_MODELS, PT650_ANIMATION_MODELS, EXERCISE_ANIMATIC_ASSETS, WORKOUT_GUIDE_ASSETS, GYM_VISUAL_ASSETS]) {
+      expect(Object.keys(assets)).toHaveLength(0)
+    }
   })
 })

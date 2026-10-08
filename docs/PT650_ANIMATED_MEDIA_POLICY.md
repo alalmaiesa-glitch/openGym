@@ -1,3 +1,5 @@
+> **Current state (2026-10-08):** No built-in exercise motion is distributed or rendered. Earlier media assets have been removed; Exercise Animatic remains deferred. Rules below apply only to a future explicitly approved media phase.
+
 # PT650 — Animated Exercise Media Policy
 
 This policy is mandatory for all built-in exercise demonstration media in PT650.

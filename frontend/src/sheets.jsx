@@ -820,9 +820,7 @@ function ExerciseDetail({ ex, close }) {
       </button>
     </header>
 
-    <div className="exercise-detail-media">
-      <Media ex={ex} />
-    </div>
+    {ex.custom && <div className="exercise-detail-media"><Media ex={ex} /></div>}
 
     <div className="exercise-detail-tags">
       <span className="tag acc">{t(ex.bp)}</span>
@@ -1480,7 +1478,7 @@ function ExConfig({ ex, existing, onSave, onDelete, onReplace, close, routine, i
   }
   return <>
     <h3 className={exerciseNameClass(ex)}>{exerciseNameFor(ex)}</h3>
-    <Media ex={ex} />
+    {ex.custom && <Media ex={ex} />}
     {/* The same tags the exercise detail sheet shows, secondaries included: choosing what goes
         into a plan is exactly when "what else does this hit" matters, and until now that was
         only visible from the Exercises tab, after the fact. Custom exercises and the newer

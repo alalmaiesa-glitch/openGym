@@ -5,8 +5,7 @@
 # flag for features that still require the legacy same-origin Node server; it no longer means
 # that the whole PT650 product is a fake demo or that users bypass account sign-in.
 #
-# Approved 3D exercise assets are SHA256-locked and mirrored into the Pages artifact before
-# Vite builds the app.
+# Added exercise motion assets have been removed; Pages must not re-mirror 3D media.
 name: Deploy PT650 to GitHub Pages
 
 on:
@@ -38,9 +37,6 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
-        working-directory: frontend
-      - name: Mirror verified PT650 3D assets
-        run: node scripts/mirror-pt650-3d-assets.mjs
         working-directory: frontend
       - run: npm run build
         working-directory: frontend

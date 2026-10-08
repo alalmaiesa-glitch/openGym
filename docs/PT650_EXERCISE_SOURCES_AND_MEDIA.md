@@ -1,3 +1,5 @@
+> **Current decision (2026-10-08):** All added built-in exercise demonstrations have been removed. Exercise Animatic is a deferred future option only. The catalogue and private user media are unchanged. See `PT650_EXERCISE_ANIMATION_REMOVAL.md`.
+
 # PT650 Exercise Sources & Media Policy
 
 Status: **adopted**

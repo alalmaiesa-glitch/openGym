@@ -450,10 +450,9 @@ export default function Settings() {
             onChange={v => update(s => { s.keepAwake = v })} />
         </Row>
       )}
-      {/* 'full'/'mini' is also what the tap-toggle on the workout animation writes; 'off' hides
-          workout media entirely (library, detail sheet and picker thumbs are unaffected).
-          Legacy/unknown values read as 'full'. */}
-      <Row icon="figureRun" iconTint="var(--green)" title={t('Exercise animations')}>
+      {/* Custom exercise media still supports full/mini/hidden display;
+          built-in motion files have been removed. Legacy values read as 'full'. */}
+      <Row icon="figureRun" iconTint="var(--green)" title={t('Photos & videos')}>
         <Segmented className="seg-inline"
           options={[{ value: 'full', label: t('Full') }, { value: 'mini', label: t('Small') }, { value: 'off', label: t('Hidden') }]}
           value={S.gifSize === 'mini' || S.gifSize === 'off' ? S.gifSize : 'full'}
