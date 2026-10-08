@@ -21,7 +21,7 @@ Highest eligible mapped provider wins:
 1. `exercise_animatic` — priority 500 — planned until licensed/imported.
 2. `pt650_opengym3d` — priority 400 — active.
 3. `pt650_authored_svg` — priority 300 — **retired from public rendering**; historical registry retained for provenance/replacement.
-4. `workout_guide` — priority 200 — active partial fallback (Semantic Alias Matching V3.5).
+4. `workout_guide` — priority 200 — active partial fallback (Semantic Alias Matching V3.6).
 5. `gymvisual` — priority 100 — planned selective gap fill.
 
 A provider can have higher priority and still not win because:
