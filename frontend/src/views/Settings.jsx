@@ -452,7 +452,7 @@ export default function Settings() {
       )}
       {/* Custom exercise media still supports full/mini/hidden display;
           built-in motion files have been removed. Legacy values read as 'full'. */}
-      <Row icon="figureRun" iconTint="var(--green)" title={t('Photos & videos')}>
+      <Row icon="figureRun" iconTint="var(--green)" title={t('Custom exercise media')}>
         <Segmented className="seg-inline"
           options={[{ value: 'full', label: t('Full') }, { value: 'mini', label: t('Small') }, { value: 'off', label: t('Hidden') }]}
           value={S.gifSize === 'mini' || S.gifSize === 'off' ? S.gifSize : 'full'}
