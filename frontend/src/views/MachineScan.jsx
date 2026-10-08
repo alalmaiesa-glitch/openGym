@@ -8,8 +8,6 @@ import { DEMO } from '../lib/demo.js'
 import { EXIDX } from '../lib/exercises.js'
 import { MACHINE_CATALOG, MACHINE_BY_ID, machineText, machinePrescription, calibrateNextLoad, roundLoad } from '../lib/machine-scan.js'
 import { analyzeMachinePhoto } from '../lib/machine-scan-api.js'
-import { threeDModelFor } from '../components/pt650-3d-registry.js'
-import { animatedModelFor } from '../components/PT650ExerciseAnimation.jsx'
 import { exerciseDetailSheet } from '../sheets.jsx'
 import Icon from '../components/Icon.jsx'
 import { Button } from '../components/ui.jsx'
@@ -52,8 +50,6 @@ const copy = ar => ar ? {
   retry: 'أدخل وزنًا وعدد عدات فعليًا أولًا.',
   nextLoad: 'اقتراح الحمل التالي',
   openExercise: 'فتح شرح التمرين',
-  openAnimation: 'عرض الأداء المتحرك',
-  animationPending: 'العرض المتحرك الدقيق لهذا الجهاز غير مكتمل بعد؛ لن نعرض حركة تقريبية.',
   retake: 'صورة أخرى',
   startOver: 'مسح جديد',
   back: 'رجوع',
@@ -98,8 +94,6 @@ const copy = ar => ar ? {
   retry: 'Enter an actual load and rep count first.',
   nextLoad: 'Suggested next load',
   openExercise: 'Open exercise guide',
-  openAnimation: 'Show animated technique',
-  animationPending: 'An exact animation for this machine is not ready yet; PT650 will not show an approximate movement.',
   retake: 'Take another photo',
   startOver: 'New scan',
   back: 'Back',
@@ -148,7 +142,6 @@ export default function MachineScan() {
   const machine = selectedId ? MACHINE_BY_ID[selectedId] : null
   const text = machine ? machineText(machine, lang) : null
   const prescription = useMemo(() => machine ? machinePrescription(S, machine) : null, [S, machine])
-  const hasAnimation = machine ? !!(threeDModelFor(machine.exerciseId) || animatedModelFor(machine.exerciseId)) : false
 
   useEffect(() => {
     if (!prescription) return
@@ -374,15 +367,12 @@ export default function MachineScan() {
           </section>
 
           <section className="machine-demo-card">
-            <div className="machine-demo-icon"><Icon name="play" /></div>
-            <div className="grow">
-              <h3>{hasAnimation ? C.openAnimation : C.openExercise}</h3>
-              {!hasAnimation && <p>{C.animationPending}</p>}
-            </div>
-            <Button size="sm" variant={hasAnimation ? 'primary' : 'tinted'} onClick={() => {
+            <div className="machine-demo-icon"><Icon name="dumbbell" /></div>
+            <div className="grow"><h3>{C.openExercise}</h3></div>
+            <Button size="sm" variant="tinted" onClick={() => {
               const ex = EXIDX[machine.exerciseId]
               if (ex) exerciseDetailSheet(ex)
-            }}>{hasAnimation ? C.openAnimation : C.openExercise}</Button>
+            }}>{C.openExercise}</Button>
           </section>
 
           <Button variant="ghost" icon="camera" onClick={reset}>{C.startOver}</Button>
