@@ -394,17 +394,17 @@ export default function RoutineEdit() {
   const profile = activeProfile(S)
   const missingCount = profile ? r.ex.filter(e => !exAvailable(S, exOr(e.id))).length : 0
 
-  return <div className="narrow">
-    <div className="hdr">
+  return <div className="narrow pt650-routine-v6">
+    <div className="hdr pt650-routine-head">
       <button className="iconbtn" onClick={() => nav('/plan')} aria-label={t('Plan')}><Icon name="chevronLeft" /></button>
-      <div style={{ flex: 1, margin: '0 12px' }}>
+      <div className="pt650-routine-title">
         <input className="input" defaultValue={r.name} style={{ fontWeight: 600, fontSize: 20, letterSpacing: '-.021em' }}
           onChange={e => update(s => { s.routines.find(x => x.id === id).name = e.target.value.trim() || t('Routine') })} />
       </div>
       <button className="iconbtn" aria-label={t('Pick an icon')} onClick={() => glyphPicker(r.emoji, g => update(s => { s.routines.find(x => x.id === id).emoji = g }))}><Icon name={glyphOf(r.emoji)} /></button>
     </div>
 
-    <div className="sect-b" style={{ marginBottom: 16 }}>
+    <div className="sect-b pt650-routine-settings" style={{ marginBottom: 16 }}>
       <SelectRow icon="chartLine" title={t('Progression')} sheetTitle={t('Progression')}
         value={r.prog || 'linear'} onChange={v => update(s => { s.routines.find(x => x.id === id).prog = v })}
         options={POLICIES_FOR.reps.map(p => ({ value: p, label: t(POLICY_NAME[p]), subtitle: t(POLICY_DESC[p]) }))} />
@@ -428,7 +428,7 @@ export default function RoutineEdit() {
         : t(POLICY_DESC[r.prog || 'linear'] || POLICY_DESC.linear) + ' ' + t('Applies to every exercise in this routine that does not set its own rule.')}
     </div>
 
-    {missingCount > 0 && <div className="card" style={{ marginBottom: 16, borderColor: 'var(--orange)' }}>
+    {missingCount > 0 && <div className="card pt650-routine-warning" style={{ marginBottom: 16, borderColor: 'var(--orange)' }}>
       <div className="row" style={{ gap: 8, alignItems: 'center' }}>
         <Icon name="warning" style={{ color: 'var(--orange)' }} />
         <div className="small">{t('{0} of {1} exercises need equipment outside "{2}"', missingCount, r.ex.length, profile.name)}</div>
@@ -436,7 +436,7 @@ export default function RoutineEdit() {
     </div>}
 
     {r.ex.length ? <div ref={reorder.listRef} onClickCapture={reorder.onClickCapture}
-      className={'list routine-list' + (reorder.drag ? ' is-reordering' : '')}>{r.ex.map((e, i) => {
+      className={'list routine-list pt650-routine-exercises' + (reorder.drag ? ' is-reordering' : '')}>{r.ex.map((e, i) => {
       // An unresolvable id is shown rather than skipped — hiding it left an entry you
       // could neither see nor delete, but that still turned up in the workout.
       const ex = exOr(e.id)
@@ -447,7 +447,7 @@ export default function RoutineEdit() {
         className={'routine-drag-row' + (isDragging ? ' is-dragging' : '')}
         style={isDragging ? { transform: `translate3d(0, ${reorder.drag.deltaY}px, 0)` } : undefined}>
         {unitFirst.has(i) && <div className="ss-label"><Icon name="link" />{t('Superset')}</div>}
-        <SwipeToDelete className={'item' + (inSS.has(i) ? ' in-ss' : '')}
+        <SwipeToDelete className={'item pt650-routine-exercise' + (inSS.has(i) ? ' in-ss' : '')}
           deleteLabel={t('Remove from routine')}
           onDelete={() => edit(x => { x.splice(i, 1); cleanupSg(x) })}
           onClick={() => {
@@ -477,7 +477,7 @@ export default function RoutineEdit() {
     {r.ex.length > 0 && (() => {
       const load = loadOfRoutine(r)
       const { worked } = rankOf(load)
-      return <div className="card" style={{ marginTop: 12 }}>
+      return <div className="card pt650-routine-muscles" style={{ marginTop: 12 }}>
         <h2>{t('What this session hits')}</h2>
         <BodyMap load={load} body={S.body} />
         <div className="mchips">
@@ -487,29 +487,28 @@ export default function RoutineEdit() {
     })()}
 
     <div className="small dim row" style={{ margin: '10px 2px', gap: 5 }}><Icon name="link" style={{ fontSize: 13 }} />{t('Tap the link button on an exercise to superset it with the one above — you’ll do them back-to-back.')}</div>
-    <Button variant="primary" onClick={() => exercisePicker((ex, quick) => {
-      if (quick) {
-        edit(x => x.push({ id: ex.id, ...defaultConfig(ex.id) }))
-        toast(t('“{0}” added to {1}', exerciseNameText(ex), r.name))
-      } else {
-        exConfigSheet(ex, null, cfg => edit(x => { x.push({ id: ex.id, ...cfg }) }), null, r)
-      }
-    })} icon="plus">{t('Add exercise')}</Button>
-    <div style={{ height: 10 }} />
-    <Button onClick={() => {
-      const copy = copyRoutine(r, t('Copy'))
-      update(s => { s.routines.push(copy) })
-      nav('/plan/r/' + copy.id)
-    }}>{t('Copy routine')}</Button>
-    <div style={{ height: 10 }} />
-    <Button disabled={!r.ex.length} onClick={printRoutine}>{t('Print / Save as PDF')}</Button>
-    <div style={{ height: 10 }} />
-    <Button variant="danger" onClick={() => confirmSheet({
-      title: t('Delete routine?'), message: t('“{0}” and its exercises will be removed.', r.name), confirmText: t('Delete'), danger: true,
-      onConfirm: () => {
-        update(s => { deleteRoutine(s, id) })
-        nav('/plan')
-      }
-    })}>{t('Delete routine')}</Button>
+    <div className="pt650-routine-actions">
+      <Button variant="primary" onClick={() => exercisePicker((ex, quick) => {
+        if (quick) {
+          edit(x => x.push({ id: ex.id, ...defaultConfig(ex.id) }))
+          toast(t('“{0}” added to {1}', exerciseNameText(ex), r.name))
+        } else {
+          exConfigSheet(ex, null, cfg => edit(x => { x.push({ id: ex.id, ...cfg }) }), null, r)
+        }
+      })} icon="plus">{t('Add exercise')}</Button>
+      <Button onClick={() => {
+        const copy = copyRoutine(r, t('Copy'))
+        update(s => { s.routines.push(copy) })
+        nav('/plan/r/' + copy.id)
+      }}>{t('Copy routine')}</Button>
+      <Button disabled={!r.ex.length} onClick={printRoutine}>{t('Print / Save as PDF')}</Button>
+      <Button variant="danger" onClick={() => confirmSheet({
+        title: t('Delete routine?'), message: t('“{0}” and its exercises will be removed.', r.name), confirmText: t('Delete'), danger: true,
+        onConfirm: () => {
+          update(s => { deleteRoutine(s, id) })
+          nav('/plan')
+        }
+      })}>{t('Delete routine')}</Button>
+    </div>
   </div>
 }
