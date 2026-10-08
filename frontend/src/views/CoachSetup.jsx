@@ -133,10 +133,10 @@ export default function CoachSetup() {
     : coachLocal?.mode === 'byok' ? t('Runs on this phone with your own API key')
     : t('Off — choose how the Coach should run.')
 
-  return <div className="narrow">
-    <div className="hdr">
+  return <div className="narrow pt650-coach-setup-v6">
+    <div className="hdr pt650-secondary-head">
       <button className="iconbtn" onClick={() => nav('/settings')} aria-label={t('Back')}><Icon name="chevronLeft" /></button>
-      <div style={{ flex: 1, marginInlineStart: 10 }}><h1>{t('AI Coach')}</h1></div>
+      <div className="pt650-secondary-title"><h1>{t('AI Coach')}</h1></div>
     </div>
 
     <Section title={t('How should the Coach run?')} footer={current}>
