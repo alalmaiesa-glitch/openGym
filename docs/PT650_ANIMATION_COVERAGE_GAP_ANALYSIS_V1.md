@@ -2,32 +2,32 @@
 
 Status: **implemented**
 
-This baseline measures real renderable animation coverage after Workout Guide Semantic Alias Matching V3.5. It uses the provider resolver rather than raw asset counts, so higher-priority providers win exactly as they do at runtime.
+This baseline measures real renderable animation coverage after Workout Guide Semantic Alias Matching V3.6. It uses the provider resolver rather than raw asset counts, so higher-priority providers win exactly as they do at runtime.
 
 ## Baseline
 
 - PT650 catalogue: **1,327 exercises** = 1,324 imported catalogue exercises + 3 PT650-native exercises.
-- Resolved animation coverage: **109 exercises**.
-- Uncovered: **1,215 exercises**.
-- Coverage: **8.21%**.
+- Resolved animation coverage: **119 exercises**.
+- Uncovered: **1,208 exercises**.
+- Coverage: **8.97%**.
 
 Selected runtime providers:
 
 - PT650 / OpenGym3D: **6**
-- Workout Guide: **103**
+- Workout Guide: **113**
 
-Workout Guide contains 104 mapped exercises, but `3360` bear crawl resolves to higher-priority OpenGym3D. The legacy PT650 Authored SVG provider is retired from public rendering; `0043` barbell full squat therefore falls through to Workout Guide. This is expected and proves that raw map count is not the same as runtime-selected coverage.
+Workout Guide contains 114 mapped exercises, but `3360` bear crawl resolves to higher-priority OpenGym3D. The legacy PT650 Authored SVG provider is retired from public rendering; `0043` barbell full squat therefore falls through to Workout Guide. This is expected and proves that raw map count is not the same as runtime-selected coverage.
 
 ## Largest body-part gaps
 
 | Body part | Missing |
 | --- | ---: |
-| upper arms | 277 |
-| back | 187 |
-| upper legs | 186 |
+| upper arms | 275 |
+| back | 183 |
+| upper legs | 185 |
 | waist | 155 |
-| chest | 149 |
-| shoulders | 127 |
+| chest | 148 |
+| shoulders | 125 |
 | lower legs | 53 |
 | lower arms | 36 |
 | cardio | 24 |
@@ -40,7 +40,7 @@ Workout Guide contains 104 mapped exercises, but `3360` bear crawl resolves to h
 | --- | ---: |
 | body weight | 288 |
 | dumbbell | 273 |
-| cable | 146 |
+| cable | 136 |
 | barbell | 134 |
 | leverage machine | 70 |
 | band | 54 |
@@ -120,3 +120,10 @@ The V3.5 gate treats bench angle, grip orientation and width, seated versus stan
 ## Legacy Authored SVG Retirement
 
 The `pt650_authored_svg` provider is **retired from public rendering**. Its historical registry remains in source control for provenance and replacement tracking, but the public provider renderer no longer exposes the old schematic stick-figure SVG style. Exercises that have a modern approved provider fall through to it; exercises without one show a clean pending state in detail views.
+
+
+## Cable Precision V3.6
+
+V3.6 adds **10 reviewed PT650 cable mappings**. Four new Workout Guide source slugs required **12 new SVG files** (`cable-fly`, `tricep-pushdown`, `rope-tricep-pushdown`, `cable-kickback`); six mappings safely reuse already-pinned cable source frames. Workout Guide now maps **114 PT650 exercises** with **294 unique local SVG files**. Runtime selects Workout Guide for **113** exercises because `3360` bear crawl remains on higher-priority OpenGym3D.
+
+Cable missing coverage drops from **146 to 136**. V3.6 treats attachment type, pulley direction, seated/standing posture, unilateral/bilateral execution and title/instruction consistency as identity. Named rope, V-bar, underhand, one-arm and conflicting-record variants remain blocked unless the source proves the same geometry.
