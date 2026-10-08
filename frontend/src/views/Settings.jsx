@@ -272,10 +272,10 @@ export default function Settings() {
     },
   })
 
-  return <div className="narrow">
-    <div className="hdr">
+  return <div className="narrow pt650-settings-v5">
+    <div className="hdr pt650-settings-head">
       <button className="iconbtn" onClick={() => nav('/home')} aria-label={t('Home')}><Icon name="chevronLeft" /></button>
-      <div style={{ flex: 1, marginInlineStart: 10 }}><h1>{t('Settings')}</h1></div>
+      <div className="pt650-settings-title"><h1>{t('Settings')}</h1><div className="sub">PT650</div></div>
     </div>
 
     {/* ---------- the server: which one, which account, how that stands, "Sync now" ----------
