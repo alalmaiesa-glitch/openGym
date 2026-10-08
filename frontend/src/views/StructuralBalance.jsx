@@ -41,16 +41,16 @@ export default function StructuralBalance() {
     const picker = exercisePicker(ex => { setOverride(role, ex.id); picker.close() }, { title: t('Change exercise') })
   }
 
-  return <>
-    <div className="hdr"><button className="iconbtn" onClick={() => nav('/stats')} aria-label={t('Stats')}><Icon name="chevronLeft" /></button>
-      <div style={{ flex: 1, marginInlineStart: 12 }}><h1>{t('Structural balance')}</h1>
+  return <div className="pt650-balance-v6">
+    <div className="hdr pt650-secondary-head"><button className="iconbtn" onClick={() => nav('/stats')} aria-label={t('Stats')}><Icon name="chevronLeft" /></button>
+      <div className="pt650-secondary-title"><h1>{t('Structural balance')}</h1>
         <div className="sub">{t('Compare your lifts against a published ratio table to find the weak link.')}</div></div></div>
 
     <Segmented className="seg-range" value={templateId}
       onChange={id => update(s => { s.balanceTemplate = id })}
       options={TEMPLATE_LIST.map(tpl => ({ value: tpl.id, label: t(tpl.label) }))} />
 
-    <div className="card">
+    <div className="card pt650-balance-card">
       {results.map(r => {
         const role = template.roles.find(role => role.id === r.roleId)
         const view = balanceStatusView(r.status, r.needsAnchor)
@@ -94,5 +94,5 @@ export default function StructuralBalance() {
         )
       })}
     </div>
-  </>
+  </div>
 }
