@@ -14,11 +14,12 @@ import { openDeviceLinkRedeem } from '../components/Passkeys.jsx'
 import { platformSignIn, platformSignUp } from '../lib/platform-auth.js'
 import { platformApi } from '../lib/platform-api.js'
 import { getLang } from '../lib/i18n-core.js'
+import PT650EntryExperience from './PT650EntryExperience.jsx'
 
 
-function PlatformEntry() {
+function PlatformEntry({ initialMode = 'signin' }) {
   const ar = String(getLang()).toLowerCase().startsWith('ar')
-  const [mode, setMode] = useState('signin')
+  const [mode, setMode] = useState(initialMode)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [busy, setBusy] = useState(false)
@@ -79,7 +80,7 @@ function PlatformEntry() {
     <div className="login-panel">
       <div className="login-panel-icon" aria-hidden="true"><Icon name="person" /></div>
       <div className="login-panel-copy">
-        <h2>{C.title}</h2>
+        <h2>{mode === 'create' ? C.create : C.title}</h2>
         <p>{C.subtitle}</p>
       </div>
 
@@ -209,14 +210,7 @@ export default function Login() {
     </section>
   )
 
-  if (DEMO) return (
-    <main className="login-page">
-      {hero}
-      <section className="login-entry">
-        <PlatformEntry />
-      </section>
-    </main>
-  )
+  if (DEMO) return <PT650EntryExperience renderAccount={props => <PlatformEntry {...props} />} />
 
   let authBody
   if (passkeys) {
