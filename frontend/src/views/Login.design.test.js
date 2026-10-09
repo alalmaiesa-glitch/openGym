@@ -64,7 +64,7 @@ describe('PT650 login design', () => {
     expect(entry).toContain("setScreen('account')")
     expect(entry).toContain('data-pt650-choice={item.id}')
     expect(entry).toContain('renderAccount({ initialMode: accountMode })')
-    expect(entry).not.toMatch(/<img\\b|<video\\b/i)
+    expect(entry).not.toMatch(/<img\b|<video\b/i)
     expect(stylesheet).toContain('#app:has(>.pt650-gateway-page)')
     expect(stylesheet).toContain('@media (prefers-reduced-motion:reduce)')
     expect(stylesheet).toContain('.pt650-gateway-choice')
